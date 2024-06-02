@@ -1,25 +1,28 @@
-package com.hrs.checklist_resign.security;
+package com.hrs.checklist_resign.Model;
 
-import com.hrs.checklist_resign.Model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private Long id;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
+    private UserDetail userDetail;
 
-    public UserDetailsImpl(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
+    public UserDetailsImpl(String username, String password, String role, UserDetail userDetail) {
+        this.username = username;
+        this.password = password;
+        this.authorities = Collections.singleton(new SimpleGrantedAuthority(role));
+        this.userDetail = userDetail;
+
+        // Debugging print statements
+        System.out.println("Creating UserDetailsImpl for user: " + username);
+
+
     }
 
     @Override
@@ -57,23 +60,11 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    public Long getId() {
-        return id;
+    public UserDetail getUserDetail() {
+        return userDetail;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities;
+    public void setUserDetail(UserDetail userDetail) {
+        this.userDetail = userDetail;
     }
 }

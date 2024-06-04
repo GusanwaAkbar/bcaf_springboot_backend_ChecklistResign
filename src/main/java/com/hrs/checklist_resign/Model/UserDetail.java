@@ -1,6 +1,8 @@
 package com.hrs.checklist_resign.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,17 +24,29 @@ public class UserDetail {
     private User user;
 
     private String nama;
+
+    @JsonProperty("user_username")
+    public String getUserUsername() {
+        return user != null ? user.getUsername() : null;
+    }
+
+    private String email;
     private String cabang;
     private String idDivisi;
     private String divisi;
     private String jabatan;
     private String externalUser;
 
+    @OneToOne(mappedBy = "userDetail", cascade = CascadeType.ALL)
+    private PengajuanResign pengajuanResign;
+
+
     @Override
     public String toString() {
         return "UserDetail{" +
-                "id=" + id +
-                ", nama='" + nama + '\'' +
+                "nip=" + id +
+                ", nama='" + user.getUsername() + '\'' +
+                ", email='" + email + '\'' +
                 ", cabang='" + cabang + '\'' +
                 ", idDivisi='" + idDivisi + '\'' +
                 ", divisi='" + divisi + '\'' +
@@ -43,6 +57,7 @@ public class UserDetail {
 
     // Getters and setters
     // ...
+
 
     public Long getId() {
         return id;
@@ -55,6 +70,8 @@ public class UserDetail {
     public User getUser() {
         return user;
     }
+
+
 
     public void setUser(User user) {
         this.user = user;
@@ -106,5 +123,21 @@ public class UserDetail {
 
     public void setExternalUser(String externalUser) {
         this.externalUser = externalUser;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public PengajuanResign getPengajuanResign() {
+        return pengajuanResign;
+    }
+
+    public void setPengajuanResign(PengajuanResign pengajuanResign) {
+        this.pengajuanResign = pengajuanResign;
     }
 }

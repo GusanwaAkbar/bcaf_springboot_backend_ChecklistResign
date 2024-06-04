@@ -16,6 +16,6 @@ public class UserDetailsService {
     }
 
     public UserDetail findByUsername(String username) {
-        return userDetailsRepository.findByUserUsername(username);
+        return userDetailsRepository.findByUser_Username(username);
     }
 }

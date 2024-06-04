@@ -1,10 +1,10 @@
 package com.hrs.checklist_resign.payload;
 
 import com.hrs.checklist_resign.Model.UserDetail;
-import com.hrs.checklist_resign.Model.UserDetailsImpl;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
+import java.util.Optional;
 
 @Data
 public class JwtResponse {

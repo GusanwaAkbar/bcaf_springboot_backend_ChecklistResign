@@ -15,6 +15,7 @@ import java.sql.SQLException;
         // user.setId(rs.getLong("id")); // Set user id
         userDetailObj.setUser(user); // Set user details
         userDetailObj.setNama(rs.getString("Nama"));
+        userDetailObj.setEmail(rs.getString("Email"));
         userDetailObj.setCabang(rs.getString("Cabang"));
         userDetailObj.setIdDivisi(rs.getString("id_divisi"));
         userDetailObj.setDivisi(rs.getString("Divisi"));

@@ -29,6 +29,13 @@ public class ApiResponse<T> {
         this.timestamp = LocalDateTime.now();
     }
 
+    public ApiResponse(boolean success, String message, int status) {
+        this.success =success;
+        this.message = message;
+        this.status = status;
+        this.timestamp = LocalDateTime.now();
+    }
+
     // Getters and setters
 
     public T getData() {

@@ -1,9 +1,11 @@
 package com.hrs.checklist_resign.controller;
 
+import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.PengajuanResign;
 import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.payload.PengajuanResignDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
+import com.hrs.checklist_resign.service.ApprovalAtasanService;
 import com.hrs.checklist_resign.service.PengajuanResignService;
 import com.hrs.checklist_resign.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,10 @@ public class PengajuanResignController {
 
     @Autowired
     private UserDetailsService userDetailService;
+
+    @Autowired
+    private ApprovalAtasanService approvalAtasanService;
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<PengajuanResign>>> getAllResignations() {
@@ -48,18 +54,17 @@ public class PengajuanResignController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ApiResponse<PengajuanResign>> createResignation(@RequestBody PengajuanResignDTO pengajuanResignDTO) {
+
+        //Start Authentication checking
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
             ApiResponse<PengajuanResign> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
+        //End Authententication checking
 
         String username = authentication.getName();
-
-        System.out.println("Authentication Details:");
-        System.out.println(authentication);
-        System.out.println("Extracted Username: " + username);
 
         Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(username));
 
@@ -70,16 +75,38 @@ public class PengajuanResignController {
             pengajuanResign.setIsiUntukOrangLain(pengajuanResignDTO.isIsiUntukOrangLain());
             pengajuanResign.setTanggalPembuatanAkunHRIS(pengajuanResignDTO.getTanggalPembuatanAkunHRIS());
             pengajuanResign.setTanggalBerakhirBekerja(pengajuanResignDTO.getTanggalBerakhirBekerja());
-            pengajuanResign.setUserDetail(userDetail);
+            pengajuanResign.setUserDetailResign(userDetail);
 
-            PengajuanResign createdResignation = pengajuanResignService.saveResignation(pengajuanResign);
-            ApiResponse<PengajuanResign> response = new ApiResponse<>(createdResignation, true, "Resignation created successfully", HttpStatus.CREATED.value());
+            // Save pengajuanResign first
+            PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
+
+            // Set NIP and Email Atasan
+            String nipAtasan = pengajuanResignDTO.getNipAtasan();
+            String emailAtasan = pengajuanResignDTO.getEmailAtasan();
+
+            // Get atasan User Details
+            UserDetail userDetailAtasan = userDetailService.findByUsername(nipAtasan);
+
+            // Start making initiate approval atasan
+            ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
+
+            // Set User Details Atasan and NIP Atasan in Approval Atasan
+            approvalAtasanObj.setNipAtasan(nipAtasan);
+            approvalAtasanObj.setUserDetailAtasan(userDetailAtasan);
+            approvalAtasanObj.setPengajuanResign(savedPengajuanResign);
+
+            // Save approval atasan object to the database
+            approvalAtasanService.saveApproval(approvalAtasanObj);
+
+            // Return the response
+            ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } else {
             ApiResponse<PengajuanResign> response = new ApiResponse<>(false, "User details not found", HttpStatus.NOT_FOUND.value(), "No user details found for username: " + username);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
+
 
 
 
@@ -114,7 +141,18 @@ public class PengajuanResignController {
 //    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteResignation(@PathVariable Long id) {
+    public ResponseEntity<?> deleteResignation(@PathVariable Long id) {
+
+        //Start Authentication checking
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<PengajuanResign> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+        //End Authententication checking
+
+
         if (pengajuanResignService.getResignationById(id).isPresent()) {
             pengajuanResignService.deleteResignation(id);
             ApiResponse<Void> response = new ApiResponse<>(null, true, "Resignation deleted successfully", HttpStatus.OK.value());

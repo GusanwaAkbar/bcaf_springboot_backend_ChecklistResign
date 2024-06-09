@@ -1,6 +1,7 @@
 package com.hrs.checklist_resign.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -26,6 +27,7 @@ public class UserDetail {
     private String nama;
 
     @JsonProperty("user_username")
+    @Column(unique = true)
     public String getUserUsername() {
         return user != null ? user.getUsername() : null;
     }
@@ -37,9 +39,14 @@ public class UserDetail {
     private String jabatan;
     private String externalUser;
 
-    @OneToOne(mappedBy = "userDetail", cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "userDetailResign", cascade = CascadeType.ALL)
+    @JsonIgnore
     private PengajuanResign pengajuanResign;
 
+    @OneToOne(mappedBy = "userDetailAtasan", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private ApprovalAtasan approvalAtasan;
 
     @Override
     public String toString() {

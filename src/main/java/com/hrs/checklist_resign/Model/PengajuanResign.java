@@ -27,17 +27,30 @@ public class PengajuanResign {
 
     @OneToOne
     @JoinColumn(name = "user_detail_id", referencedColumnName = "id")
-    private UserDetail userDetail;
+    private UserDetail userDetailResign;
 
     @Column(name = "nip_atasan")
     private String nipAtasan;
 
     @Column(name = "email_atasan")
-    private boolean emailAtasan;
+    private String emailAtasan;
 
+
+
+//    @OneToOne
+//    @JoinColumn(name = "pengajuan_resign_id", referencedColumnName = "id")
+//    private ApprovalAtasan approvalAtasan;
     @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonBackReference
     private ApprovalAtasan approvalAtasan;
+
+//    @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL )
+//    @JsonManagedReference
+//    private ApprovalHRIR approvalHRIR;
+//
+//    @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL )
+//    @JsonManagedReference
+//    private ApprovalHRTalent approvalHRTalent;
 
     // Getters and setters
 
@@ -73,20 +86,12 @@ public class PengajuanResign {
         this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
     }
 
-    public UserDetail getUserDetail() {
-        return userDetail;
+    public UserDetail getUserDetailResign() {
+        return userDetailResign;
     }
 
-    public void setUserDetail(UserDetail userDetail) {
-        this.userDetail = userDetail;
-    }
-
-    public boolean isEmailAtasan() {
-        return emailAtasan;
-    }
-
-    public void setEmailAtasan(boolean emailAtasan) {
-        this.emailAtasan = emailAtasan;
+    public void setUserDetailResign(UserDetail userDetailResign) {
+        this.userDetailResign = userDetailResign;
     }
 
     public String getNipAtasan() {
@@ -103,6 +108,14 @@ public class PengajuanResign {
 
     public void setApprovalAtasan(ApprovalAtasan approvalAtasan) {
         this.approvalAtasan = approvalAtasan;
+    }
+
+    public String getEmailAtasan() {
+        return emailAtasan;
+    }
+
+    public void setEmailAtasan(String emailAtasan) {
+        this.emailAtasan = emailAtasan;
     }
 
     @Override

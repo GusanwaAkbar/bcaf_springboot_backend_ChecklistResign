@@ -31,7 +31,7 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/api/auth/**")
-                        .ignoringRequestMatchers("/api/resignations/**")// Disable CSRF for these paths
+                        .ignoringRequestMatchers("/api/**")// Disable CSRF for these paths
                 )
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/resign").hasRole("USER")

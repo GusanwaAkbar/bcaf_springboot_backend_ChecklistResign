@@ -1,6 +1,8 @@
 package com.hrs.checklist_resign.payload;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
+
 import java.util.Date;
 
 public class PengajuanResignDTO {
@@ -12,6 +14,11 @@ public class PengajuanResignDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date tanggalBerakhirBekerja;
+
+
+    private String nipAtasan;
+
+    private String emailAtasan;
 
     // Getters and setters
 
@@ -45,5 +52,21 @@ public class PengajuanResignDTO {
 
     public void setTanggalBerakhirBekerja(Date tanggalBerakhirBekerja) {
         this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
+    }
+
+    public String getNipAtasan() {
+        return nipAtasan;
+    }
+
+    public void setNipAtasan(String nipAtasan) {
+        this.nipAtasan = nipAtasan;
+    }
+
+    public String getEmailAtasan() {
+        return emailAtasan;
+    }
+
+    public void setEmailAtasan(String emailAtasan) {
+        this.emailAtasan = emailAtasan;
     }
 }

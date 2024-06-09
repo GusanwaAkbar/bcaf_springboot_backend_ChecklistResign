@@ -1,6 +1,7 @@
 package com.hrs.checklist_resign.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -11,43 +12,84 @@ public class ApprovalAtasan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nip_atasan")
+    private String nipAtasan;
+
+    @OneToOne
+    @JoinColumn(name = "user_detail_atasan_id", referencedColumnName = "id")
+    private UserDetail userDetailAtasan;
+
+//    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+//    private PengajuanResign pengajuanResign;
+
     @OneToOne
     @JoinColumn(name = "pengajuan_resign_id", referencedColumnName = "id")
-    @JsonBackReference
-    private PengajuanResign pengajuanResign;
+    private  PengajuanResign pengajuanResign;
+
+
 
     @Column(name = "serah_terima_tugas")
-    private boolean serahTerimaTugas;
+    private String serahTerimaTugas;
 
     @Column(name = "pengembalian_notebook")
-    private boolean pengembalianNotebook;
+    private String pengembalianNotebook;
 
     @Column(name = "pengembalian_kunci_loker")
-    private boolean pengembalianKunciLoker;
+    private String pengembalianKunciLoker;
 
     @Column(name = "pengembalian_kunci_ruangan")
-    private boolean pengembalianKunciRuangan;
+    private String pengembalianKunciRuangan;
 
     @Column(name = "penyerahan_surat_pengunduran_diri")
-    private boolean penyerahanSuratPengunduranDiri;
+    private String penyerahanSuratPengunduranDiri;
 
     @Column(name = "pengembalian_id_card")
-    private boolean pengembalianIdCard;
+    private String pengembalianIdCard;
 
     @Column(name = "hapus_aplikasi_mobile")
-    private boolean hapusAplikasiMobile;
+    private String hapusAplikasiMobile;
 
     @Column(name = "uninstall_software_notebook")
-    private boolean uninstallSoftwareNotebook;
+    private String uninstallSoftwareNotebook;
 
     @Column(name = "uninstall_software_unit_kerja")
-    private boolean uninstallSoftwareUnitKerja;
+    private String uninstallSoftwareUnitKerja;
 
     @Column(name = "approval_status_atasan")
     private String approvalStatusAtasan;
 
     @Column(name = "remarks_atasan")
     private String remarksAtasan;
+
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private ApprovalHRTalent approvalHRTalent;
+
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private ApprovalHRIR approvalHRIR;
+
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private ApprovalGeneralServices approvalGeneralServices;
+
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private ApprovalHRPayroll approvalHRPayroll;
+
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private ApprovalHRServicesAdmin approvalHRServicesAdmin;
+
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private ApprovalSecurityAdministrator approvalSecurityAdministrator;
+
+
+
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private ApprovalTreasury approvalTreasury;
 
     // Getters and setters
 
@@ -67,76 +109,84 @@ public class ApprovalAtasan {
         this.pengajuanResign = pengajuanResign;
     }
 
-    public boolean isSerahTerimaTugas() {
+    public String getSerahTerimaTugas() {
         return serahTerimaTugas;
     }
 
-    public void setSerahTerimaTugas(boolean serahTerimaTugas) {
+    public void setSerahTerimaTugas(String serahTerimaTugas) {
         this.serahTerimaTugas = serahTerimaTugas;
     }
 
-    public boolean isPengembalianNotebook() {
+    public String getPengembalianNotebook() {
         return pengembalianNotebook;
     }
 
-    public void setPengembalianNotebook(boolean pengembalianNotebook) {
+    public void setPengembalianNotebook(String pengembalianNotebook) {
         this.pengembalianNotebook = pengembalianNotebook;
     }
 
-    public boolean isPengembalianKunciLoker() {
+    public String getPengembalianKunciLoker() {
         return pengembalianKunciLoker;
     }
 
-    public void setPengembalianKunciLoker(boolean pengembalianKunciLoker) {
+    public void setPengembalianKunciLoker(String pengembalianKunciLoker) {
         this.pengembalianKunciLoker = pengembalianKunciLoker;
     }
 
-    public boolean isPengembalianKunciRuangan() {
+    public String getPengembalianKunciRuangan() {
         return pengembalianKunciRuangan;
     }
 
-    public void setPengembalianKunciRuangan(boolean pengembalianKunciRuangan) {
+    public void setPengembalianKunciRuangan(String pengembalianKunciRuangan) {
         this.pengembalianKunciRuangan = pengembalianKunciRuangan;
     }
 
-    public boolean isPenyerahanSuratPengunduranDiri() {
+    public String getPenyerahanSuratPengunduranDiri() {
         return penyerahanSuratPengunduranDiri;
     }
 
-    public void setPenyerahanSuratPengunduranDiri(boolean penyerahanSuratPengunduranDiri) {
+    public void setPenyerahanSuratPengunduranDiri(String penyerahanSuratPengunduranDiri) {
         this.penyerahanSuratPengunduranDiri = penyerahanSuratPengunduranDiri;
     }
 
-    public boolean isPengembalianIdCard() {
+    public String getPengembalianIdCard() {
         return pengembalianIdCard;
     }
 
-    public void setPengembalianIdCard(boolean pengembalianIdCard) {
+    public void setPengembalianIdCard(String pengembalianIdCard) {
         this.pengembalianIdCard = pengembalianIdCard;
     }
 
-    public boolean isHapusAplikasiMobile() {
+    public String getHapusAplikasiMobile() {
         return hapusAplikasiMobile;
     }
 
-    public void setHapusAplikasiMobile(boolean hapusAplikasiMobile) {
+    public void setHapusAplikasiMobile(String hapusAplikasiMobile) {
         this.hapusAplikasiMobile = hapusAplikasiMobile;
     }
 
-    public boolean isUninstallSoftwareNotebook() {
+    public String getUninstallSoftwareNotebook() {
         return uninstallSoftwareNotebook;
     }
 
-    public void setUninstallSoftwareNotebook(boolean uninstallSoftwareNotebook) {
+    public void setUninstallSoftwareNotebook(String uninstallSoftwareNotebook) {
         this.uninstallSoftwareNotebook = uninstallSoftwareNotebook;
     }
 
-    public boolean isUninstallSoftwareUnitKerja() {
+    public String getUninstallSoftwareUnitKerja() {
         return uninstallSoftwareUnitKerja;
     }
 
-    public void setUninstallSoftwareUnitKerja(boolean uninstallSoftwareUnitKerja) {
+    public void setUninstallSoftwareUnitKerja(String uninstallSoftwareUnitKerja) {
         this.uninstallSoftwareUnitKerja = uninstallSoftwareUnitKerja;
+    }
+
+    public ApprovalHRTalent getApprovalHRTalent() {
+        return approvalHRTalent;
+    }
+
+    public void setApprovalHRTalent(ApprovalHRTalent approvalHRTalent) {
+        this.approvalHRTalent = approvalHRTalent;
     }
 
     public String getApprovalStatusAtasan() {
@@ -145,6 +195,22 @@ public class ApprovalAtasan {
 
     public void setApprovalStatusAtasan(String approvalStatusAtasan) {
         this.approvalStatusAtasan = approvalStatusAtasan;
+    }
+
+    public String getNipAtasan() {
+        return nipAtasan;
+    }
+
+    public void setNipAtasan(String nipAtasan) {
+        this.nipAtasan = nipAtasan;
+    }
+
+    public UserDetail getUserDetailAtasan() {
+        return userDetailAtasan;
+    }
+
+    public void setUserDetailAtasan(UserDetail userDetailAtasan) {
+        this.userDetailAtasan = userDetailAtasan;
     }
 
     public String getRemarksAtasan() {

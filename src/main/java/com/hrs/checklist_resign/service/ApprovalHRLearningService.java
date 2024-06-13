@@ -17,6 +17,9 @@ public class ApprovalHRLearningService {
     private final ApprovalHRLearningRepository repository;
 
     @Autowired
+    private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
+
+    @Autowired
     public ApprovalHRLearningService(ApprovalHRLearningRepository repository) {
         this.repository = repository;
     }
@@ -50,8 +53,15 @@ public class ApprovalHRLearningService {
         ApprovalHRLearning approvalHRLearning = optionalApprovalHRLearning.get();
         approvalHRLearning.setPengecekanBiayaTraining(approvalHRLearningDetails.getPengecekanBiayaTraining());
         approvalHRLearning.setApprovalHRLearningStatus(approvalHRLearningDetails.getApprovalHRLearningStatus());
+        approvalHRLearning.setRemarks(approvalHRLearningDetails.getRemarks());
 
         ApprovalHRLearning updatedApprovalHRLearning = repository.save(approvalHRLearning);
+
+        //checking all approval status
+        checkingAllApprovalsStatus.doCheck(id);
+
+
+
         ApiResponse<ApprovalHRLearning> response = new ApiResponse<>(updatedApprovalHRLearning, true, "Update succeeded", HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

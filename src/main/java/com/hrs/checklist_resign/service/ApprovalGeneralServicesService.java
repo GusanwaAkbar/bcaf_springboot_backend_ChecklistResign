@@ -54,6 +54,7 @@ public class ApprovalGeneralServicesService {
         approvalGeneralServices.setPengembalianAktiva(approvalGeneralServicesDetails.getPengembalianAktiva());
         approvalGeneralServices.setPengembalianKendaraanUMK3(approvalGeneralServicesDetails.getPengembalianKendaraanUMK3());
         approvalGeneralServices.setApprovalGeneralServicesStatus(approvalGeneralServicesDetails.getApprovalGeneralServicesStatus());
+        approvalGeneralServices.setRemarks(approvalGeneralServicesDetails.getRemarks());
 
         ApprovalGeneralServices updatedApprovalGeneralServices = repository.save(approvalGeneralServices);
         ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(updatedApprovalGeneralServices, true, "Update succeeded", HttpStatus.OK.value());

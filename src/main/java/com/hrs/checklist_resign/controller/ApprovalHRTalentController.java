@@ -50,46 +50,7 @@ public class ApprovalHRTalentController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateApprovalHRTalent(@PathVariable Long id, @RequestBody ApprovalHRTalent approvalHRTalentDetails) {
         // Start Authentication checking
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            ApiResponse<ApprovalHRTalent> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-        }
-        // End Authentication checking
-
-        // Get existing item
-        Optional<ApprovalHRTalent> approvalHRTalentOptional = approvalHRTalentService.findById(id);
-        if (!approvalHRTalentOptional.isPresent()) {
-            ApiResponse<ApprovalHRTalent> response = new ApiResponse<>(false, "Approval HR Talent Not Found", HttpStatus.NOT_FOUND.value(), "Approval HR Talent with ID " + id + " is not found");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-
-        ApprovalHRTalent existingApprovalHRTalent = approvalHRTalentOptional.get();
-        // Update fields
-        existingApprovalHRTalent.setPengecekanBiaya(approvalHRTalentDetails.getPengecekanBiaya());
-        existingApprovalHRTalent.setFilePengecekanBiaya(approvalHRTalentDetails.getFilePengecekanBiaya());
-        existingApprovalHRTalent.setApprovalHRTalentStatus(approvalHRTalentDetails.getApprovalHRTalentStatus());
-        existingApprovalHRTalent.setPengajuanResign(approvalHRTalentDetails.getPengajuanResign());
-        //existingApprovalHRTalent.setApprovalAtasan(approvalHRTalentDetails.getApprovalAtasan());
-
-        ApprovalHRTalent updatedApprovalHRTalent = approvalHRTalentService.saveApprovalHRTalent(existingApprovalHRTalent);
-
-        // Check ApprovalHRIR status
-        ApprovalHRIR approvalHRIR = approvalHRIRService.findApprovalHRIRById(id);
-        if (approvalHRIR == null) {
-            ApiResponse<ApprovalHRIR> response = new ApiResponse<>(false, "Approval HRIR Not Found", HttpStatus.NOT_FOUND.value(), "Approval HRIR with ID " + id + " is not found");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-
-        // If both ApprovalHRTalent and ApprovalHRIR are approved
-        if (true) {
-            // Create final form entity
-            // Add your logic here for creating the final form entity
-        }
-
-        ApiResponse<ApprovalHRTalent> response = new ApiResponse<>(updatedApprovalHRTalent, true, "Approval HR Talent Updated", HttpStatus.OK.value());
-        return ResponseEntity.ok(response);
+        return approvalHRTalentService.update(id, approvalHRTalentDetails);
     }
 }
 

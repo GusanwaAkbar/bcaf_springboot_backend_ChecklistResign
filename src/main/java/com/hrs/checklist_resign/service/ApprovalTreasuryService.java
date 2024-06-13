@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +17,9 @@ import java.util.Optional;
 public class ApprovalTreasuryService {
 
     private final ApprovalTreasuryRepository repository;
+
+    @Autowired
+    private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
     @Autowired
     public ApprovalTreasuryService(ApprovalTreasuryRepository repository) {
@@ -40,7 +45,8 @@ public class ApprovalTreasuryService {
         }
     }
 
-    public ResponseEntity<ApiResponse<ApprovalTreasury>> update(Long id, ApprovalTreasury approvalTreasuryDetails) {
+
+    public ResponseEntity<ApiResponse<ApprovalTreasury>> update(@PathVariable Long id, @RequestBody ApprovalTreasury approvalTreasuryDetails) {
         Optional<ApprovalTreasury> optionalApprovalTreasury = repository.findById(id);
         if (!optionalApprovalTreasury.isPresent()) {
             ApiResponse<ApprovalTreasury> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalTreasury not found");
@@ -51,11 +57,25 @@ public class ApprovalTreasuryService {
         approvalTreasury.setBiayaAdvance(approvalTreasuryDetails.getBiayaAdvance());
         approvalTreasury.setBlokirFleet(approvalTreasuryDetails.getBlokirFleet());
         approvalTreasury.setApprovalTreasuryStatus(approvalTreasuryDetails.getApprovalTreasuryStatus());
+        approvalTreasury.setRemarks(approvalTreasuryDetails.getRemarks());
+
+        //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+
+        if (allApprove) {
+            // Create the final form
+            checkingAllApprovalsStatus.createFinalApproval(id);
+        } else {
+            // Log or take other actions if final form is not created
+
+        }
 
         ApprovalTreasury updatedApprovalTreasury = repository.save(approvalTreasury);
         ApiResponse<ApprovalTreasury> response = new ApiResponse<>(updatedApprovalTreasury, true, "Update succeeded", HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+
 
     public void deleteById(Long id) {
         repository.deleteById(id);

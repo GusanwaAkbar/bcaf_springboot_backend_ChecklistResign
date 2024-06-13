@@ -1,6 +1,7 @@
 package com.hrs.checklist_resign.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,7 +14,7 @@ public class ApprovalHRPayroll {
 
     @OneToOne
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
-    @JsonBackReference
+    @JsonManagedReference(value = "approvalHRPayroll")
     private ApprovalAtasan approvalAtasan;
 
     @Column(name = "soft_loan")
@@ -36,6 +37,8 @@ public class ApprovalHRPayroll {
 
     @Column(name = "approval_hr_payroll_status")
     private String approvalHRPayrollStatus;
+
+    private String remarks;
 
 
     //getter and setter
@@ -101,5 +104,21 @@ public class ApprovalHRPayroll {
 
     public void setApprovalHRPayrollStatus(String approvalHRPayrollStatus) {
         this.approvalHRPayrollStatus = approvalHRPayrollStatus;
+    }
+
+    public ApprovalAtasan getApprovalAtasan() {
+        return approvalAtasan;
+    }
+
+    public void setApprovalAtasan(ApprovalAtasan approvalAtasan) {
+        this.approvalAtasan = approvalAtasan;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

@@ -55,6 +55,7 @@ public class ApprovalHRPayrollService {
         approvalHRPayroll.setUmkLoan(approvalHRPayrollDetails.getUmkLoan());
         approvalHRPayroll.setLaptopLoan(approvalHRPayrollDetails.getLaptopLoan());
         approvalHRPayroll.setApprovalHRPayrollStatus(approvalHRPayrollDetails.getApprovalHRPayrollStatus());
+        approvalHRPayroll.setRemarks(approvalHRPayrollDetails.getRemarks());
 
         ApprovalHRPayroll updatedApprovalHRPayroll = repository.save(approvalHRPayroll);
         ApiResponse<ApprovalHRPayroll> response = new ApiResponse<>(updatedApprovalHRPayroll, true, "Update succeeded", HttpStatus.OK.value());

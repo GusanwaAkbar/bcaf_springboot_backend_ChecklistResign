@@ -77,12 +77,18 @@ public class PengajuanResignController {
             pengajuanResign.setTanggalBerakhirBekerja(pengajuanResignDTO.getTanggalBerakhirBekerja());
             pengajuanResign.setUserDetailResign(userDetail);
 
-            // Save pengajuanResign first
-            PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
-
             // Set NIP and Email Atasan
             String nipAtasan = pengajuanResignDTO.getNipAtasan();
             String emailAtasan = pengajuanResignDTO.getEmailAtasan();
+
+            pengajuanResign.setNipAtasan(nipAtasan);
+            pengajuanResign.setEmailAtasan(emailAtasan);
+
+
+            // Save pengajuanResign first
+            PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
+
+
 
             // Get atasan User Details
             UserDetail userDetailAtasan = userDetailService.findByUsername(nipAtasan);
@@ -92,6 +98,7 @@ public class PengajuanResignController {
 
             // Set User Details Atasan and NIP Atasan in Approval Atasan
             approvalAtasanObj.setNipAtasan(nipAtasan);
+            approvalAtasanObj.setEmailAtasan(emailAtasan);
             approvalAtasanObj.setUserDetailAtasan(userDetailAtasan);
             approvalAtasanObj.setPengajuanResign(savedPengajuanResign);
 

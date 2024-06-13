@@ -1,15 +1,11 @@
 package com.hrs.checklist_resign.controller;
 
-import com.hrs.checklist_resign.Model.ApprovalAtasan;
-import com.hrs.checklist_resign.Model.ApprovalHRIR;
-import com.hrs.checklist_resign.Model.ApprovalHRTalent;
-import com.hrs.checklist_resign.Model.PengajuanResign;
+import com.hrs.checklist_resign.Model.*;
 import com.hrs.checklist_resign.response.ApiResponse;
-import com.hrs.checklist_resign.service.ApprovalAtasanService;
-import com.hrs.checklist_resign.service.ApprovalHRIRService;
-import com.hrs.checklist_resign.service.ApprovalHRTalentService;
+import com.hrs.checklist_resign.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +27,26 @@ public class ApprovalAtasanController {
 
     @Autowired
     private ApprovalHRIRService approvalHRIRService;
+
+    @Autowired
+    private ApprovalGeneralServicesService approvalGeneralServicesService;
+
+    @Autowired
+    private ApprovalHRPayrollService approvalHRPayrollService;
+
+    @Autowired
+    private ApprovalHRServicesAdminService approvalHRServicesAdminService;
+
+    @Autowired
+    private ApprovalSecurityAdministratorService approvalSecurityAdministratorService;
+
+    @Autowired
+    private ApprovalTreasuryService approvalTreasuryService;
+
+    @Autowired
+    private ApprovalHRLearningService approvalHRLearningService;
+
+
 
 
     @PostMapping()
@@ -87,7 +103,7 @@ public class ApprovalAtasanController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<ApprovalAtasan>> updateApprovalAtasan(
             @PathVariable Long id,
             @RequestBody ApprovalAtasan approvalAtasanDetails) {
@@ -123,7 +139,7 @@ public class ApprovalAtasanController {
 
         ApprovalAtasan updatedApprovalAtasan = approvalAtasanService.saveApproval(approvalAtasan);
 
-        if (approvalAtasanDetails.getApprovalStatusAtasan() == "accept") {
+        if (approvalAtasanDetails.getApprovalStatusAtasan().equals("accept")) {
             ApprovalHRTalent approvalHRTalent = new ApprovalHRTalent();
             approvalHRTalent.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRTalentService.saveApprovalHRTalent(approvalHRTalent);
@@ -131,6 +147,35 @@ public class ApprovalAtasanController {
             ApprovalHRIR approvalHRIR = new ApprovalHRIR();
             approvalHRIR.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRIRService.saveApprovalHRIR(approvalHRIR);
+
+            ApprovalTreasury approvalTreasury = new ApprovalTreasury();
+            approvalTreasury.setApprovalAtasan((updatedApprovalAtasan));
+            approvalTreasuryService.save(approvalTreasury);
+
+            ApprovalHRServicesAdmin approvalHRServicesAdmin= new ApprovalHRServicesAdmin();
+            approvalHRServicesAdmin.setApprovalAtasan(updatedApprovalAtasan);
+            approvalHRServicesAdminService.save(approvalHRServicesAdmin);
+
+            ApprovalHRPayroll approvalHRPayroll = new ApprovalHRPayroll();
+            approvalHRPayroll.setApprovalAtasan(updatedApprovalAtasan);
+            approvalHRPayrollService.save(approvalHRPayroll);
+
+            ApprovalSecurityAdministrator approvalSecurityAdministrator = new ApprovalSecurityAdministrator();
+            approvalSecurityAdministrator.setApprovalAtasan(updatedApprovalAtasan);
+            approvalSecurityAdministratorService.save(approvalSecurityAdministrator);
+
+            ApprovalGeneralServices approvalGeneralServices = new ApprovalGeneralServices();
+            approvalGeneralServices.setApprovalAtasan(updatedApprovalAtasan);
+            approvalGeneralServicesService.save(approvalGeneralServices);
+
+            ApprovalHRLearning approvalHRLearning = new ApprovalHRLearning();
+            approvalHRLearning.setApprovalAtasan(approvalAtasan);
+            approvalHRLearningService.save(approvalHRLearning);
+
+
+
+
+
         }
 
         ApiResponse<ApprovalAtasan> response = new ApiResponse<>(updatedApprovalAtasan, true, "Approval Atasan updated successfully", HttpStatus.OK.value());

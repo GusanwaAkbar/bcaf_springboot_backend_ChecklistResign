@@ -1,6 +1,7 @@
 package com.hrs.checklist_resign.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -14,21 +15,24 @@ public class ApprovalHRIR {
 
     @OneToOne
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
-    @JsonBackReference
+    @JsonManagedReference(value = "approvalHRIR")
     private ApprovalAtasan approvalAtasan;
 
 
     @Value("${exitInterview:false}")
     @Column(name = "exit_interview")
-    private Boolean exitInterview;
+    private String exitInterview;
 
     @Value("${approvalHRIR:false}")
-    private boolean approvalHRIRStatus;
+    private String approvalHRIRStatus;
+
+    private String remarks;
 
 
 
 
     //Getter Setter
+
     public long getId() {
         return id;
     }
@@ -45,20 +49,27 @@ public class ApprovalHRIR {
         this.approvalAtasan = approvalAtasan;
     }
 
-    public Boolean getExitInterview() {
+    public String getExitInterview() {
         return exitInterview;
     }
 
-    public void setExitInterview(Boolean exitInterview) {
+    public void setExitInterview(String exitInterview) {
         this.exitInterview = exitInterview;
     }
 
-
-    public boolean isApprovalHRIRStatus() {
+    public String getApprovalHRIRStatus() {
         return approvalHRIRStatus;
     }
 
-    public void setApprovalHRIRStatus(boolean approvalHRIRStatus) {
+    public void setApprovalHRIRStatus(String approvalHRIRStatus) {
         this.approvalHRIRStatus = approvalHRIRStatus;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

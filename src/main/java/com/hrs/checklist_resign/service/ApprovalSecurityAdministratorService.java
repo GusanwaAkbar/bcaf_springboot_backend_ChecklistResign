@@ -53,6 +53,7 @@ public class ApprovalSecurityAdministratorService {
         approvalSecurityAdministrator.setPenutupanEmailBCA(approvalSecurityAdministratorDetails.getPenutupanEmailBCA());
         approvalSecurityAdministrator.setPengembalianToken(approvalSecurityAdministratorDetails.getPengembalianToken());
         approvalSecurityAdministrator.setApprovalSecurityAdministratorStatus(approvalSecurityAdministratorDetails.getApprovalSecurityAdministratorStatus());
+        approvalSecurityAdministrator.setRemarks(approvalSecurityAdministratorDetails.getRemarks());
 
         ApprovalSecurityAdministrator updatedApprovalSecurityAdministrator = repository.save(approvalSecurityAdministrator);
         ApiResponse<ApprovalSecurityAdministrator> response = new ApiResponse<>(updatedApprovalSecurityAdministrator, true, "Update succeeded", HttpStatus.OK.value());

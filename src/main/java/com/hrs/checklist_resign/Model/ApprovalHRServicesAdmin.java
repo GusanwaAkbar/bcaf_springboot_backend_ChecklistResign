@@ -2,6 +2,7 @@ package com.hrs.checklist_resign.Model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class ApprovalHRServicesAdmin {
 
     @OneToOne
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
-    @JsonBackReference
+    @JsonManagedReference(value = "approvalHRServicesAdmin")
     private ApprovalAtasan approvalAtasan;
 
     @Column(name = "hutang_kelebihan_biaya_berobat")
@@ -29,6 +30,8 @@ public class ApprovalHRServicesAdmin {
 
     @Column(name = "approval_hr_services_admin_status")
     private String approvalHRServicesAdminStatus;
+
+    private String remarks;
 
     //getter setter
 
@@ -79,5 +82,13 @@ public class ApprovalHRServicesAdmin {
 
     public void setApprovalHRServicesAdminStatus(String approvalHRServicesAdminStatus) {
         this.approvalHRServicesAdminStatus = approvalHRServicesAdminStatus;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

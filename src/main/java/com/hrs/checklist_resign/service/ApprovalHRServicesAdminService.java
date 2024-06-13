@@ -52,6 +52,7 @@ public class ApprovalHRServicesAdminService {
         approvalHRServicesAdmin.setPenyelesaianBiayaHR(approvalHRServicesAdminDetails.getPenyelesaianBiayaHR());
         approvalHRServicesAdmin.setPenonaktifanKartuElektronik(approvalHRServicesAdminDetails.getPenonaktifanKartuElektronik());
         approvalHRServicesAdmin.setApprovalHRServicesAdminStatus(approvalHRServicesAdminDetails.getApprovalHRServicesAdminStatus());
+        approvalHRServicesAdmin.setRemarks(approvalHRServicesAdminDetails.getRemarks());
 
         ApprovalHRServicesAdmin updatedApprovalHRServicesAdmin = repository.save(approvalHRServicesAdmin);
         ApiResponse<ApprovalHRServicesAdmin> response = new ApiResponse<>(updatedApprovalHRServicesAdmin, true, "Update succeeded", HttpStatus.OK.value());

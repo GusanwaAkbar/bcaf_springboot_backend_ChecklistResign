@@ -2,11 +2,13 @@ package com.hrs.checklist_resign.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "app_hrs_resign_bucket_approval_atasan")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApprovalAtasan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +16,9 @@ public class ApprovalAtasan {
 
     @Column(name = "nip_atasan")
     private String nipAtasan;
+
+    @Column(name = "email_atasan")
+    private String emailAtasan;
 
     @OneToOne
     @JoinColumn(name = "user_detail_atasan_id", referencedColumnName = "id")
@@ -62,33 +67,31 @@ public class ApprovalAtasan {
     private String remarksAtasan;
 
     @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonBackReference(value = "approvalHRTalent")
     private ApprovalHRTalent approvalHRTalent;
 
     @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonBackReference(value = "approvalHRIR")
     private ApprovalHRIR approvalHRIR;
 
     @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonBackReference(value = "approvalGeneralServices")
     private ApprovalGeneralServices approvalGeneralServices;
 
     @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonBackReference(value = "approvalHRPayroll")
     private ApprovalHRPayroll approvalHRPayroll;
 
     @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonBackReference(value = "approvalHRServicesAdmin")
     private ApprovalHRServicesAdmin approvalHRServicesAdmin;
 
     @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonBackReference(value = "approvalSecurityAdministrator")
     private ApprovalSecurityAdministrator approvalSecurityAdministrator;
 
-
-
     @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonBackReference(value = "approvalTreasury")
     private ApprovalTreasury approvalTreasury;
 
     // Getters and setters
@@ -219,5 +222,13 @@ public class ApprovalAtasan {
 
     public void setRemarksAtasan(String remarksAtasan) {
         this.remarksAtasan = remarksAtasan;
+    }
+
+    public String getEmailAtasan() {
+        return emailAtasan;
+    }
+
+    public void setEmailAtasan(String emailAtasan) {
+        this.emailAtasan = emailAtasan;
     }
 }

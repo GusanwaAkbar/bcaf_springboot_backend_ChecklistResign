@@ -21,6 +21,9 @@ public class ApprovalHRTalentService {
     @Autowired
     ApprovalHRTalentRepository approvalHRTalentRepository;
 
+    @Autowired
+    private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
+
     public ApprovalHRTalent saveApprovalHRTalent (ApprovalHRTalent approvalHRTalent)
     {
         return approvalHRTalentRepository.save(approvalHRTalent);
@@ -66,10 +69,16 @@ public class ApprovalHRTalentService {
         //save the instance
         ApprovalHRTalent approvalHRTalent = approvalHRTalentRepository.save(existingApprovalHRTalent);
 
-        // Start Check Approver Status
-        // do something
+        //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
 
-        // End Check Approver Status
+        if (allApprove) {
+            // Create the final form
+            checkingAllApprovalsStatus.createFinalApproval(id);
+        } else {
+            // Log or take other actions if final form is not created
+
+        }
 
         ApiResponse<ApprovalHRTalent> response = new ApiResponse<>(approvalHRTalent, true, "Approval HR Talent Updated", HttpStatus.OK.value());
         return ResponseEntity.ok(response);

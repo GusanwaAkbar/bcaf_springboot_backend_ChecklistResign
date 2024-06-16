@@ -19,6 +19,11 @@ public class ApprovalHRIRService {
 
     @Autowired
     ApprovalHRIRRepository approvalHRIRRepository;
+
+    @Autowired
+    private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
+
+
     public ApprovalHRIR findApprovalHRIRById (Long id)
     {
         //get item by id using Repository
@@ -70,10 +75,15 @@ public class ApprovalHRIRService {
         // Save the instance
         ApprovalHRIR savedApprovalHRIR = approvalHRIRRepository.save(approvalHRIRObj.get());
 
-        // If all approvals are approved by Manager
-        if (true) {
-            // Create final form entity
-            // Add your logic here for creating the final form entity
+        //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+
+        if (allApprove) {
+            // Create the final form
+            checkingAllApprovalsStatus.createFinalApproval(id);
+        } else {
+            // Log or take other actions if final form is not created
+
         }
 
         // Response based on save result

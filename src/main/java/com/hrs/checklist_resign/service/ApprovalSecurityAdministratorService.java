@@ -18,6 +18,9 @@ public class ApprovalSecurityAdministratorService {
     private final ApprovalSecurityAdministratorRepository repository;
 
     @Autowired
+    private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
+
+    @Autowired
     public ApprovalSecurityAdministratorService(ApprovalSecurityAdministratorRepository repository) {
         this.repository = repository;
     }
@@ -54,6 +57,18 @@ public class ApprovalSecurityAdministratorService {
         approvalSecurityAdministrator.setPengembalianToken(approvalSecurityAdministratorDetails.getPengembalianToken());
         approvalSecurityAdministrator.setApprovalSecurityAdministratorStatus(approvalSecurityAdministratorDetails.getApprovalSecurityAdministratorStatus());
         approvalSecurityAdministrator.setRemarks(approvalSecurityAdministratorDetails.getRemarks());
+
+        //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+
+        if (allApprove) {
+            // Create the final form
+            System.out.println("========== should be do creating ==========");
+            checkingAllApprovalsStatus.createFinalApproval(id);
+        } else {
+            // Log or take other actions if final form is not created
+
+        }
 
         ApprovalSecurityAdministrator updatedApprovalSecurityAdministrator = repository.save(approvalSecurityAdministrator);
         ApiResponse<ApprovalSecurityAdministrator> response = new ApiResponse<>(updatedApprovalSecurityAdministrator, true, "Update succeeded", HttpStatus.OK.value());

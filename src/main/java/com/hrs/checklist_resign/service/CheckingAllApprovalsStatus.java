@@ -37,7 +37,13 @@ public class CheckingAllApprovalsStatus {
     @Autowired
     private FinalApprovalRepository finalApprovalRepository;
 
+    @Autowired
+    private ApprovalAtasanRepository approvalAtasanRepository;
+
     public boolean doCheck(Long id) {
+
+        System.out.println("=========================== do checking ===========================");
+
         return isApprovalStatusAccepted(approvalTreasuryRepository.findById(id).map(ApprovalTreasury::getApprovalTreasuryStatus)) &&
                 isApprovalStatusAccepted(approvalGeneralServicesRepository.findById(id).map(ApprovalGeneralServices::getApprovalGeneralServicesStatus)) &&
                 isApprovalStatusAccepted(approvalHRIRRepository.findById(id).map(ApprovalHRIR::getApprovalHRIRStatus)) &&
@@ -53,7 +59,18 @@ public class CheckingAllApprovalsStatus {
     }
 
     public FinalApproval createFinalApproval(Long id) {
+
+        System.out.println("=========================== do creating ===========================");
+
         FinalApproval finalApproval = new FinalApproval();
+
+        finalApproval.setUserDetailAtasan(approvalTreasuryRepository.findById(id).get().getApprovalAtasan().getUserDetailAtasan());
+
+        finalApproval.setUserDetailResign(approvalTreasuryRepository.findById(id).get().getApprovalAtasan().getPengajuanResign().getUserDetailResign());
+
+        finalApproval.setApprovalAtasan(approvalTreasuryRepository.findById(id).get().getApprovalAtasan() );
+
+
         finalApproval.setApprovalTreasury(approvalTreasuryRepository.findById(id).orElse(null));
         finalApproval.setApprovalGeneralServices(approvalGeneralServicesRepository.findById(id).orElse(null));
         finalApproval.setApprovalHRIR(approvalHRIRRepository.findById(id).orElse(null));

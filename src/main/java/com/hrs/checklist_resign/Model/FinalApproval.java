@@ -5,58 +5,60 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "app_hrs_resign_final_approval")
 public class FinalApproval implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_detail_resign_id", referencedColumnName = "id")
     private UserDetail userDetailResign;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_detail_atasan_id", referencedColumnName = "id")
-    private  UserDetail userDetailAtasan;
+    private UserDetail userDetailAtasan;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
-    private  ApprovalAtasan approvalAtasan;
+    private ApprovalAtasan approvalAtasan;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_treasury_id")
     private ApprovalTreasury approvalTreasury;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_general_services_id")
     private ApprovalGeneralServices approvalGeneralServices;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_hr_ir_id")
     private ApprovalHRIR approvalHRIR;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_hr_learning_id")
     private ApprovalHRLearning approvalHRLearning;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_hr_payroll_id")
     private ApprovalHRPayroll approvalHRPayroll;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_hr_services_admin_id")
     private ApprovalHRServicesAdmin approvalHRServicesAdmin;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_hr_talent_id")
     private ApprovalHRTalent approvalHRTalent;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_security_administrator_id")
     private ApprovalSecurityAdministrator approvalSecurityAdministrator;
 
     private String finalApprovalStatus;
     private String remarks;
+
 
     // getters and setters
 
@@ -69,21 +71,7 @@ public class FinalApproval implements Serializable {
         this.id = id;
     }
 
-    public UserDetail getUserDetailResign() {
-        return userDetailResign;
-    }
 
-    public void setUserDetailResign(UserDetail userDetailResign) {
-        this.userDetailResign = userDetailResign;
-    }
-
-    public UserDetail getUserDetailAtasan() {
-        return userDetailAtasan;
-    }
-
-    public void setUserDetailAtasan(UserDetail userDetailAtasan) {
-        this.userDetailAtasan = userDetailAtasan;
-    }
 
     public ApprovalAtasan getApprovalAtasan() {
         return approvalAtasan;
@@ -171,6 +159,22 @@ public class FinalApproval implements Serializable {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public UserDetail getUserDetailResign() {
+        return userDetailResign;
+    }
+
+    public void setUserDetailResign(UserDetail userDetailResign) {
+        this.userDetailResign = userDetailResign;
+    }
+
+    public UserDetail getUserDetailAtasan() {
+        return userDetailAtasan;
+    }
+
+    public void setUserDetailAtasan(UserDetail userDetailAtasan) {
+        this.userDetailAtasan = userDetailAtasan;
     }
 }
 

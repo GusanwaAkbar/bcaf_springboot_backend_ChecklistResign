@@ -1,5 +1,6 @@
 package com.hrs.checklist_resign.controller;
 
+import com.hrs.checklist_resign.dto.FinalApprovalDTO;
 import com.hrs.checklist_resign.Model.FinalApproval;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.FinalApprovalService;
@@ -18,13 +19,13 @@ public class FinalApprovalController {
     private FinalApprovalService finalApprovalService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<FinalApproval>> getFinalApprovalById(@PathVariable Long id) {
-        Optional<FinalApproval> finalApproval = finalApprovalService.getFinalApprovalById(id);
+    public ResponseEntity<ApiResponse<FinalApprovalDTO>> getFinalApprovalById(@PathVariable Long id) {
+        Optional<FinalApprovalDTO> finalApproval = finalApprovalService.getFinalApprovalById(id);
         if (finalApproval.isPresent()) {
-            ApiResponse<FinalApproval> response = new ApiResponse<>(finalApproval.get(), true, "Fetch succeeded", HttpStatus.OK.value());
+            ApiResponse<FinalApprovalDTO> response = new ApiResponse<>(finalApproval.get(), true, "Fetch succeeded", HttpStatus.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            ApiResponse<FinalApproval> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "FinalApproval not found");
+            ApiResponse<FinalApprovalDTO> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "FinalApproval not found");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }

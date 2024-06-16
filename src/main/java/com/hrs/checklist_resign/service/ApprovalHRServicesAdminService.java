@@ -17,6 +17,9 @@ public class ApprovalHRServicesAdminService {
     private final ApprovalHRServicesAdminRepository repository;
 
     @Autowired
+    private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
+
+    @Autowired
     public ApprovalHRServicesAdminService(ApprovalHRServicesAdminRepository repository) {
         this.repository = repository;
     }
@@ -53,6 +56,17 @@ public class ApprovalHRServicesAdminService {
         approvalHRServicesAdmin.setPenonaktifanKartuElektronik(approvalHRServicesAdminDetails.getPenonaktifanKartuElektronik());
         approvalHRServicesAdmin.setApprovalHRServicesAdminStatus(approvalHRServicesAdminDetails.getApprovalHRServicesAdminStatus());
         approvalHRServicesAdmin.setRemarks(approvalHRServicesAdminDetails.getRemarks());
+
+        //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+
+        if (allApprove) {
+            // Create the final form
+            checkingAllApprovalsStatus.createFinalApproval(id);
+        } else {
+            // Log or take other actions if final form is not created
+
+        }
 
         ApprovalHRServicesAdmin updatedApprovalHRServicesAdmin = repository.save(approvalHRServicesAdmin);
         ApiResponse<ApprovalHRServicesAdmin> response = new ApiResponse<>(updatedApprovalHRServicesAdmin, true, "Update succeeded", HttpStatus.OK.value());

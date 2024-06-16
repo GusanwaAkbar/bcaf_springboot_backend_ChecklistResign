@@ -94,8 +94,12 @@ public class ApprovalAtasan {
     @JsonBackReference(value = "approvalTreasury")
     private ApprovalTreasury approvalTreasury;
 
-    // Getters and setters
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @JsonBackReference(value = "approvalHRLearning")
+    private ApprovalHRLearning approvalHRLearning;
 
+
+    // Getters and setters
     public Long getId() {
         return id;
     }

@@ -17,6 +17,9 @@ public class ApprovalGeneralServicesService {
     private final ApprovalGeneralServicesRepository repository;
 
     @Autowired
+    private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
+
+    @Autowired
     public ApprovalGeneralServicesService(ApprovalGeneralServicesRepository repository) {
         this.repository = repository;
     }
@@ -55,6 +58,17 @@ public class ApprovalGeneralServicesService {
         approvalGeneralServices.setPengembalianKendaraanUMK3(approvalGeneralServicesDetails.getPengembalianKendaraanUMK3());
         approvalGeneralServices.setApprovalGeneralServicesStatus(approvalGeneralServicesDetails.getApprovalGeneralServicesStatus());
         approvalGeneralServices.setRemarks(approvalGeneralServicesDetails.getRemarks());
+
+        //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+
+        if (allApprove) {
+            // Create the final form
+            checkingAllApprovalsStatus.createFinalApproval(id);
+        } else {
+            // Log or take other actions if final form is not created
+
+        }
 
         ApprovalGeneralServices updatedApprovalGeneralServices = repository.save(approvalGeneralServices);
         ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(updatedApprovalGeneralServices, true, "Update succeeded", HttpStatus.OK.value());

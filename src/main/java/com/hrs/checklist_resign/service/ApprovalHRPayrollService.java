@@ -17,6 +17,9 @@ public class ApprovalHRPayrollService {
     private final ApprovalHRPayrollRepository repository;
 
     @Autowired
+    private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
+
+    @Autowired
     public ApprovalHRPayrollService(ApprovalHRPayrollRepository repository) {
         this.repository = repository;
     }
@@ -56,6 +59,17 @@ public class ApprovalHRPayrollService {
         approvalHRPayroll.setLaptopLoan(approvalHRPayrollDetails.getLaptopLoan());
         approvalHRPayroll.setApprovalHRPayrollStatus(approvalHRPayrollDetails.getApprovalHRPayrollStatus());
         approvalHRPayroll.setRemarks(approvalHRPayrollDetails.getRemarks());
+
+        //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+
+        if (allApprove) {
+            // Create the final form
+            checkingAllApprovalsStatus.createFinalApproval(id);
+        } else {
+            // Log or take other actions if final form is not created
+
+        }
 
         ApprovalHRPayroll updatedApprovalHRPayroll = repository.save(approvalHRPayroll);
         ApiResponse<ApprovalHRPayroll> response = new ApiResponse<>(updatedApprovalHRPayroll, true, "Update succeeded", HttpStatus.OK.value());

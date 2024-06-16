@@ -1,5 +1,6 @@
 package com.hrs.checklist_resign.service;
 
+import com.hrs.checklist_resign.dto.FinalApprovalDTO;
 import com.hrs.checklist_resign.Model.FinalApproval;
 import com.hrs.checklist_resign.repository.FinalApprovalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,9 @@ public class FinalApprovalService {
     @Autowired
     private FinalApprovalRepository finalApprovalRepository;
 
-    public Optional<FinalApproval> getFinalApprovalById(Long id) {
-        return finalApprovalRepository.findById(id);
-    }
+//    public Optional<FinalApproval> getFinalApprovalById(Long id) {
+//        return finalApprovalRepository.findById(id);
+//    }
 
     public FinalApproval createFinalApproval(FinalApproval finalApproval) {
         return finalApprovalRepository.save(finalApproval);
@@ -41,4 +42,14 @@ public class FinalApprovalService {
             return null;
         }
     }
+
+
+
+
+
+        public Optional<FinalApprovalDTO> getFinalApprovalById(Long id) {
+            return finalApprovalRepository.findFinalApprovalDTOById(id);
+        }
+
+
 }

@@ -39,6 +39,37 @@ public class PengajuanResignController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/user-detail")
+    public ResponseEntity<ApiResponse<UserDetail>> getUserDetails() {
+
+        //Start Authentication checking
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<UserDetail> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+        //End Authententication checking
+
+        String username = authentication.getName();
+
+        Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(username));
+
+        //check if user detailnull
+        if (!userDetailOpt.isPresent())
+        {
+            ApiResponse <UserDetail> response = new ApiResponse<>( true, "User Detail Not Found", HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+        }
+
+        UserDetail userDetail = userDetailOpt.get();
+
+        ApiResponse <UserDetail> response = new ApiResponse<>(userDetail, true, "Resignation created successfully", HttpStatus.CREATED.value());
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getResignationById(@PathVariable Long id) {
         Optional<PengajuanResign> pengajuanResign = pengajuanResignService.getResignationById(id);
@@ -84,10 +115,18 @@ public class PengajuanResignController {
             pengajuanResign.setNipAtasan(nipAtasan);
             pengajuanResign.setEmailAtasan(emailAtasan);
 
+            // Set WA Aktif dan Email Aktif
+
+            userDetail.setNomerWA(pengajuanResignDTO.getNomerWA());
+            userDetail.setEmailAktif(pengajuanResignDTO.getEmailAktif());
+
 
             // Save pengajuanResign first
             PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
 
+            // Save WA dan email at user detail
+
+            userDetailService.saveUserDetails(userDetail);
 
 
             // Get atasan User Details
@@ -147,26 +186,42 @@ public class PengajuanResignController {
 //        }
 //    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteResignation(@PathVariable Long id) {
-
-        //Start Authentication checking
+    @DeleteMapping("/deleteResignation")
+    public ResponseEntity<?> deleteResignation() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
             ApiResponse<PengajuanResign> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
-        //End Authententication checking
 
+        String loggedInUsername = authentication.getName();
+        Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(loggedInUsername));
 
-        if (pengajuanResignService.getResignationById(id).isPresent()) {
-            pengajuanResignService.deleteResignation(id);
-            ApiResponse<Void> response = new ApiResponse<>(null, true, "Resignation deleted successfully", HttpStatus.OK.value());
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        if (userDetailOpt.isPresent()) {
+            UserDetail userDetail = userDetailOpt.get();
+            Optional<PengajuanResign> resignationOpt = pengajuanResignService.getResignationByUserDetail(userDetail);
+
+            if (resignationOpt.isPresent()) {
+                PengajuanResign resignation = resignationOpt.get();
+                try {
+                    pengajuanResignService.deleteResignation(resignation.getId());
+
+                    ApiResponse<Void> response = new ApiResponse<>(null, true, "Resignation deleted successfully", HttpStatus.OK.value());
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } catch (Exception e) {
+                    ApiResponse<Void> response = new ApiResponse<>(false, "Failed to delete resignation", HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+                    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                ApiResponse<Void> response = new ApiResponse<>(false, "Resignation not found", HttpStatus.NOT_FOUND.value(), "No resignation found for the logged-in user");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
         } else {
-            ApiResponse<Void> response = new ApiResponse<>(false, "Resignation not found", HttpStatus.NOT_FOUND.value(), "No resignation found with ID: " + id);
+            ApiResponse<Void> response = new ApiResponse<>(false, "User details not found", HttpStatus.NOT_FOUND.value(), "No user details found for the logged-in user");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
+
+
 }

@@ -39,6 +39,10 @@ public class UserDetail {
     private String jabatan;
     private String externalUser;
 
+    private String emailAktif;
+
+    private String nomerWA;
+
 
     @OneToOne(mappedBy = "userDetailResign", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -146,5 +150,21 @@ public class UserDetail {
 
     public void setPengajuanResign(PengajuanResign pengajuanResign) {
         this.pengajuanResign = pengajuanResign;
+    }
+
+    public String getNomerWA() {
+        return nomerWA;
+    }
+
+    public void setNomerWA(String nomerWA) {
+        this.nomerWA = nomerWA;
+    }
+
+    public String getEmailAktif() {
+        return emailAktif;
+    }
+
+    public void setEmailAktif(String emailAktif) {
+        this.emailAktif = emailAktif;
     }
 }

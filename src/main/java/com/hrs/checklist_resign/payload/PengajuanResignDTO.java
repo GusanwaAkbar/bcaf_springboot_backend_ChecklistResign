@@ -20,6 +20,10 @@ public class PengajuanResignDTO {
 
     private String emailAtasan;
 
+    private String emailAktif;
+
+    private String nomerWA;
+
     // Getters and setters
 
     public Long getId() {
@@ -68,5 +72,21 @@ public class PengajuanResignDTO {
 
     public void setEmailAtasan(String emailAtasan) {
         this.emailAtasan = emailAtasan;
+    }
+
+    public String getEmailAktif() {
+        return emailAktif;
+    }
+
+    public void setEmailAktif(String emailAktif) {
+        this.emailAktif = emailAktif;
+    }
+
+    public String getNomerWA() {
+        return nomerWA;
+    }
+
+    public void setNomerWA(String nomerWA) {
+        this.nomerWA = nomerWA;
     }
 }

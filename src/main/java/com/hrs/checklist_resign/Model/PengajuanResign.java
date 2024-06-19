@@ -40,7 +40,7 @@ public class PengajuanResign {
 //    @OneToOne
 //    @JoinColumn(name = "pengajuan_resign_id", referencedColumnName = "id")
 //    private ApprovalAtasan approvalAtasan;
-    @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private ApprovalAtasan approvalAtasan;
 

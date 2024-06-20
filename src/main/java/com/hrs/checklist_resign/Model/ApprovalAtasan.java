@@ -32,37 +32,47 @@ public class ApprovalAtasan {
     private  PengajuanResign pengajuanResign;
 
 
-
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "serah_terima_tugas")
     private String serahTerimaTugas;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "pengembalian_notebook")
     private String pengembalianNotebook;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "pengembalian_kunci_loker")
     private String pengembalianKunciLoker;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "pengembalian_kunci_ruangan")
     private String pengembalianKunciRuangan;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "penyerahan_surat_pengunduran_diri")
     private String penyerahanSuratPengunduranDiri;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "pengembalian_id_card")
     private String pengembalianIdCard;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "hapus_aplikasi_mobile")
     private String hapusAplikasiMobile;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "uninstall_software_notebook")
     private String uninstallSoftwareNotebook;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "uninstall_software_unit_kerja")
     private String uninstallSoftwareUnitKerja;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "approval_status_atasan")
     private String approvalStatusAtasan;
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Column(name = "remarks_atasan")
     private String remarksAtasan;
 

@@ -29,4 +29,8 @@ public class ApprovalAtasanService {
     public void deleteById(Long id) {
         approvalAtasanRepository.deleteById(id);
     }
+
+    public List<ApprovalAtasan> getApprovalByNipAtasan(String nipAtasan) {
+        return approvalAtasanRepository.findByNipAtasan(nipAtasan);
+    }
 }

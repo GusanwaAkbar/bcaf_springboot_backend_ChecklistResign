@@ -103,7 +103,73 @@ public class ApprovalAtasanController {
     }
 
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/get-approval-by-username")
+    public ResponseEntity<ApiResponse<List<ApprovalAtasan>>> getApprovalByUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipAtasan = authentication.getName();
+        List<ApprovalAtasan> approvalAtasanList = approvalAtasanService.getApprovalByNipAtasan(nipAtasan);
+
+        if (approvalAtasanList.isEmpty()) {
+            ApiResponse response = new ApiResponse<>(true, "No data found", HttpStatus.OK.value(), "No approval found for the given username");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        ApiResponse response = new ApiResponse<>(approvalAtasanList,true, "Data retrieved successfully", HttpStatus.OK.value());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-approval-by-username/{id}")
+    public ResponseEntity<ApiResponse<List<ApprovalAtasan>>> getApprovalByUsername(@PathVariable Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipAtasan = authentication.getName();
+        List<ApprovalAtasan> approvalAtasanList = approvalAtasanService.getApprovalByNipAtasan(nipAtasan);
+
+        Optional<ApprovalAtasan> approvalAtasan = approvalAtasanService.findById(id);
+
+        if (approvalAtasan.isPresent())
+        {
+
+            //approvalatasan is present
+            if (approvalAtasanList.contains(approvalAtasan))
+            {
+                ApiResponse response = new ApiResponse<>(approvalAtasan, true, "Approval atasan successfully fetched", HttpStatus.OK.value());
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            // user is try to grab others data
+            else
+            {
+
+                ApiResponse response = new ApiResponse<>(false, "User don't have right to open this item", HttpStatus.UNAUTHORIZED.value(), "Login with different account");
+                return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+
+            }
+        }
+
+
+        if (approvalAtasanList.isEmpty()) {
+            ApiResponse response = new ApiResponse<>(true, "No data found", HttpStatus.OK.value(), "No approval found for the given username");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        ApiResponse response = new ApiResponse<>(false, "Unknown Error", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
+    @PutMapping(value = "/get-approval-by-username/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<ApprovalAtasan>> updateApprovalAtasan(
             @PathVariable Long id,
             @RequestBody ApprovalAtasan approvalAtasanDetails) {
@@ -117,9 +183,12 @@ public class ApprovalAtasanController {
         }
         // End Authentication checking
 
+        String nipAtasan = authentication.getName();
+
+        // Find the approval by ID instead of by nipAtasan
         Optional<ApprovalAtasan> approvalAtasanOptional = approvalAtasanService.findById(id);
 
-        if (!approvalAtasanOptional.isPresent()) {
+        if (!approvalAtasanOptional.isPresent() || !approvalAtasanOptional.get().getNipAtasan().equals(nipAtasan)) {
             ApiResponse<ApprovalAtasan> response = new ApiResponse<>(false, "Update failed", HttpStatus.NOT_FOUND.value(), "No approval found with ID: " + id);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
@@ -149,10 +218,10 @@ public class ApprovalAtasanController {
             approvalHRIRService.saveApprovalHRIR(approvalHRIR);
 
             ApprovalTreasury approvalTreasury = new ApprovalTreasury();
-            approvalTreasury.setApprovalAtasan((updatedApprovalAtasan));
+            approvalTreasury.setApprovalAtasan(updatedApprovalAtasan);
             approvalTreasuryService.save(approvalTreasury);
 
-            ApprovalHRServicesAdmin approvalHRServicesAdmin= new ApprovalHRServicesAdmin();
+            ApprovalHRServicesAdmin approvalHRServicesAdmin = new ApprovalHRServicesAdmin();
             approvalHRServicesAdmin.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRServicesAdminService.save(approvalHRServicesAdmin);
 
@@ -171,11 +240,6 @@ public class ApprovalAtasanController {
             ApprovalHRLearning approvalHRLearning = new ApprovalHRLearning();
             approvalHRLearning.setApprovalAtasan(approvalAtasan);
             approvalHRLearningService.save(approvalHRLearning);
-
-
-
-
-
         }
 
         ApiResponse<ApprovalAtasan> response = new ApiResponse<>(updatedApprovalAtasan, true, "Approval Atasan updated successfully", HttpStatus.OK.value());

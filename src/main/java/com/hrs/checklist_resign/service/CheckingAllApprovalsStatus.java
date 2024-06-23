@@ -70,6 +70,7 @@ public class CheckingAllApprovalsStatus {
 
         finalApproval.setApprovalAtasan(approvalTreasuryRepository.findById(id).get().getApprovalAtasan() );
 
+        finalApproval.setPengajuanResign(approvalTreasuryRepository.findById(id).get().getApprovalAtasan().getPengajuanResign());
 
         finalApproval.setApprovalTreasury(approvalTreasuryRepository.findById(id).orElse(null));
         finalApproval.setApprovalGeneralServices(approvalGeneralServicesRepository.findById(id).orElse(null));

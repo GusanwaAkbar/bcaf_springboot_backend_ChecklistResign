@@ -9,10 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/finalApproval")
+@RequestMapping("api/final-approval")
 public class FinalApprovalController {
 
     @Autowired
@@ -26,6 +27,18 @@ public class FinalApprovalController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             ApiResponse<FinalApprovalDTO> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "FinalApproval not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse<List<FinalApprovalDTO>>> getAllFinalApproval() {
+        List<FinalApprovalDTO> finalApproval = finalApprovalService.getAllFinalApproval();
+        if (!finalApproval.isEmpty()) {
+            ApiResponse<List<FinalApprovalDTO>> response = new ApiResponse<>(finalApproval, true, "Fetch succeeded", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<List<FinalApprovalDTO>> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "FinalApproval not found");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }

@@ -1,7 +1,6 @@
 package com.hrs.checklist_resign.service;
 
 import com.hrs.checklist_resign.Model.ApprovalHRIR;
-import com.hrs.checklist_resign.Model.ApprovalHRTalent;
 import com.hrs.checklist_resign.repository.ApprovalHRIRRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,10 @@ public class ApprovalHRIRService {
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
 
-    public ApprovalHRIR findApprovalHRIRById (Long id)
+    public Optional<ApprovalHRIR> findApprovalHRIRById (Long id)
     {
         //get item by id using Repository
-        ApprovalHRIR approvalHRIRObj  = approvalHRIRRepository.getReferenceById(id);
+        Optional<ApprovalHRIR> approvalHRIRObj  = approvalHRIRRepository.findById(id);
 
         return approvalHRIRObj;
     }

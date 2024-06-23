@@ -57,7 +57,7 @@ public class ApprovalHRServicesAdminService {
         approvalHRServicesAdmin.setApprovalHRServicesAdminStatus(approvalHRServicesAdminDetails.getApprovalHRServicesAdminStatus());
         approvalHRServicesAdmin.setRemarks(approvalHRServicesAdminDetails.getRemarks());
 
-        //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
+        // Check all approval status
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
 
         if (allApprove) {
@@ -65,7 +65,6 @@ public class ApprovalHRServicesAdminService {
             checkingAllApprovalsStatus.createFinalApproval(id);
         } else {
             // Log or take other actions if final form is not created
-
         }
 
         ApprovalHRServicesAdmin updatedApprovalHRServicesAdmin = repository.save(approvalHRServicesAdmin);

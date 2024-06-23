@@ -21,6 +21,10 @@ public class FinalApproval implements Serializable {
     private UserDetail userDetailAtasan;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pengajuan_resign_id", referencedColumnName = "id")
+    private PengajuanResign pengajuanResign;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
     private ApprovalAtasan approvalAtasan;
 
@@ -71,7 +75,13 @@ public class FinalApproval implements Serializable {
         this.id = id;
     }
 
+    public PengajuanResign getPengajuanResign() {
+        return pengajuanResign;
+    }
 
+    public void setPengajuanResign(PengajuanResign pengajuanResign) {
+        this.pengajuanResign = pengajuanResign;
+    }
 
     public ApprovalAtasan getApprovalAtasan() {
         return approvalAtasan;

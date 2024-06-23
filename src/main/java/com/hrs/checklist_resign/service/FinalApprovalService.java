@@ -3,9 +3,11 @@ package com.hrs.checklist_resign.service;
 import com.hrs.checklist_resign.dto.FinalApprovalDTO;
 import com.hrs.checklist_resign.Model.FinalApproval;
 import com.hrs.checklist_resign.repository.FinalApprovalRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,6 +52,11 @@ public class FinalApprovalService {
         public Optional<FinalApprovalDTO> getFinalApprovalById(Long id) {
             return finalApprovalRepository.findFinalApprovalDTOById(id);
         }
+
+        @Transactional
+    public List<FinalApprovalDTO> getAllFinalApproval() {
+        return finalApprovalRepository.findAllFinalApprovalDTOs();
+    }
 
 
 }

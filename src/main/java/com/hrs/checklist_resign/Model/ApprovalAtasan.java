@@ -29,6 +29,7 @@ public class ApprovalAtasan {
 
     @OneToOne
     @JoinColumn(name = "pengajuan_resign_id", referencedColumnName = "id")
+    @JsonManagedReference(value = "pengajuanResign")
     private  PengajuanResign pengajuanResign;
 
 

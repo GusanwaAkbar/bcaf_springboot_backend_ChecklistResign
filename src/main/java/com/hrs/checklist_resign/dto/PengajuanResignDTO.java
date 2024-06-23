@@ -1,35 +1,28 @@
 package com.hrs.checklist_resign.dto;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class PengajuanResignDTO {
     private Long id;
-    private String isiUntukOrangLain;
-    private LocalDate tanggalPembuatanAkunHRIS;
-    private LocalDate tanggalBerakhirBekerja;
-    private UserDetailDTO userDetailResign;
+    private Boolean isiUntukOrangLain;
+    private Date tanggalPembuatanAkunHRIS;
+    private Date tanggalBerakhirBekerja;
+    private UserDetailDTO userDetailDTO;
     private String nipAtasan;
     private String emailAtasan;
 
-    //Constructor
-    // No-arg constructor
-    public PengajuanResignDTO() {}
-
-    // All-arg constructor
-    public PengajuanResignDTO(Long id, String isiUntukOrangLain, String tanggalPembuatanAkunHRIS, String tanggalBerakhirBekerja, UserDetailDTO userDetailResign, String nipAtasan, String emailAtasan) {
+    public PengajuanResignDTO(Long id, Boolean isiUntukOrangLain, Date tanggalPembuatanAkunHRIS, Date tanggalBerakhirBekerja, UserDetailDTO userDetailDTO, String nipAtasan, String emailAtasan) {
         this.id = id;
         this.isiUntukOrangLain = isiUntukOrangLain;
-        this.tanggalPembuatanAkunHRIS = LocalDate.parse(tanggalPembuatanAkunHRIS);
-        this.tanggalBerakhirBekerja = LocalDate.parse(tanggalBerakhirBekerja);
-        this.userDetailResign = userDetailResign;
+        this.tanggalPembuatanAkunHRIS = tanggalPembuatanAkunHRIS;
+        this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
+        this.userDetailDTO = userDetailDTO;
         this.nipAtasan = nipAtasan;
         this.emailAtasan = emailAtasan;
     }
 
-
-
-
-    // Getters and setters
+    // Getters and setters (if needed)
 
 
     public Long getId() {
@@ -40,36 +33,36 @@ public class PengajuanResignDTO {
         this.id = id;
     }
 
-    public String getIsiUntukOrangLain() {
+    public Boolean getIsiUntukOrangLain() {
         return isiUntukOrangLain;
     }
 
-    public void setIsiUntukOrangLain(String isiUntukOrangLain) {
+    public void setIsiUntukOrangLain(Boolean isiUntukOrangLain) {
         this.isiUntukOrangLain = isiUntukOrangLain;
     }
 
-    public LocalDate getTanggalPembuatanAkunHRIS() {
+    public Date getTanggalPembuatanAkunHRIS() {
         return tanggalPembuatanAkunHRIS;
     }
 
-    public void setTanggalPembuatanAkunHRIS(LocalDate tanggalPembuatanAkunHRIS) {
+    public void setTanggalPembuatanAkunHRIS(Date tanggalPembuatanAkunHRIS) {
         this.tanggalPembuatanAkunHRIS = tanggalPembuatanAkunHRIS;
     }
 
-    public LocalDate getTanggalBerakhirBekerja() {
+    public Date getTanggalBerakhirBekerja() {
         return tanggalBerakhirBekerja;
     }
 
-    public void setTanggalBerakhirBekerja(LocalDate tanggalBerakhirBekerja) {
+    public void setTanggalBerakhirBekerja(Date tanggalBerakhirBekerja) {
         this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
     }
 
-    public UserDetailDTO getUserDetailResign() {
-        return userDetailResign;
+    public UserDetailDTO getUserDetailDTO() {
+        return userDetailDTO;
     }
 
-    public void setUserDetailResign(UserDetailDTO userDetailResign) {
-        this.userDetailResign = userDetailResign;
+    public void setUserDetailDTO(UserDetailDTO userDetailDTO) {
+        this.userDetailDTO = userDetailDTO;
     }
 
     public String getNipAtasan() {

@@ -45,17 +45,18 @@ public class ApprovalHRIRController {
 
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getApprovalHRIRbyId(@PathVariable Long id)
     {
 
         // get item by id using service
-        ApprovalHRIR approvalHRIR = approvalHRIRService.findApprovalHRIRById(id);
+        Optional<ApprovalHRIR> approvalHRIR = approvalHRIRService.findApprovalHRIRById(id);
 
 
-        if (approvalHRIR != null)
+        if (approvalHRIR.isPresent())
         {
-            ApiResponse<ApprovalHRIR> response = new ApiResponse<>(approvalHRIR, true, "Find Approval HRIR  by ID Succeeded", HttpStatus.OK.value());
+
+            ApiResponse<ApprovalHRIR> response = new ApiResponse<>(approvalHRIR.get(), true, "Find Approval HRIR  by ID Succeeded", HttpStatus.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         else

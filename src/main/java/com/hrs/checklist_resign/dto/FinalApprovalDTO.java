@@ -4,6 +4,7 @@ public class FinalApprovalDTO {
     private Long id;
     private UserDetailDTO userDetailResign;
     private UserDetailDTO userDetailAtasan;
+    private PengajuanResignDTO pengajuanResign;  // Add this field
     private ApprovalGeneralServicesDTO approvalGeneralServices;
     private ApprovalHRIRDTO approvalHRIR;
     private ApprovalHRLearningDTO approvalHRLearning;
@@ -17,6 +18,7 @@ public class FinalApprovalDTO {
 
     // Constructor with all fields
     public FinalApprovalDTO(Long id, UserDetailDTO userDetailResign, UserDetailDTO userDetailAtasan,
+                            PengajuanResignDTO pengajuanResign,  // Add this parameter
                             ApprovalGeneralServicesDTO approvalGeneralServices, ApprovalHRIRDTO approvalHRIR,
                             ApprovalHRLearningDTO approvalHRLearning, ApprovalHRPayrollDTO approvalHRPayroll,
                             ApprovalHRServicesAdminDTO approvalHRServicesAdmin, ApprovalHRTalentDTO approvalHRTalent,
@@ -25,6 +27,7 @@ public class FinalApprovalDTO {
         this.id = id;
         this.userDetailResign = userDetailResign;
         this.userDetailAtasan = userDetailAtasan;
+        this.pengajuanResign = pengajuanResign;  // Initialize this field
         this.approvalGeneralServices = approvalGeneralServices;
         this.approvalHRIR = approvalHRIR;
         this.approvalHRLearning = approvalHRLearning;
@@ -38,9 +41,12 @@ public class FinalApprovalDTO {
     }
 
     // No-arg constructor
-    public FinalApprovalDTO() {}
+    public FinalApprovalDTO() {
+    }
 
-    // Getters and setters for all fields
+    // set and get
+
+
     public Long getId() {
         return id;
     }
@@ -63,6 +69,14 @@ public class FinalApprovalDTO {
 
     public void setUserDetailAtasan(UserDetailDTO userDetailAtasan) {
         this.userDetailAtasan = userDetailAtasan;
+    }
+
+    public PengajuanResignDTO getPengajuanResign() {
+        return pengajuanResign;
+    }
+
+    public void setPengajuanResign(PengajuanResignDTO pengajuanResign) {
+        this.pengajuanResign = pengajuanResign;
     }
 
     public ApprovalGeneralServicesDTO getApprovalGeneralServices() {

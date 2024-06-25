@@ -5,6 +5,8 @@ public class FinalApprovalDTO {
     private UserDetailDTO userDetailResign;
     private UserDetailDTO userDetailAtasan;
     private PengajuanResignDTO pengajuanResign;  // Add this field
+
+    private ApprovalAtasanDTO approvalAtasan;
     private ApprovalGeneralServicesDTO approvalGeneralServices;
     private ApprovalHRIRDTO approvalHRIR;
     private ApprovalHRLearningDTO approvalHRLearning;
@@ -18,7 +20,7 @@ public class FinalApprovalDTO {
 
     // Constructor with all fields
     public FinalApprovalDTO(Long id, UserDetailDTO userDetailResign, UserDetailDTO userDetailAtasan,
-                            PengajuanResignDTO pengajuanResign,  // Add this parameter
+                            PengajuanResignDTO pengajuanResign, ApprovalAtasanDTO approvalAtasan,  // Add this parameter
                             ApprovalGeneralServicesDTO approvalGeneralServices, ApprovalHRIRDTO approvalHRIR,
                             ApprovalHRLearningDTO approvalHRLearning, ApprovalHRPayrollDTO approvalHRPayroll,
                             ApprovalHRServicesAdminDTO approvalHRServicesAdmin, ApprovalHRTalentDTO approvalHRTalent,
@@ -28,6 +30,7 @@ public class FinalApprovalDTO {
         this.userDetailResign = userDetailResign;
         this.userDetailAtasan = userDetailAtasan;
         this.pengajuanResign = pengajuanResign;  // Initialize this field
+        this.approvalAtasan = approvalAtasan;
         this.approvalGeneralServices = approvalGeneralServices;
         this.approvalHRIR = approvalHRIR;
         this.approvalHRLearning = approvalHRLearning;
@@ -53,6 +56,14 @@ public class FinalApprovalDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public ApprovalAtasanDTO getApprovalAtasan() {
+        return approvalAtasan;
+    }
+
+    public void setApprovalAtasan(ApprovalAtasanDTO approvalAtasan) {
+        this.approvalAtasan = approvalAtasan;
     }
 
     public UserDetailDTO getUserDetailResign() {

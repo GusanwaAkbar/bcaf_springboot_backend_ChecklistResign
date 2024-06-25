@@ -5,7 +5,6 @@ package com.hrs.checklist_resign.dto;
         private Long id;
         private String nipAtasan;
         private String emailAtasan;
-        private UserDetailDTO userDetailAtasan;
         private String serahTerimaTugas;
         private String pengembalianNotebook;
         private String pengembalianKunciLoker;
@@ -22,7 +21,7 @@ package com.hrs.checklist_resign.dto;
         // No-arg constructor
         public ApprovalAtasanDTO() {}
 
-        public ApprovalAtasanDTO(Long id, String nipAtasan, String emailAtasan, UserDetailDTO userDetailAtasan,
+        public ApprovalAtasanDTO(Long id, String nipAtasan, String emailAtasan,
                                  String serahTerimaTugas, String pengembalianNotebook, String pengembalianKunciLoker,
                                  String pengembalianKunciRuangan, String penyerahanSuratPengunduranDiri,
                                  String pengembalianIdCard, String hapusAplikasiMobile,
@@ -31,7 +30,7 @@ package com.hrs.checklist_resign.dto;
             this.id = id;
             this.nipAtasan = nipAtasan;
             this.emailAtasan = emailAtasan;
-            this.userDetailAtasan = userDetailAtasan;
+
             this.serahTerimaTugas = serahTerimaTugas;
             this.pengembalianNotebook = pengembalianNotebook;
             this.pengembalianKunciLoker = pengembalianKunciLoker;
@@ -77,15 +76,6 @@ package com.hrs.checklist_resign.dto;
     public void setEmailAtasan(String emailAtasan) {
         this.emailAtasan = emailAtasan;
     }
-
-    public UserDetailDTO getUserDetailAtasan() {
-        return userDetailAtasan;
-    }
-
-    public void setUserDetailAtasan(UserDetailDTO userDetailAtasan) {
-        this.userDetailAtasan = userDetailAtasan;
-    }
-
 
 
     public String getSerahTerimaTugas() {

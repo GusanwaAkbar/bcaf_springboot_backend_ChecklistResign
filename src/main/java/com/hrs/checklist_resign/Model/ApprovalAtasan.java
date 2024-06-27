@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "app_hrs_resign_bucket_approval_atasan")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -20,7 +22,8 @@ public class ApprovalAtasan {
     @Column(name = "email_atasan")
     private String emailAtasan;
 
-    @OneToOne
+    //change this one to one to many to many
+    @ManyToOne
     @JoinColumn(name = "user_detail_atasan_id", referencedColumnName = "id")
     private UserDetail userDetailAtasan;
 
@@ -222,6 +225,7 @@ public class ApprovalAtasan {
     public void setNipAtasan(String nipAtasan) {
         this.nipAtasan = nipAtasan;
     }
+
 
     public UserDetail getUserDetailAtasan() {
         return userDetailAtasan;

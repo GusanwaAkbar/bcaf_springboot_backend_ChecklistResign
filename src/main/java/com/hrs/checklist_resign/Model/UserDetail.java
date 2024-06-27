@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -23,6 +26,8 @@ public class UserDetail {
     @JoinColumn(name = "user_username", referencedColumnName = "username")
     @JsonBackReference
     private User user;
+
+
 
     private String nama;
 
@@ -43,14 +48,18 @@ public class UserDetail {
 
     private String nomerWA;
 
+    @OneToMany(mappedBy = "userDetailAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<FinalApproval> finalApprovals;
+
 
     @OneToOne(mappedBy = "userDetailResign", cascade = CascadeType.ALL)
     @JsonIgnore
     private PengajuanResign pengajuanResign;
 
-    @OneToOne(mappedBy = "userDetailAtasan", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userDetailAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private ApprovalAtasan approvalAtasan;
+    private List<ApprovalAtasan> approvalAtasan;
 
     @Override
     public String toString() {

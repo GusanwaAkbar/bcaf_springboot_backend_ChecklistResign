@@ -16,7 +16,7 @@ public class FinalApproval implements Serializable {
     @JoinColumn(name = "user_detail_resign_id", referencedColumnName = "id")
     private UserDetail userDetailResign;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_detail_atasan_id", referencedColumnName = "id")
     private UserDetail userDetailAtasan;
 

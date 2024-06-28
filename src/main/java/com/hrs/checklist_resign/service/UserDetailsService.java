@@ -18,4 +18,8 @@ public class UserDetailsService {
     public UserDetail findByUsername(String username) {
         return userDetailsRepository.findByUser_Username(username);
     }
+
+    public UserDetail updateUserDetails(UserDetail userDetails) {
+        return userDetailsRepository.save(userDetails);
+    }
 }

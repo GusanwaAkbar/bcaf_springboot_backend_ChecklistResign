@@ -5,9 +5,7 @@ import com.hrs.checklist_resign.Model.PengajuanResign;
 import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.payload.PengajuanResignDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
-import com.hrs.checklist_resign.service.ApprovalAtasanService;
-import com.hrs.checklist_resign.service.PengajuanResignService;
-import com.hrs.checklist_resign.service.UserDetailsService;
+import com.hrs.checklist_resign.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/resignations")
@@ -30,6 +30,11 @@ public class PengajuanResignController {
 
     @Autowired
     private ApprovalAtasanService approvalAtasanService;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    private EmailService emailService;
 
 
     @GetMapping
@@ -86,17 +91,14 @@ public class PengajuanResignController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ApiResponse<PengajuanResign>> createResignation(@RequestBody PengajuanResignDTO pengajuanResignDTO) {
 
-        //Start Authentication checking
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
             ApiResponse<PengajuanResign> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
-        //End Authententication checking
 
         String username = authentication.getName();
-
         Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(username));
 
         if (userDetailOpt.isPresent()) {
@@ -108,43 +110,37 @@ public class PengajuanResignController {
             pengajuanResign.setTanggalBerakhirBekerja(pengajuanResignDTO.getTanggalBerakhirBekerja());
             pengajuanResign.setUserDetailResign(userDetail);
 
-            // Set NIP and Email Atasan
             String nipAtasan = pengajuanResignDTO.getNipAtasan();
             String emailAtasan = pengajuanResignDTO.getEmailAtasan();
 
             pengajuanResign.setNipAtasan(nipAtasan);
             pengajuanResign.setEmailAtasan(emailAtasan);
 
-            // Set WA Aktif dan Email Aktif
-
             userDetail.setNomerWA(pengajuanResignDTO.getNomerWA());
             userDetail.setEmailAktif(pengajuanResignDTO.getEmailAktif());
 
-
-            // Save pengajuanResign first
             PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
-
-            // Save WA dan email at user detail
-
             userDetailService.saveUserDetails(userDetail);
 
-
-            // Get atasan User Details
             UserDetail userDetailAtasan = userDetailService.findByUsername(nipAtasan);
 
-            // Start making initiate approval atasan
             ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
-
-            // Set User Details Atasan and NIP Atasan in Approval Atasan
             approvalAtasanObj.setNipAtasan(nipAtasan);
             approvalAtasanObj.setEmailAtasan(emailAtasan);
             approvalAtasanObj.setUserDetailAtasan(userDetailAtasan);
             approvalAtasanObj.setPengajuanResign(savedPengajuanResign);
 
-            // Save approval atasan object to the database
             approvalAtasanService.saveApproval(approvalAtasanObj);
 
-            // Return the response
+            Set<UserDetail> recipients = new HashSet<>();
+            recipients.add(userDetail);
+            recipients.add(userDetailAtasan);
+
+            notificationService.sendNotification("Resignation request submitted", userDetail, recipients);
+
+            emailService.sendEmail(userDetail.getEmailAktif(), "Resignation Request Submitted", "Your resignation request has been submitted.");
+            emailService.sendEmail(userDetailAtasan.getEmail(), "Approval Required: Resignation Request", "Please approve the resignation request.");
+
             ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } else {

@@ -61,6 +61,13 @@ public class UserDetail {
     @JsonIgnore
     private List<ApprovalAtasan> approvalAtasan;
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Notification> sentNotifications;
+
+    @ManyToMany(mappedBy = "recipients")
+    private Set<Notification> receivedNotifications;
+
     @Override
     public String toString() {
         return "UserDetail{" +
@@ -154,7 +161,7 @@ public class UserDetail {
     }
 
     public PengajuanResign getPengajuanResign() {
-        return pengajuanResign;
+        return pengEmailajuanResign;
     }
 
     public void setPengajuanResign(PengajuanResign pengajuanResign) {

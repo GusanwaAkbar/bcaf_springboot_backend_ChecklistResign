@@ -30,6 +30,10 @@ public class ApprovalTreasuryService {
         return repository.findAll();
     }
 
+    public Optional<ApprovalTreasury> findByNipKaryawanResign(String nipKaryawanResign) {
+        return repository.findByNipKaryawanResign(nipKaryawanResign);
+    }
+
     public Optional<ApprovalTreasury> findById(Long id) {
         return repository.findById(id);
     }

@@ -1,6 +1,7 @@
 package com.hrs.checklist_resign.service;
 
 import com.hrs.checklist_resign.Model.ApprovalAtasan;
+import com.hrs.checklist_resign.Model.ApprovalGeneralServices;
 import com.hrs.checklist_resign.repository.ApprovalAtasanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class ApprovalAtasanService {
 
     public ApprovalAtasan saveApproval(ApprovalAtasan approvalAtasan) {
         return approvalAtasanRepository.save(approvalAtasan);
+    }
+    public Optional<ApprovalAtasan> findByNipKaryawanResign(String nipKaryawanResign) {
+        return approvalAtasanRepository.findByNipKaryawanResign(nipKaryawanResign);
     }
 
     public Optional<ApprovalAtasan> findById(Long id) {

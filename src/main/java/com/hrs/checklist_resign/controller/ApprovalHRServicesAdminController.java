@@ -1,11 +1,14 @@
 package com.hrs.checklist_resign.controller;
 
+import com.hrs.checklist_resign.Model.ApprovalHRLearning;
 import com.hrs.checklist_resign.Model.ApprovalHRServicesAdmin;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.ApprovalHRServicesAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +30,28 @@ public class ApprovalHRServicesAdminController {
         List<ApprovalHRServicesAdmin> approvalHRServicesAdminList = service.findAll();
         ApiResponse<List<ApprovalHRServicesAdmin>> response = new ApiResponse<>(approvalHRServicesAdminList, true, "Fetched all records successfully", HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/karyawan-resign")
+    public ResponseEntity<ApiResponse<ApprovalHRServicesAdmin>> getByNipKaryawanResign() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = authentication.getName();
+
+        Optional<ApprovalHRServicesAdmin> approvalHRServicesAdmin = service.findByNipKaryawanResign(nipKaryawanResign);
+        if (approvalHRServicesAdmin.isPresent()) {
+            ApiResponse<ApprovalHRServicesAdmin> response = new ApiResponse<>(approvalHRServicesAdmin.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalHRServicesAdmin> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalGeneralServices not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{id}")

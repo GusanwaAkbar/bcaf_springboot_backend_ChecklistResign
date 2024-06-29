@@ -1,6 +1,7 @@
 package com.hrs.checklist_resign.controller;
 
 import com.hrs.checklist_resign.Model.ApprovalAtasan;
+import com.hrs.checklist_resign.Model.ApprovalGeneralServices;
 import com.hrs.checklist_resign.Model.ApprovalHRIR;
 import com.hrs.checklist_resign.Model.ApprovalHRTalent;
 import com.hrs.checklist_resign.response.ApiResponse;
@@ -43,6 +44,28 @@ public class ApprovalHRIRController {
        }
 
 
+    }
+
+    @GetMapping("/karyawan-resign")
+    public ResponseEntity<ApiResponse<ApprovalHRIR>> getByNipKaryawanResign() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = authentication.getName();
+
+        Optional<ApprovalHRIR> approvalHRIR = approvalHRIRService.findByNipKaryawanResign(nipKaryawanResign);
+        if (approvalHRIR.isPresent()) {
+            ApiResponse<ApprovalHRIR> response = new ApiResponse<>(approvalHRIR.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalHRIR> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalGeneralServices not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{id}")

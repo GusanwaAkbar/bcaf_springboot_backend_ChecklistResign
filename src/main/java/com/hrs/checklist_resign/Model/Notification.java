@@ -19,6 +19,9 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nip_user")
+    private String nipUser;
+
     private String message;
 
     @ManyToOne

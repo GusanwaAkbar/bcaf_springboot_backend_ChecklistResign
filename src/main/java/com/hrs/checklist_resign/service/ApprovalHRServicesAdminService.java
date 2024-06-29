@@ -28,6 +28,10 @@ public class ApprovalHRServicesAdminService {
         return repository.findAll();
     }
 
+    public Optional<ApprovalHRServicesAdmin> findByNipKaryawanResign(String nipKaryawanResign) {
+        return repository.findByNipKaryawanResign(nipKaryawanResign);
+    }
+
     public Optional<ApprovalHRServicesAdmin> findById(Long id) {
         return repository.findById(id);
     }

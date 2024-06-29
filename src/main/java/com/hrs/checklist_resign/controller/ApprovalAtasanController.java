@@ -66,6 +66,28 @@ public class ApprovalAtasanController {
         return ResponseEntity.ok(createdApprovalAtasan);
     }
 
+    @GetMapping("/karyawan-resign")
+    public ResponseEntity<ApiResponse<ApprovalAtasan>> getByNipKaryawanResign() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = authentication.getName();
+
+        Optional<ApprovalAtasan> approvalAtasan = approvalAtasanService.findByNipKaryawanResign(nipKaryawanResign);
+        if (approvalAtasan.isPresent()) {
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>(approvalAtasan.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalAtasan not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getApproval(@PathVariable Long id) {
 

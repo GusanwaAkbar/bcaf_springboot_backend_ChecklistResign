@@ -101,6 +101,8 @@ public class PengajuanResignController {
         }
 
         String username = authentication.getName();
+        String nipKaryawanResign = username;
+
         Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(username));
 
         if (userDetailOpt.isPresent()) {
@@ -128,6 +130,7 @@ public class PengajuanResignController {
             UserDetail userDetailAtasan = userDetailService.findByUsername(nipAtasan);
 
             ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
+            approvalAtasanObj.setNipKaryawanResign(nipKaryawanResign);
             approvalAtasanObj.setNipAtasan(nipAtasan);
             approvalAtasanObj.setEmailAtasan(emailAtasan);
             approvalAtasanObj.setUserDetailAtasan(userDetailAtasan);

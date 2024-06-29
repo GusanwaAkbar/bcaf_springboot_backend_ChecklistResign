@@ -22,6 +22,9 @@ public class ApprovalHRIRService {
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
+    public Optional<ApprovalHRIR> findByNipKaryawanResign(String nipKaryawanResign) {
+        return approvalHRIRRepository.findByNipKaryawanResign(nipKaryawanResign);
+    }
 
     public Optional<ApprovalHRIR> findApprovalHRIRById (Long id)
     {

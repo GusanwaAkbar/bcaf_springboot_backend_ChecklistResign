@@ -1,5 +1,6 @@
 package com.hrs.checklist_resign.repository;
 
+import com.hrs.checklist_resign.Model.ApprovalHRIR;
 import com.hrs.checklist_resign.dto.FinalApprovalDTO;
 import com.hrs.checklist_resign.Model.FinalApproval;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface FinalApprovalRepository extends JpaRepository<FinalApproval, Long> {
+
+    Optional<FinalApproval> findByNipKaryawanResign(String nipKaryawanResign);
 
     @Query("SELECT new com.hrs.checklist_resign.dto.FinalApprovalDTO(fa.id, " +
             "new com.hrs.checklist_resign.dto.UserDetailDTO(udr.id, udr.nama, udr.email, udr.cabang, udr.idDivisi, udr.divisi, udr.jabatan, udr.externalUser, udr.user.username), " +

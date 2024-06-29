@@ -1,11 +1,14 @@
 package com.hrs.checklist_resign.controller;
 
+import com.hrs.checklist_resign.Model.ApprovalHRLearning;
 import com.hrs.checklist_resign.Model.ApprovalHRPayroll;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.ApprovalHRPayrollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +23,29 @@ public class ApprovalHRPayrollController {
     @Autowired
     public ApprovalHRPayrollController(ApprovalHRPayrollService service) {
         this.service = service;
+    }
+
+
+    @GetMapping("/karyawan-resign")
+    public ResponseEntity<ApiResponse<ApprovalHRPayroll>> getByNipKaryawanResign() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = authentication.getName();
+
+        Optional<ApprovalHRPayroll> approvalHRPayroll = service.findByNipKaryawanResign(nipKaryawanResign);
+        if (approvalHRPayroll.isPresent()) {
+            ApiResponse<ApprovalHRPayroll> response = new ApiResponse<>(approvalHRPayroll.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalHRPayroll> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalGeneralServices not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping

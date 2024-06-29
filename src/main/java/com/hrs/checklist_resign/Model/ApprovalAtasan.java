@@ -17,6 +17,9 @@ public class ApprovalAtasan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nip_karyawan")
+    private String nipKaryawanResign;
+
     @Column(name = "nip_atasan")
     private String nipAtasan;
 
@@ -250,6 +253,14 @@ public class ApprovalAtasan {
 
     public void setEmailAtasan(String emailAtasan) {
         this.emailAtasan = emailAtasan;
+    }
+
+    public String getNipKaryawanResign() {
+        return nipKaryawanResign;
+    }
+
+    public void setNipKaryawanResign(String nipKaryawanResign) {
+        this.nipKaryawanResign = nipKaryawanResign;
     }
 
     @Override

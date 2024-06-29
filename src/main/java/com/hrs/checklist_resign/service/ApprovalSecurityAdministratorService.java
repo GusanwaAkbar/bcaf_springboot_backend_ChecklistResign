@@ -25,6 +25,10 @@ public class ApprovalSecurityAdministratorService {
         this.repository = repository;
     }
 
+    public Optional<ApprovalSecurityAdministrator> findByNipKaryawanResign(String nipKaryawanResign) {
+        return repository.findByNipKaryawanResign(nipKaryawanResign);
+    }
+
     public List<ApprovalSecurityAdministrator> findAll() {
         return repository.findAll();
     }

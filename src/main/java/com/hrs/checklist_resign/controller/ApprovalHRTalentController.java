@@ -1,9 +1,6 @@
 package com.hrs.checklist_resign.controller;
 
-import com.hrs.checklist_resign.Model.ApprovalAtasan;
-import com.hrs.checklist_resign.Model.ApprovalHRIR;
-import com.hrs.checklist_resign.Model.ApprovalHRTalent;
-import com.hrs.checklist_resign.Model.PengajuanResign;
+import com.hrs.checklist_resign.Model.*;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.ApprovalHRIRService;
 import com.hrs.checklist_resign.service.ApprovalHRTalentService;
@@ -32,6 +29,28 @@ public class ApprovalHRTalentController {
         List<ApprovalHRTalent> approvalHRTalents = approvalHRTalentService.findAll();
         ApiResponse<List<ApprovalHRTalent>> response = new ApiResponse<>(approvalHRTalents, true, "Fetched all resignations", HttpStatus.OK.value());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/karyawan-resign")
+    public ResponseEntity<ApiResponse<ApprovalHRTalent>> getByNipKaryawanResign() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = authentication.getName();
+
+        Optional<ApprovalHRTalent> approvalHRTalent = approvalHRTalentService.findByNipKaryawanResign(nipKaryawanResign);
+        if (approvalHRTalent.isPresent()) {
+            ApiResponse<ApprovalHRTalent> response = new ApiResponse<>(approvalHRTalent.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalHRTalent> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalGeneralServices not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{id}")

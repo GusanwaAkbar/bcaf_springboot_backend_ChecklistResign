@@ -24,12 +24,17 @@ public class ApprovalHRLearningService {
         this.repository = repository;
     }
 
+
     public List<ApprovalHRLearning> findAll() {
         return repository.findAll();
     }
 
     public Optional<ApprovalHRLearning> findById(Long id) {
         return repository.findById(id);
+    }
+
+    public Optional<ApprovalHRLearning> findByNipKaryawanResign(String nipKaryawanResign) {
+        return repository.findByNipKaryawanResign(nipKaryawanResign);
     }
 
     public ResponseEntity<ApiResponse<ApprovalHRLearning>> save(ApprovalHRLearning approvalHRLearning) {

@@ -12,6 +12,9 @@ public class ApprovalHRPayroll {
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Long id;
 
+    @Column(name = "nip_karyawan_resign")
+    private String nipKaryawanResign;
+
     @OneToOne
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
     @JsonManagedReference(value = "approvalHRPayroll")
@@ -48,6 +51,14 @@ public class ApprovalHRPayroll {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNipKaryawanResign() {
+        return nipKaryawanResign;
+    }
+
+    public void setNipKaryawanResign(String nipKaryawanResign) {
+        this.nipKaryawanResign = nipKaryawanResign;
     }
 
     public String getSoftLoan() {

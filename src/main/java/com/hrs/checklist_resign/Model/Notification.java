@@ -1,5 +1,6 @@
 package com.hrs.checklist_resign.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class Notification {
     private LocalDateTime timestamp;
 
     @ManyToMany
+    @JsonBackReference
     @JoinTable(
             name = "notification_recipients",
             joinColumns = @JoinColumn(name = "notification_id"),

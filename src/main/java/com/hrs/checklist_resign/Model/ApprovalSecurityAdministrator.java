@@ -12,6 +12,9 @@ public class ApprovalSecurityAdministrator {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "nip_karyawan_resign")
+    private String nipKaryawanResign;
+
     @OneToOne
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
     @JsonManagedReference(value = "approvalSecurityAdministrator")
@@ -41,6 +44,14 @@ public class ApprovalSecurityAdministrator {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getNipKaryawanResign() {
+        return nipKaryawanResign;
+    }
+
+    public void setNipKaryawanResign(String nipKaryawanResign) {
+        this.nipKaryawanResign = nipKaryawanResign;
     }
 
     public ApprovalAtasan getApprovalAtasan() {

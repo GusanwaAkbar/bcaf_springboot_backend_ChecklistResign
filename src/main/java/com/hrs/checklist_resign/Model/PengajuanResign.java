@@ -136,7 +136,7 @@ public class PengajuanResign {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PengajuanResign that = (PengajuanResign) o;
-        return id != null && id.equals(that.id);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

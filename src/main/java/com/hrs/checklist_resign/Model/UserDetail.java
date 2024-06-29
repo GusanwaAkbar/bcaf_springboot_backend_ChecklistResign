@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -44,7 +45,7 @@ public class UserDetail {
     private String jabatan;
     private String externalUser;
 
-    private String emailAktif;
+
 
     private String nomerWA;
 
@@ -66,6 +67,7 @@ public class UserDetail {
     private Set<Notification> sentNotifications;
 
     @ManyToMany(mappedBy = "recipients")
+    @JsonIgnore
     private Set<Notification> receivedNotifications;
 
     @Override
@@ -82,8 +84,24 @@ public class UserDetail {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDetail that = (UserDetail) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+
+
     // Getters and setters
     // ...
+
 
 
     public Long getId() {
@@ -161,7 +179,7 @@ public class UserDetail {
     }
 
     public PengajuanResign getPengajuanResign() {
-        return pengEmailajuanResign;
+        return pengajuanResign;
     }
 
     public void setPengajuanResign(PengajuanResign pengajuanResign) {
@@ -176,11 +194,11 @@ public class UserDetail {
         this.nomerWA = nomerWA;
     }
 
-    public String getEmailAktif() {
-        return emailAktif;
-    }
-
-    public void setEmailAktif(String emailAktif) {
-        this.emailAktif = emailAktif;
-    }
+//    public String getEmailAktif() {
+//        return emailAktif;
+//    }
+//
+//    public void setEmailAktif(String emailAktif) {
+//        this.emailAktif = emailAktif;
+//    }
 }

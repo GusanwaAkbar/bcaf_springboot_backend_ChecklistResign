@@ -10,10 +10,12 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class EmailService {
+public class EmailTemplateService {
 
     @Autowired
     private JavaMailSender mailSender;
@@ -36,5 +38,12 @@ public class EmailService {
         helper.addInline("logo", new ClassPathResource("static/images/BCA_Finance.svg"));  // Ensure you have a logo.png in src/main/resources/static/images
 
         mailSender.send(message);
+    }
+
+    public Map<String, Object> createEmailVariables(String message, String link) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("message", message);
+        variables.put("link", link);
+        return variables;
     }
 }

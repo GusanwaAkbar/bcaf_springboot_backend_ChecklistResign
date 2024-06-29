@@ -6,6 +6,7 @@ import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.payload.PengajuanResignDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.*;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/resignations")
@@ -34,7 +32,11 @@ public class PengajuanResignController {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private EmailTemplateService emailTemplateService;
 
 
     @GetMapping
@@ -88,7 +90,7 @@ public class PengajuanResignController {
     }
 
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping()
     public ResponseEntity<ApiResponse<PengajuanResign>> createResignation(@RequestBody PengajuanResignDTO pengajuanResignDTO) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -116,12 +118,13 @@ public class PengajuanResignController {
             pengajuanResign.setNipAtasan(nipAtasan);
             pengajuanResign.setEmailAtasan(emailAtasan);
 
-            userDetail.setNomerWA(pengajuanResignDTO.getNomerWA());
-            userDetail.setEmailAktif(pengajuanResignDTO.getEmailAktif());
-
+            //userDetail.setNomerWA(pengajuanResignDTO.getNomerWA());
+            //userDetail.setEmail(pengajuanResignDTO.getEmailAktif());
+            System.out.println("111111");
             PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
-            userDetailService.saveUserDetails(userDetail);
+            //userDetailService.saveUserDetails(userDetail);
 
+            System.out.println("222222");
             UserDetail userDetailAtasan = userDetailService.findByUsername(nipAtasan);
 
             ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
@@ -130,16 +133,30 @@ public class PengajuanResignController {
             approvalAtasanObj.setUserDetailAtasan(userDetailAtasan);
             approvalAtasanObj.setPengajuanResign(savedPengajuanResign);
 
+            System.out.println("33333");
             approvalAtasanService.saveApproval(approvalAtasanObj);
 
             Set<UserDetail> recipients = new HashSet<>();
             recipients.add(userDetail);
             recipients.add(userDetailAtasan);
 
+            System.out.println("444444");
+            System.out.println("right in above notification service");
             notificationService.sendNotification("Resignation request submitted", userDetail, recipients);
 
-            emailService.sendEmail(userDetail.getEmailAktif(), "Resignation Request Submitted", "Your resignation request has been submitted.");
-            emailService.sendEmail(userDetailAtasan.getEmail(), "Approval Required: Resignation Request", "Please approve the resignation request.");
+            String message = "Your resignation request has been submitted.";
+            String link = "http://your-app-url.com";  // Replace with your actual application link
+
+            System.out.println("5555555");
+            Map<String, Object> variables = emailTemplateService.createEmailVariables(message, link);
+
+            try {
+                emailTemplateService.sendHtmlEmail(userDetail.getEmail(), "Resignation Request Submitted", "email-template", variables);
+                emailTemplateService.sendHtmlEmail(userDetailAtasan.getEmail(), "Approval Required: Resignation Request", "email-template", variables);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                // Handle exception
+            }
 
             ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
             return new ResponseEntity<>(response, HttpStatus.CREATED);

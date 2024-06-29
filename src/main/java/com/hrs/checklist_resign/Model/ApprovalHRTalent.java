@@ -13,6 +13,9 @@ public class ApprovalHRTalent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "nip_karyawan_resign")
+    private String nipKaryawanResign;
+
     @Value("${pengecekan.biaya:false}")
     private String pengecekanBiaya;
 
@@ -36,6 +39,14 @@ public class ApprovalHRTalent {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getNipKaryawanResign() {
+        return nipKaryawanResign;
+    }
+
+    public void setNipKaryawanResign(String nipKaryawanResign) {
+        this.nipKaryawanResign = nipKaryawanResign;
     }
 
     public String getPengecekanBiaya() {

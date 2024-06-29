@@ -12,6 +12,9 @@ public class FinalApproval implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nip_karyawan_resign")
+    private String nipKaryawanResign;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_detail_resign_id", referencedColumnName = "id")
     private UserDetail userDetailResign;
@@ -73,6 +76,14 @@ public class FinalApproval implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNipKaryawanResign() {
+        return nipKaryawanResign;
+    }
+
+    public void setNipKaryawanResign(String nipKaryawanResign) {
+        this.nipKaryawanResign = nipKaryawanResign;
     }
 
     public PengajuanResign getPengajuanResign() {

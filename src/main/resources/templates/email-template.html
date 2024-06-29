@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Email Template</title>
+    <style>
+        /* Add your styles here */
+        .header {
+            background-color: #004080;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .content {
+            margin: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #004080;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/BCA_Finance.svg/798px-BCA_Finance.svg.png" alt="BCA Finance Logo" width="200">
+</div>
+<div class="content">
+    <h4>Pemberitahuan Pesan Otomatis dari Sistem Pesan Aplikasi Checklist Resign BCA Finance</h4>
+    <p th:text="${message}"></p>
+    <p><a th:href="${link}">Klik di sini untuk membuka aplikasi</a></p>
+</div>
+<div class="footer">
+    <p>Salam penutup,</p>
+    <p>BCA Finance</p>
+</div>
+</body>
+</html>

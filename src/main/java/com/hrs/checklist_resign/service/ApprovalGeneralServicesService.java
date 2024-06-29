@@ -24,6 +24,10 @@ public class ApprovalGeneralServicesService {
         this.repository = repository;
     }
 
+    public Optional<ApprovalGeneralServices> findByNipKaryawanResign(String nipKaryawanResign) {
+        return repository.findByNipKaryawanResign(nipKaryawanResign);
+    }
+
     public List<ApprovalGeneralServices> findAll() {
         return repository.findAll();
     }

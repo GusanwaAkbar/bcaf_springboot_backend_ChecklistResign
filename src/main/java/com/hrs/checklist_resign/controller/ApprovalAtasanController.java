@@ -194,6 +194,10 @@ public class ApprovalAtasanController {
         }
 
         ApprovalAtasan approvalAtasan = approvalAtasanOptional.get();
+
+        //Setup nip karyawan
+        String nipKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign().getUserUsername();
+
         approvalAtasan.setSerahTerimaTugas(approvalAtasanDetails.getSerahTerimaTugas());
         approvalAtasan.setPengembalianNotebook(approvalAtasanDetails.getPengembalianNotebook());
         approvalAtasan.setPengembalianKunciLoker(approvalAtasanDetails.getPengembalianKunciLoker());
@@ -235,6 +239,7 @@ public class ApprovalAtasanController {
 
             ApprovalGeneralServices approvalGeneralServices = new ApprovalGeneralServices();
             approvalGeneralServices.setApprovalAtasan(updatedApprovalAtasan);
+            approvalGeneralServices.setNipKaryawanResign(nipKaryawan);
             approvalGeneralServicesService.save(approvalGeneralServices);
 
             ApprovalHRLearning approvalHRLearning = new ApprovalHRLearning();

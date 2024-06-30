@@ -33,6 +33,10 @@ public class PengajuanResignService {
         return pengajuanResignRepository.findByUserDetailResign(userDetail);
     }
 
+    public Optional<PengajuanResign> getResignationByNipUser(String nipUser) {
+        return pengajuanResignRepository.findByNipUser(nipUser);
+    }
+
     public PengajuanResign saveResignation(PengajuanResign pengajuanResign) {
         return pengajuanResignRepository.save(pengajuanResign);
     }

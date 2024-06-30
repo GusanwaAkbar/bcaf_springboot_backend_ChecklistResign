@@ -14,6 +14,9 @@ public class PengajuanResign {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nip_user")
+    private String nipUser;
+
     @Column(name = "isi_untuk_orang_lain")
     private boolean isiUntukOrangLain;
 
@@ -129,6 +132,14 @@ public class PengajuanResign {
 
     public void setEmailAtasan(String emailAtasan) {
         this.emailAtasan = emailAtasan;
+    }
+
+    public String getNipUser() {
+        return nipUser;
+    }
+
+    public void setNipUser(String nipUser) {
+        this.nipUser = nipUser;
     }
 
     @Override

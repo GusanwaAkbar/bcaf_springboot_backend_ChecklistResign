@@ -23,4 +23,6 @@ public interface PengajuanResignRepository extends JpaRepository<PengajuanResign
     @Transactional
     @Query(value = "DELETE FROM app_hrs_resign_bucket_pengajuan_resign WHERE id = :id", nativeQuery = true)
     void deletePengajuanResignById(Long id);
+
+    Optional<PengajuanResign> findByNipUser(String nipUser);
 }

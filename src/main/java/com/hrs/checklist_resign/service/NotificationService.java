@@ -16,8 +16,7 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    @Autowired
-    private UserDetail userDetail;
+
 
     @Autowired
     private UserDetailsService userDetailsService;

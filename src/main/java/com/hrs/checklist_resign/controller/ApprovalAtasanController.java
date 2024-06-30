@@ -237,26 +237,32 @@ public class ApprovalAtasanController {
         if (approvalAtasanDetails.getApprovalStatusAtasan().equals("accept")) {
             ApprovalHRTalent approvalHRTalent = new ApprovalHRTalent();
             approvalHRTalent.setApprovalAtasan(updatedApprovalAtasan);
+            approvalHRTalent.setNipKaryawanResign(nipKaryawan);
             approvalHRTalentService.saveApprovalHRTalent(approvalHRTalent);
 
             ApprovalHRIR approvalHRIR = new ApprovalHRIR();
             approvalHRIR.setApprovalAtasan(updatedApprovalAtasan);
+            approvalHRIR.setNipKaryawanResign(nipKaryawan);
             approvalHRIRService.saveApprovalHRIR(approvalHRIR);
 
             ApprovalTreasury approvalTreasury = new ApprovalTreasury();
             approvalTreasury.setApprovalAtasan(updatedApprovalAtasan);
+            approvalTreasury.setNipKaryawanResign(nipKaryawan);
             approvalTreasuryService.save(approvalTreasury);
 
             ApprovalHRServicesAdmin approvalHRServicesAdmin = new ApprovalHRServicesAdmin();
             approvalHRServicesAdmin.setApprovalAtasan(updatedApprovalAtasan);
+            approvalHRServicesAdmin.setNipKaryawanResign(nipKaryawan);
             approvalHRServicesAdminService.save(approvalHRServicesAdmin);
 
             ApprovalHRPayroll approvalHRPayroll = new ApprovalHRPayroll();
             approvalHRPayroll.setApprovalAtasan(updatedApprovalAtasan);
+            approvalHRPayroll.setNipKaryawanResign(nipKaryawan);
             approvalHRPayrollService.save(approvalHRPayroll);
 
             ApprovalSecurityAdministrator approvalSecurityAdministrator = new ApprovalSecurityAdministrator();
             approvalSecurityAdministrator.setApprovalAtasan(updatedApprovalAtasan);
+            approvalSecurityAdministrator.setNipKaryawanResign(nipKaryawan);
             approvalSecurityAdministratorService.save(approvalSecurityAdministrator);
 
             ApprovalGeneralServices approvalGeneralServices = new ApprovalGeneralServices();
@@ -266,6 +272,7 @@ public class ApprovalAtasanController {
 
             ApprovalHRLearning approvalHRLearning = new ApprovalHRLearning();
             approvalHRLearning.setApprovalAtasan(approvalAtasan);
+            approvalHRLearning.setNipKaryawanResign(nipKaryawan);
             approvalHRLearningService.save(approvalHRLearning);
         }
 

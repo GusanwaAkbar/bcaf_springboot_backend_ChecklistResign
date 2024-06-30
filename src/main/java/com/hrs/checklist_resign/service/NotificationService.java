@@ -16,6 +16,12 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Autowired
+    private UserDetail userDetail;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     public Notification sendNotification(String message, UserDetail sender, Set<UserDetail> recipients) {
         Notification notification = new Notification();
         notification.setMessage(message);
@@ -29,4 +35,6 @@ public class NotificationService {
     public List<Notification> findByNipUser(String nipUser) {
         return notificationRepository.findByNipUser(nipUser);
     }
+
+
 }

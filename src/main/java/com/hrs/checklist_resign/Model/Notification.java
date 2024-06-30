@@ -82,4 +82,12 @@ public class Notification {
     public void setRecipients(Set<UserDetail> recipients) {
         this.recipients = recipients;
     }
+
+    public String getNipUser() {
+        return nipUser;
+    }
+
+    public void setNipUser(String nipUser) {
+        this.nipUser = nipUser;
+    }
 }

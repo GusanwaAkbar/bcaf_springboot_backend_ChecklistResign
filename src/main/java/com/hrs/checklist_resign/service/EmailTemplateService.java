@@ -40,10 +40,12 @@ public class EmailTemplateService {
         mailSender.send(message);
     }
 
-    public Map<String, Object> createEmailVariables(String message, String link) {
+    public Map<String, Object> createEmailVariables(String nama, String message, String link) {
         Map<String, Object> variables = new HashMap<>();
+        variables.put("nama", nama);
         variables.put("message", message);
         variables.put("link", link);
+
         return variables;
     }
 }

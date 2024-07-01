@@ -66,10 +66,6 @@ public class UserDetail {
     @JsonIgnore
     private Set<Notification> sentNotifications;
 
-    @ManyToMany(mappedBy = "recipients")
-    @JsonIgnore
-    private Set<Notification> receivedNotifications;
-
     @Override
     public String toString() {
         return "UserDetail{" +

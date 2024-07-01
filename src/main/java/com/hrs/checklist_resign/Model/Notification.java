@@ -19,8 +19,6 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nip_user")
-    private String nipUser;
 
     private String message;
 
@@ -30,14 +28,7 @@ public class Notification {
 
     private LocalDateTime timestamp;
 
-    @ManyToMany
-    @JsonBackReference
-    @JoinTable(
-            name = "notification_recipients",
-            joinColumns = @JoinColumn(name = "notification_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_detail_id")
-    )
-    private Set<UserDetail> recipients;
+    private String recipient;
 
 
     //getter and setter
@@ -75,19 +66,14 @@ public class Notification {
         this.timestamp = timestamp;
     }
 
-    public Set<UserDetail> getRecipients() {
-        return recipients;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setRecipients(Set<UserDetail> recipients) {
-        this.recipients = recipients;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
-    public String getNipUser() {
-        return nipUser;
-    }
 
-    public void setNipUser(String nipUser) {
-        this.nipUser = nipUser;
-    }
+
 }

@@ -24,36 +24,21 @@ public class FinalApprovalService {
         return finalApprovalRepository.save(finalApproval);
     }
 
-    public FinalApproval updateFinalApproval(Long id, FinalApproval finalApprovalDetails) {
-        Optional<FinalApproval> optionalFinalApproval = finalApprovalRepository.findById(id);
-        if (optionalFinalApproval.isPresent()) {
-            FinalApproval finalApproval = optionalFinalApproval.get();
-            finalApproval.setApprovalTreasury(finalApprovalDetails.getApprovalTreasury());
-            finalApproval.setApprovalGeneralServices(finalApprovalDetails.getApprovalGeneralServices());
-            finalApproval.setApprovalHRIR(finalApprovalDetails.getApprovalHRIR());
-            finalApproval.setApprovalHRLearning(finalApprovalDetails.getApprovalHRLearning());
-            finalApproval.setApprovalHRPayroll(finalApprovalDetails.getApprovalHRPayroll());
-            finalApproval.setApprovalHRServicesAdmin(finalApprovalDetails.getApprovalHRServicesAdmin());
-            finalApproval.setApprovalHRTalent(finalApprovalDetails.getApprovalHRTalent());
-            finalApproval.setApprovalSecurityAdministrator(finalApprovalDetails.getApprovalSecurityAdministrator());
-            finalApproval.setFinalApprovalStatus(finalApprovalDetails.getFinalApprovalStatus());
-            finalApproval.setRemarks(finalApprovalDetails.getRemarks());
-
-            return finalApprovalRepository.save(finalApproval);
-        } else {
-            return null;
-        }
+    public FinalApproval updateFinalApproval(FinalApproval finalApproval) {
+        return finalApprovalRepository.save(finalApproval);
     }
-
-
-
 
 
         public Optional<FinalApprovalDTO> getFinalApprovalById(Long id) {
             return finalApprovalRepository.findFinalApprovalDTOById(id);
         }
 
-        @Transactional
+    public Optional<FinalApproval> getFinalApprovalByIdv2(Long id) {
+        return finalApprovalRepository.findById(id);
+    }
+
+
+    @Transactional
     public List<FinalApprovalDTO> getAllFinalApproval() {
         return finalApprovalRepository.findAllFinalApprovalDTOs();
     }

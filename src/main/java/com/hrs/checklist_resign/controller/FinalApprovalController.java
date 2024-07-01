@@ -2,6 +2,7 @@ package com.hrs.checklist_resign.controller;
 
 import com.hrs.checklist_resign.dto.FinalApprovalDTO;
 import com.hrs.checklist_resign.Model.FinalApproval;
+import com.hrs.checklist_resign.dto.PostFinalApprovalDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.FinalApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +52,23 @@ public class FinalApprovalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<FinalApproval>> updateFinalApproval(@PathVariable Long id, @RequestBody FinalApproval finalApprovalDetails) {
-        FinalApproval updatedFinalApproval = finalApprovalService.updateFinalApproval(id, finalApprovalDetails);
-        if (updatedFinalApproval != null) {
+    public ResponseEntity<ApiResponse<FinalApproval>> updateFinalApproval(
+            @PathVariable Long id,
+            @RequestBody PostFinalApprovalDTO postFinalApprovalDTO) {
+
+        // Retrieve the current final approval
+        Optional<FinalApproval> finalApprovalObj = finalApprovalService.getFinalApprovalByIdv2(id);
+
+        if (finalApprovalObj.isPresent()) {
+            FinalApproval finalApproval = finalApprovalObj.get();
+
+            // Update final approval
+            finalApproval.setRemarks(postFinalApprovalDTO.getRemarks());
+            finalApproval.setFinalApprovalStatus(postFinalApprovalDTO.getFinalApprovalStatus());
+
+            // Save updated final approval
+            FinalApproval updatedFinalApproval = finalApprovalService.updateFinalApproval(finalApproval);
+
             ApiResponse<FinalApproval> response = new ApiResponse<>(updatedFinalApproval, true, "Update succeeded", HttpStatus.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
@@ -61,4 +76,5 @@ public class FinalApprovalController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
+
 }

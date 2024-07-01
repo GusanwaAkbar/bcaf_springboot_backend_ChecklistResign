@@ -21,19 +21,26 @@ public class NotificationService {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    public Notification sendNotification(String message, UserDetail sender, Set<UserDetail> recipients) {
+    public Notification sendNotification(String message, UserDetail sender, String recipient) {
         Notification notification = new Notification();
         notification.setMessage(message);
         notification.setSender(sender);
         notification.setTimestamp(LocalDateTime.now());
-        notification.setRecipients(recipients);
+        notification.setRecipient(recipient);
 
         return notificationRepository.save(notification);
     }
 
-    public List<Notification> findByNipUser(String nipUser) {
-        return notificationRepository.findByNipUser(nipUser);
+    public List<Notification> findByRecepient(String nipUser)
+    {
+
+
+        return notificationRepository.findByRecipient(nipUser);
     }
+
+//    public List<Notification> findByNipUser(String nipUser) {
+//        return notificationRepository.findByNipUser(nipUser);
+//    }
 
 
 }

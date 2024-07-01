@@ -38,7 +38,7 @@ public class NotificationController {
 
         String nipUser = authentication.getName();
 
-        List<Notification> notification = notificationService.findByNipUser(nipUser);
+        List<Notification> notification = notificationService.findByRecepient(nipUser);
         if (!notification.isEmpty()) {
             ApiResponse<List<Notification>> response = new ApiResponse<>(notification, true, "Record fetched successfully", HttpStatus.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);

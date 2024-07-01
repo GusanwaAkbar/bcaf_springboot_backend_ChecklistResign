@@ -10,5 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findByNipUser(String nipUser);
+//    List<Notification> findByNipUser(String nipUser);
+
+    List<Notification> findByRecipient(String nipUser);
 }

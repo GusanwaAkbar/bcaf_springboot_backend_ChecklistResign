@@ -12,7 +12,11 @@ public class PengajuanResignDTO {
     private String nipAtasan;
     private String emailAtasan;
 
-    public PengajuanResignDTO(Long id, Boolean isiUntukOrangLain, Date tanggalPembuatanAkunHRIS, Date tanggalBerakhirBekerja, UserDetailDTO userDetailDTO, String nipAtasan, String emailAtasan) {
+    private Date approvedDate;
+
+    private Date createdDate;
+
+    public PengajuanResignDTO(Long id, Boolean isiUntukOrangLain, Date tanggalPembuatanAkunHRIS, Date tanggalBerakhirBekerja, UserDetailDTO userDetailDTO, String nipAtasan, String emailAtasan, Date approvedDate, Date createdDate) {
         this.id = id;
         this.isiUntukOrangLain = isiUntukOrangLain;
         this.tanggalPembuatanAkunHRIS = tanggalPembuatanAkunHRIS;
@@ -20,6 +24,8 @@ public class PengajuanResignDTO {
         this.userDetailDTO = userDetailDTO;
         this.nipAtasan = nipAtasan;
         this.emailAtasan = emailAtasan;
+        this.approvedDate = approvedDate;
+        this.createdDate = createdDate;
     }
 
     // Getters and setters (if needed)
@@ -79,5 +85,21 @@ public class PengajuanResignDTO {
 
     public void setEmailAtasan(String emailAtasan) {
         this.emailAtasan = emailAtasan;
+    }
+
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +69,11 @@ public class ApprovalHRTalentService {
         existingApprovalHRTalent.setPengecekanBiaya(approvalHRTalentDetails.getPengecekanBiaya());
         existingApprovalHRTalent.setApprovalHRTalentStatus(approvalHRTalentDetails.getApprovalHRTalentStatus());
         existingApprovalHRTalent.setRemarks(approvalHRTalentDetails.getRemarks());
+
+        if (existingApprovalHRTalent.getApprovalHRTalentStatus().equals("accept"))
+        {
+            existingApprovalHRTalent.setApprovedDate(new Date());
+        }
 
         //save the instance
         ApprovalHRTalent approvalHRTalent = approvalHRTalentRepository.save(existingApprovalHRTalent);

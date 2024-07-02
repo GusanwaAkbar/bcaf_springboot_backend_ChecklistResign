@@ -1,11 +1,12 @@
 package com.hrs.checklist_resign.dto;
 
+import java.util.Date;
+
 public class FinalApprovalDTO {
     private Long id;
     private UserDetailDTO userDetailResign;
     private UserDetailDTO userDetailAtasan;
-    private PengajuanResignDTO pengajuanResign;  // Add this field
-
+    private PengajuanResignDTO pengajuanResign;
     private ApprovalAtasanDTO approvalAtasan;
     private ApprovalGeneralServicesDTO approvalGeneralServices;
     private ApprovalHRIRDTO approvalHRIR;
@@ -17,19 +18,21 @@ public class FinalApprovalDTO {
     private ApprovalTreasuryDTO approvalTreasury;
     private String finalApprovalStatus;
     private String remarks;
+    private Date approvedDate;
+    private Date createdDate;
 
     // Constructor with all fields
     public FinalApprovalDTO(Long id, UserDetailDTO userDetailResign, UserDetailDTO userDetailAtasan,
-                            PengajuanResignDTO pengajuanResign, ApprovalAtasanDTO approvalAtasan,  // Add this parameter
+                            PengajuanResignDTO pengajuanResign, ApprovalAtasanDTO approvalAtasan,
                             ApprovalGeneralServicesDTO approvalGeneralServices, ApprovalHRIRDTO approvalHRIR,
                             ApprovalHRLearningDTO approvalHRLearning, ApprovalHRPayrollDTO approvalHRPayroll,
                             ApprovalHRServicesAdminDTO approvalHRServicesAdmin, ApprovalHRTalentDTO approvalHRTalent,
                             ApprovalSecurityAdministratorDTO approvalSecurityAdministrator, ApprovalTreasuryDTO approvalTreasury,
-                            String finalApprovalStatus, String remarks) {
+                            String finalApprovalStatus, String remarks, Date approvedDate, Date createdDate) {
         this.id = id;
         this.userDetailResign = userDetailResign;
         this.userDetailAtasan = userDetailAtasan;
-        this.pengajuanResign = pengajuanResign;  // Initialize this field
+        this.pengajuanResign = pengajuanResign;
         this.approvalAtasan = approvalAtasan;
         this.approvalGeneralServices = approvalGeneralServices;
         this.approvalHRIR = approvalHRIR;
@@ -41,29 +44,20 @@ public class FinalApprovalDTO {
         this.approvalTreasury = approvalTreasury;
         this.finalApprovalStatus = finalApprovalStatus;
         this.remarks = remarks;
+        this.approvedDate = approvedDate;
+        this.createdDate = createdDate;
     }
 
-    // No-arg constructor
-    public FinalApprovalDTO() {
-    }
+    // Getters and Setters for all fields
+    // ...
 
-    // set and get
-
-
+    // Example getters and setters:
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public ApprovalAtasanDTO getApprovalAtasan() {
-        return approvalAtasan;
-    }
-
-    public void setApprovalAtasan(ApprovalAtasanDTO approvalAtasan) {
-        this.approvalAtasan = approvalAtasan;
     }
 
     public UserDetailDTO getUserDetailResign() {
@@ -88,6 +82,14 @@ public class FinalApprovalDTO {
 
     public void setPengajuanResign(PengajuanResignDTO pengajuanResign) {
         this.pengajuanResign = pengajuanResign;
+    }
+
+    public ApprovalAtasanDTO getApprovalAtasan() {
+        return approvalAtasan;
+    }
+
+    public void setApprovalAtasan(ApprovalAtasanDTO approvalAtasan) {
+        this.approvalAtasan = approvalAtasan;
     }
 
     public ApprovalGeneralServicesDTO getApprovalGeneralServices() {
@@ -168,5 +170,21 @@ public class FinalApprovalDTO {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

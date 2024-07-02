@@ -7,6 +7,12 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+
+import java.util.Date;
+
 @Entity
 @Table(name = "app_hrs_resign_bucket_pengajuan_resign")
 public class PengajuanResign {
@@ -38,8 +44,16 @@ public class PengajuanResign {
     @Column(name = "email_atasan")
     private String emailAtasan;
 
+    // Field untuk audit trail
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "created_date", nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
 
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "approved_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date approvedDate;
 
     @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "pengajuanResign")
@@ -49,17 +63,14 @@ public class PengajuanResign {
     @JsonBackReference(value = "FinalApproval")
     private FinalApproval finalApproval;
 
+    // Constructor, getter, setter
 
-    // Getters and setters
-
-
-    public FinalApproval getFinalApproval() {
-        return finalApproval;
+    @PrePersist
+    protected void onCreate() {
+        createdDate = new Date();
     }
 
-    public void setFinalApproval(FinalApproval finalApproval) {
-        this.finalApproval = finalApproval;
-    }
+
 
     public Long getId() {
         return id;
@@ -67,6 +78,14 @@ public class PengajuanResign {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNipUser() {
+        return nipUser;
+    }
+
+    public void setNipUser(String nipUser) {
+        this.nipUser = nipUser;
     }
 
     public boolean isIsiUntukOrangLain() {
@@ -109,14 +128,6 @@ public class PengajuanResign {
         this.nipAtasan = nipAtasan;
     }
 
-    public ApprovalAtasan getApprovalAtasan() {
-        return approvalAtasan;
-    }
-
-    public void setApprovalAtasan(ApprovalAtasan approvalAtasan) {
-        this.approvalAtasan = approvalAtasan;
-    }
-
     public String getEmailAtasan() {
         return emailAtasan;
     }
@@ -125,24 +136,35 @@ public class PengajuanResign {
         this.emailAtasan = emailAtasan;
     }
 
-    public String getNipUser() {
-        return nipUser;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setNipUser(String nipUser) {
-        this.nipUser = nipUser;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PengajuanResign that = (PengajuanResign) o;
-        return id != null && Objects.equals(id, that.id);
+    public Date getApprovedDate() {
+        return approvedDate;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
+
+    public ApprovalAtasan getApprovalAtasan() {
+        return approvalAtasan;
+    }
+
+    public void setApprovalAtasan(ApprovalAtasan approvalAtasan) {
+        this.approvalAtasan = approvalAtasan;
+    }
+
+    public FinalApproval getFinalApproval() {
+        return finalApproval;
+    }
+
+    public void setFinalApproval(FinalApproval finalApproval) {
+        this.finalApproval = finalApproval;
     }
 }

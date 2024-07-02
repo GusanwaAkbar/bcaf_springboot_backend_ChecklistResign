@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,13 +70,20 @@ public class ApprovalHRIRService {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
 
+        ApprovalHRIR approvalHRIR = approvalHRIRObj.get();
+
         // Update the approval HRIR
-        approvalHRIRObj.get().setExitInterview(approvalHRIRDetails.getExitInterview());
-        approvalHRIRObj.get().setApprovalHRIRStatus(approvalHRIRDetails.getApprovalHRIRStatus());
-        approvalHRIRObj.get().setRemarks(approvalHRIRDetails.getRemarks());
+        approvalHRIR.setExitInterview(approvalHRIRDetails.getExitInterview());
+        approvalHRIR.setApprovalHRIRStatus(approvalHRIRDetails.getApprovalHRIRStatus());
+        approvalHRIR.setRemarks(approvalHRIRDetails.getRemarks());
+
+        if (approvalHRIR.getApprovalHRIRStatus().equals("accept"))
+        {
+            approvalHRIR.setApprovedDate(new Date());
+        }
 
         // Save the instance
-        ApprovalHRIR savedApprovalHRIR = approvalHRIRRepository.save(approvalHRIRObj.get());
+        ApprovalHRIR savedApprovalHRIR = approvalHRIRRepository.save(approvalHRIR);
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id);

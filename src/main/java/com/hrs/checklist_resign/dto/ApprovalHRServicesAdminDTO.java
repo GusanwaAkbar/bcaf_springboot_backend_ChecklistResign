@@ -1,5 +1,7 @@
 package com.hrs.checklist_resign.dto;
 
+import java.util.Date;
+
 public class ApprovalHRServicesAdminDTO {
     private long id;
     private String excessOfClaim;
@@ -8,18 +10,24 @@ public class ApprovalHRServicesAdminDTO {
     private String approvalHRServicesAdminStatus;
     private String remarks;
 
+    private Date approvedDate;
+    private Date createdDate;
+
     public ApprovalHRServicesAdminDTO() {
     }
 
     public ApprovalHRServicesAdminDTO(long id, String excessOfClaim, String penyelesaianBiayaHR,
                                       String penonaktifanKartuElektronik, String approvalHRServicesAdminStatus,
-                                      String remarks) {
+                                      String remarks, Date approvedDate, Date createdDate) {
         this.id = id;
         this.excessOfClaim = excessOfClaim;
         this.penyelesaianBiayaHR = penyelesaianBiayaHR;
         this.penonaktifanKartuElektronik = penonaktifanKartuElektronik;
         this.approvalHRServicesAdminStatus = approvalHRServicesAdminStatus;
         this.remarks = remarks;
+        this.approvedDate = approvedDate;
+        this.createdDate = createdDate;
+
     }
 
     // Getters and setters
@@ -71,5 +79,21 @@ public class ApprovalHRServicesAdminDTO {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

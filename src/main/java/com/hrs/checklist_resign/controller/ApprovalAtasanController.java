@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,6 +46,9 @@ public class ApprovalAtasanController {
 
     @Autowired
     private ApprovalHRLearningService approvalHRLearningService;
+
+    @Autowired
+    private PengajuanResignService pengajuanResignService;
 
 
 
@@ -217,6 +221,7 @@ public class ApprovalAtasanController {
 
         ApprovalAtasan approvalAtasan = approvalAtasanOptional.get();
 
+
         //Setup nip karyawan
         String nipKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign().getUserUsername();
 
@@ -235,6 +240,21 @@ public class ApprovalAtasanController {
         ApprovalAtasan updatedApprovalAtasan = approvalAtasanService.saveApproval(approvalAtasan);
 
         if (approvalAtasanDetails.getApprovalStatusAtasan().equals("accept")) {
+
+
+            //set approved date on pengajuan resign
+            Optional<PengajuanResign> pengajuanResignOpt = pengajuanResignService.getResignationByNipUser(approvalAtasan.getNipKaryawanResign());
+            PengajuanResign pengajuanResign = pengajuanResignOpt.get();
+            pengajuanResign.setApprovedDate(new Date());
+            pengajuanResignService.saveResignation(pengajuanResign);
+
+            //set approved date on approval atasan
+            approvalAtasan.setApprovedDate(new Date());
+            approvalAtasanService.saveApproval(approvalAtasan);
+
+
+
+
             ApprovalHRTalent approvalHRTalent = new ApprovalHRTalent();
             approvalHRTalent.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRTalent.setNipKaryawanResign(nipKaryawan);

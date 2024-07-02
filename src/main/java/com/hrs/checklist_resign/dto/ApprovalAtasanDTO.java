@@ -1,7 +1,9 @@
 package com.hrs.checklist_resign.dto;
 
 
-    public class ApprovalAtasanDTO {
+import java.util.Date;
+
+public class ApprovalAtasanDTO {
         private Long id;
         private String nipAtasan;
         private String emailAtasan;
@@ -17,6 +19,10 @@ package com.hrs.checklist_resign.dto;
         private String approvalStatusAtasan;
         private String remarksAtasan;
 
+        private Date approvedDate;
+
+        private Date createdDate;
+
 
         // No-arg constructor
         public ApprovalAtasanDTO() {}
@@ -26,7 +32,7 @@ package com.hrs.checklist_resign.dto;
                                  String pengembalianKunciRuangan, String penyerahanSuratPengunduranDiri,
                                  String pengembalianIdCard, String hapusAplikasiMobile,
                                  String uninstallSoftwareNotebook, String uninstallSoftwareUnitKerja,
-                                 String approvalStatusAtasan, String remarksAtasan) {
+                                 String approvalStatusAtasan, String remarksAtasan, Date approvedDate, Date createdDate) {
             this.id = id;
             this.nipAtasan = nipAtasan;
             this.emailAtasan = emailAtasan;
@@ -42,6 +48,9 @@ package com.hrs.checklist_resign.dto;
             this.uninstallSoftwareUnitKerja = uninstallSoftwareUnitKerja;
             this.approvalStatusAtasan = approvalStatusAtasan;
             this.remarksAtasan = remarksAtasan;
+            this.approvedDate = approvedDate;
+            this.createdDate = createdDate;
+
         }
 
     //constructor
@@ -166,5 +175,19 @@ package com.hrs.checklist_resign.dto;
         this.remarksAtasan = remarksAtasan;
     }
 
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
 
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
 }

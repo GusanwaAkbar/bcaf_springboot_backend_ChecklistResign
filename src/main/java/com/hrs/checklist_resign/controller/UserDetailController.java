@@ -1,6 +1,7 @@
 package com.hrs.checklist_resign.controller;
 
 import com.hrs.checklist_resign.Model.UserDetail;
+import com.hrs.checklist_resign.dto.PostChangeRoleDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,5 +109,7 @@ public class UserDetailController {
         ApiResponse<UserDetail> response = new ApiResponse<>(updatedUserDetail, true, "User details updated successfully", HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+
 
 }

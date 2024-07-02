@@ -116,39 +116,23 @@ public class PengajuanResignController {
 
 
     @DeleteMapping("/deleteResignation")
-    public ResponseEntity<?> deleteResignation() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<String> deletePengajuanResign() {
+        try {
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            ApiResponse<PengajuanResign> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-        }
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String loggedInUsername = authentication.getName();
-        Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(loggedInUsername));
-
-        if (userDetailOpt.isPresent()) {
-            UserDetail userDetail = userDetailOpt.get();
-            Optional<PengajuanResign> resignationOpt = pengajuanResignService.getResignationByUserDetail(userDetail);
-
-            if (resignationOpt.isPresent()) {
-                PengajuanResign resignation = resignationOpt.get();
-                try {
-                    pengajuanResignService.deleteResignation(resignation.getId());
-
-                    ApiResponse<Void> response = new ApiResponse<>(null, true, "Resignation deleted successfully", HttpStatus.OK.value());
-                    return new ResponseEntity<>(response, HttpStatus.OK);
-                } catch (Exception e) {
-                    ApiResponse<Void> response = new ApiResponse<>(false, "Failed to delete resignation", HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
-                    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            } else {
-                ApiResponse<Void> response = new ApiResponse<>(false, "Resignation not found", HttpStatus.NOT_FOUND.value(), "No resignation found for the logged-in user");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            if (authentication == null || !authentication.isAuthenticated()) {
+                ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+                return new ResponseEntity(response, HttpStatus.UNAUTHORIZED);
             }
-        } else {
-            ApiResponse<Void> response = new ApiResponse<>(false, "User details not found", HttpStatus.NOT_FOUND.value(), "No user details found for the logged-in user");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            // End Authentication checking
+
+            String nipUser = authentication.getName();
+            pengajuanResignService.deletePengajuanResign(nipUser);
+
+            return ResponseEntity.ok("PengajuanResign and related entities deleted successfully");
+        }  catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete PengajuanResign");
         }
     }
 

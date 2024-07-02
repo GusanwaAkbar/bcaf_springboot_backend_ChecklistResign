@@ -40,9 +40,7 @@ public class PengajuanResign {
 
 
 
-//    @OneToOne
-//    @JoinColumn(name = "pengajuan_resign_id", referencedColumnName = "id")
-//    private ApprovalAtasan approvalAtasan;
+
     @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "pengajuanResign")
     private ApprovalAtasan approvalAtasan;
@@ -51,13 +49,6 @@ public class PengajuanResign {
     @JsonBackReference(value = "FinalApproval")
     private FinalApproval finalApproval;
 
-//    @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL )
-//    @JsonManagedReference
-//    private ApprovalHRIR approvalHRIR;
-//
-//    @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL )
-//    @JsonManagedReference
-//    private ApprovalHRTalent approvalHRTalent;
 
     // Getters and setters
 

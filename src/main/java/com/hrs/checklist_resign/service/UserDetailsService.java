@@ -22,4 +22,6 @@ public class UserDetailsService {
     public UserDetail updateUserDetails(UserDetail userDetails) {
         return userDetailsRepository.save(userDetails);
     }
+
+
 }

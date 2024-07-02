@@ -84,35 +84,35 @@ public class ApprovalAtasan {
     @Column(name = "remarks_atasan")
     private String remarksAtasan;
 
-    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "approvalHRTalent")
     private ApprovalHRTalent approvalHRTalent;
 
-    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "approvalHRIR")
     private ApprovalHRIR approvalHRIR;
 
-    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "approvalGeneralServices")
     private ApprovalGeneralServices approvalGeneralServices;
 
-    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "approvalHRPayroll")
     private ApprovalHRPayroll approvalHRPayroll;
 
-    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "approvalHRServicesAdmin")
     private ApprovalHRServicesAdmin approvalHRServicesAdmin;
 
-    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "approvalSecurityAdministrator")
     private ApprovalSecurityAdministrator approvalSecurityAdministrator;
 
-    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "approvalTreasury")
     private ApprovalTreasury approvalTreasury;
 
-    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "approvalAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "approvalHRLearning")
     private ApprovalHRLearning approvalHRLearning;
 

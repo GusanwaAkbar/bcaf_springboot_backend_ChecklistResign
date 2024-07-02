@@ -2,6 +2,7 @@ package com.hrs.checklist_resign.controller;
 
 import com.hrs.checklist_resign.Model.User;
 import com.hrs.checklist_resign.Model.UserDetail;
+import com.hrs.checklist_resign.dto.PostChangeRoleDTO;
 import com.hrs.checklist_resign.payload.LoginRequest;
 import com.hrs.checklist_resign.payload.SignupRequest;
 import com.hrs.checklist_resign.payload.JwtResponse;
@@ -130,6 +131,18 @@ public class AuthController {
                 "AND h.id = ?";
 
         return jdbcTemplate.query(sql, new UserDetailsRowMapper(), username);
+    }
+
+
+    @PostMapping("/changeRole")
+    public ResponseEntity<?> changeUserRole(@RequestBody PostChangeRoleDTO postChangeRoleDTO) {
+        boolean isRoleChanged = userService.changeUserRole(postChangeRoleDTO.getUsername(), postChangeRoleDTO.getNewRole());
+
+        if (isRoleChanged) {
+            return ResponseEntity.ok(new ApiResponse<>(null, true, "User role changed successfully", 200));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User not found", 400));
+        }
     }
 
 }

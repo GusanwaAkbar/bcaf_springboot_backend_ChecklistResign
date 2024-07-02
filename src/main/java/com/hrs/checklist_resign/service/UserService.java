@@ -39,6 +39,19 @@ public class UserService {
 
 
     }
+
+    public boolean changeUserRole(String username, String newRole) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setRole(newRole);
+            userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 /////////

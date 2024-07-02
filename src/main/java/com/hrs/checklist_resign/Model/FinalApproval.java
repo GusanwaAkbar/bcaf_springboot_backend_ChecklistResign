@@ -1,8 +1,10 @@
 package com.hrs.checklist_resign.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "app_hrs_resign_final_approval")
@@ -66,9 +68,39 @@ public class FinalApproval implements Serializable {
     private String finalApprovalStatus;
     private String remarks;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "created_date", nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "approved_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date approvedDate;
+
 
     // getters and setters
 
+    @PrePersist
+    protected void onCreate() {
+        createdDate = new Date();
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
 
     public Long getId() {
         return id;

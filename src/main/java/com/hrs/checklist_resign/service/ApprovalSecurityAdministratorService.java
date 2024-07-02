@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +62,11 @@ public class ApprovalSecurityAdministratorService {
         approvalSecurityAdministrator.setPengembalianToken(approvalSecurityAdministratorDetails.getPengembalianToken());
         approvalSecurityAdministrator.setApprovalSecurityAdministratorStatus(approvalSecurityAdministratorDetails.getApprovalSecurityAdministratorStatus());
         approvalSecurityAdministrator.setRemarks(approvalSecurityAdministratorDetails.getRemarks());
+
+        if(approvalSecurityAdministrator.getApprovalSecurityAdministratorStatus().equals("accept"))
+        {
+            approvalSecurityAdministrator.setApprovedDate(new Date());
+        }
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id);

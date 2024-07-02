@@ -1,19 +1,27 @@
 package com.hrs.checklist_resign.dto;
 
+import java.util.Date;
+
 public class ApprovalHRIRDTO {
     private long id;
     private String exitInterview;
     private String approvalHRIRStatus;
     private String remarks;
 
+    private Date approvedDate;
+
+    private Date createdDate;
+
     public ApprovalHRIRDTO() {
     }
 
-    public ApprovalHRIRDTO(long id, String exitInterview, String approvalHRIRStatus, String remarks) {
+    public ApprovalHRIRDTO(long id, String exitInterview, String approvalHRIRStatus, String remarks, Date approvedDate,Date createdDate) {
         this.id = id;
         this.exitInterview = exitInterview;
         this.approvalHRIRStatus = approvalHRIRStatus;
         this.remarks = remarks;
+        this.approvedDate = approvedDate;
+        this.createdDate = createdDate;
     }
 
     // Getters and setters
@@ -49,5 +57,21 @@ public class ApprovalHRIRDTO {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

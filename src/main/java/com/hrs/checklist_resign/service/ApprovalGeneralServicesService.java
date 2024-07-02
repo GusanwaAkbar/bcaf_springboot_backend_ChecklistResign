@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +63,11 @@ public class ApprovalGeneralServicesService {
         approvalGeneralServices.setPengembalianKendaraanUMK3(approvalGeneralServicesDetails.getPengembalianKendaraanUMK3());
         approvalGeneralServices.setApprovalGeneralServicesStatus(approvalGeneralServicesDetails.getApprovalGeneralServicesStatus());
         approvalGeneralServices.setRemarks(approvalGeneralServicesDetails.getRemarks());
+
+        if (approvalGeneralServices.getApprovalGeneralServicesStatus().equals("accept"))
+        {
+            approvalGeneralServices.setApprovedDate(new Date());
+        }
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id);

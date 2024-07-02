@@ -1,5 +1,7 @@
 package com.hrs.checklist_resign.dto;
 
+import java.util.Date;
+
 public class ApprovalHRPayrollDTO {
     private Long id;
     private String softLoan;
@@ -11,12 +13,17 @@ public class ApprovalHRPayrollDTO {
     private String approvalHRPayrollStatus;
     private String remarks;
 
+    private Date approvedDate;
+    private Date createdDate;
+
+
+
     public ApprovalHRPayrollDTO() {
     }
 
     public ApprovalHRPayrollDTO(Long id, String softLoan, String emergencyLoan, String smartphoneLoan,
                                 String motorLoan, String umkLoan, String laptopLoan,
-                                String approvalHRPayrollStatus, String remarks) {
+                                String approvalHRPayrollStatus, String remarks, Date approvedDate,Date createdDate) {
         this.id = id;
         this.softLoan = softLoan;
         this.emergencyLoan = emergencyLoan;
@@ -26,6 +33,8 @@ public class ApprovalHRPayrollDTO {
         this.laptopLoan = laptopLoan;
         this.approvalHRPayrollStatus = approvalHRPayrollStatus;
         this.remarks = remarks;
+        this.approvedDate = approvedDate;
+        this.createdDate = createdDate;
     }
 
     // Getters and setters
@@ -101,5 +110,21 @@ public class ApprovalHRPayrollDTO {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

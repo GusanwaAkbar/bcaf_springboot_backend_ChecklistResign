@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +66,11 @@ public class ApprovalTreasuryService {
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+
+        if(approvalTreasury.getApprovalTreasuryStatus().equals("accept"))
+        {
+            approvalTreasury.setApprovedDate(new Date());
+        }
 
         if (allApprove) {
             // Create the final form

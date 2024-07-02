@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +61,11 @@ public class ApprovalHRServicesAdminService {
         approvalHRServicesAdmin.setPenonaktifanKartuElektronik(approvalHRServicesAdminDetails.getPenonaktifanKartuElektronik());
         approvalHRServicesAdmin.setApprovalHRServicesAdminStatus(approvalHRServicesAdminDetails.getApprovalHRServicesAdminStatus());
         approvalHRServicesAdmin.setRemarks(approvalHRServicesAdminDetails.getRemarks());
+
+        if(approvalHRServicesAdmin.getApprovalHRServicesAdminStatus().equals("accept"))
+        {
+            approvalHRServicesAdmin.setApprovedDate(new Date());
+        }
 
         // Check all approval status
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id);

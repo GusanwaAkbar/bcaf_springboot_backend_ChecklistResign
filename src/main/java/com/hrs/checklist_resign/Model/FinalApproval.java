@@ -31,35 +31,35 @@ public class FinalApproval implements Serializable {
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
     private ApprovalAtasan approvalAtasan;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "approval_treasury_id")
     private ApprovalTreasury approvalTreasury;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "approval_general_services_id")
     private ApprovalGeneralServices approvalGeneralServices;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "approval_hr_ir_id")
     private ApprovalHRIR approvalHRIR;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "approval_hr_learning_id")
     private ApprovalHRLearning approvalHRLearning;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "approval_hr_payroll_id")
     private ApprovalHRPayroll approvalHRPayroll;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "approval_hr_services_admin_id")
     private ApprovalHRServicesAdmin approvalHRServicesAdmin;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "approval_hr_talent_id")
     private ApprovalHRTalent approvalHRTalent;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "approval_security_administrator_id")
     private ApprovalSecurityAdministrator approvalSecurityAdministrator;
 

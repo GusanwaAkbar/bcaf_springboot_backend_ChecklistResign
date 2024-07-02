@@ -42,11 +42,33 @@ public class PengajuanResignService {
     }
 
     @Transactional
-    public void deleteResignation(Long id) {
-        // Delete related entities first
-        pengajuanResignRepository.deleteApprovalAtasanByResignationId(id);
+    public void deletePengajuanResign(String nipUser) {
+        // Find the PengajuanResign entity by nipUser to get the nipKaryawanResign
+        PengajuanResign pengajuanResign = pengajuanResignRepository.findByNipUser(nipUser)
+                .orElseThrow(() -> new EntityNotFoundException("PengajuanResign not found with nipUser " + nipUser));
 
-        // Delete the PengajuanResign entity
-        pengajuanResignRepository.deletePengajuanResignById(id);
+        String nipKaryawanResign = pengajuanResign.getNipUser();
+
+        pengajuanResignRepository.deleteFinalApprovalByNipKaryawanResign(nipKaryawanResign);
+        pengajuanResignRepository.flush();
+
+        pengajuanResignRepository.deleteApprovalSecurityAdministratorByNipKaryawanResign(nipKaryawanResign);
+        pengajuanResignRepository.deleteApprovalHRTalentByNipKaryawanResign(nipKaryawanResign);
+        pengajuanResignRepository.deleteApprovalHRServicesAdminByNipKaryawanResign(nipKaryawanResign);
+        pengajuanResignRepository.deleteApprovalHRPayrollByNipKaryawanResign(nipKaryawanResign);
+        pengajuanResignRepository.deleteApprovalHRLearningByNipKaryawanResign(nipKaryawanResign);
+        pengajuanResignRepository.deleteApprovalHRIRByNipKaryawanResign(nipKaryawanResign);
+        pengajuanResignRepository.deleteApprovalGeneralServicesByNipKaryawanResign(nipKaryawanResign);
+        pengajuanResignRepository.deleteApprovalTreasuryByNipKaryawanResign(nipKaryawanResign);
+
+
+
+        // Delete child entities first
+
+
+        pengajuanResignRepository.deleteApprovalAtasanByNipKaryawanResign(nipKaryawanResign);
+
+        // Delete the parent entity
+        pengajuanResignRepository.deletePengajuanResignByNipUser(nipUser);
     }
 }

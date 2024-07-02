@@ -36,7 +36,7 @@ public class WebSecurityConfig {
                         .ignoringRequestMatchers("/api/**/**/**")// Disable CSRF for these paths
                 )
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/resign").hasRole("USER")
+//                        .requestMatchers("/resign").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/auth/signin", "/api/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/signin", "/api/auth/signup").permitAll()
                         .anyRequest().authenticated()

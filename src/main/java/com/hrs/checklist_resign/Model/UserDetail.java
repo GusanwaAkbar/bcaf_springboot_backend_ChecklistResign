@@ -27,6 +27,7 @@ public class UserDetail {
     @JoinColumn(name = "user_username", referencedColumnName = "username")
     @JsonBackReference
     private User user;
+    
 
 
 

@@ -13,10 +13,10 @@ public class UserDetailsImpl implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
     private UserDetail userDetail;
 
-    public UserDetailsImpl(String username, String password, String role, UserDetail userDetail) {
+    public UserDetailsImpl(String username, String password,  Collection<? extends GrantedAuthority> authorities, UserDetail userDetail) {
         this.username = username;
         this.password = password;
-        this.authorities = Collections.singleton(new SimpleGrantedAuthority(role));
+        this.authorities = authorities;
         this.userDetail = userDetail;
 
         // Debugging print statements

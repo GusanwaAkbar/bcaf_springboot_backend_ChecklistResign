@@ -99,7 +99,7 @@ public class AuthController {
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
         user.setPassword(signUpRequest.getPassword());
-        user.setRole("USER");
+        user.setRoles("USER");
 
         // Save the user to generate the ID
         userService.saveUser(user);
@@ -139,6 +139,21 @@ public class AuthController {
         boolean isRoleChanged = userService.changeUserRole(postChangeRoleDTO.getUsername(), postChangeRoleDTO.getNewRole());
 
         if (isRoleChanged) {
+            return ResponseEntity.ok(new ApiResponse<>(null, true, "User role changed successfully", 200));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User not found", 400));
+        }
+    }
+
+    @PostMapping("/changeRole/v2")
+    public ResponseEntity<?> changeUserRoleV2(@RequestBody PostChangeRoleDTO postChangeRoleDTO) {
+        Optional<User> userOptional = userService.findByUsername(postChangeRoleDTO.getUsername());
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setRoles(postChangeRoleDTO.getNewRole());
+            userService.saveUser(user);
+
             return ResponseEntity.ok(new ApiResponse<>(null, true, "User role changed successfully", 200));
         } else {
             return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User not found", 400));

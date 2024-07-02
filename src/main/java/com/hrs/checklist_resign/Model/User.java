@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -22,7 +21,9 @@ public class User {
     @Id
     private String username;
     private String password;
-    private String role;
+
+    @Column(name = "role")
+    private String roles;
 
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
@@ -30,7 +31,9 @@ public class User {
     private UserDetail userDetails;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role));
+        return Arrays.stream(roles.split(","))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
+                .collect(Collectors.toList());
     }
 
 
@@ -53,12 +56,12 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public void setRoles(String... roles) {
+        this.roles = String.join(",", roles);
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public List<String> getRolesList() {
+        return Arrays.asList(roles.split(","));
     }
 
     public UserDetail getUserDetails() {

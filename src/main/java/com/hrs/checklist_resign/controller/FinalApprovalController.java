@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +66,11 @@ public class FinalApprovalController {
             // Update final approval
             finalApproval.setRemarks(postFinalApprovalDTO.getRemarks());
             finalApproval.setFinalApprovalStatus(postFinalApprovalDTO.getFinalApprovalStatus());
+
+            if (finalApproval.getFinalApprovalStatus().equals("accept"))
+            {
+                finalApproval.setApprovedDate(new Date());
+            }
 
             // Save updated final approval
             FinalApproval updatedFinalApproval = finalApprovalService.updateFinalApproval(finalApproval);

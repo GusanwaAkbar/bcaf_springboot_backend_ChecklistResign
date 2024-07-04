@@ -21,6 +21,7 @@ import java.sql.SQLException;
         userDetailObj.setDivisi(rs.getString("Divisi"));
         userDetailObj.setJabatan(rs.getString("Jabatan"));
         userDetailObj.setExternalUser(rs.getString("External_User"));
+        userDetailObj.setNipAtasan(rs.getString("nipAtasan"));
         return userDetailObj;
     }
 }

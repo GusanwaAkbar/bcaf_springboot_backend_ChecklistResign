@@ -155,19 +155,33 @@ public class PengajuanResignController {
         PengajuanResign pengajuanResign = buildPengajuanResign(pengajuanResignDTO, username, userDetail);
 
         PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
-        UserDetail userDetailAtasan = userDetailService.findByUsername(pengajuanResignDTO.getNipAtasan());
+
+        UserDetail userDetailAtasan;
+
+        if (!pengajuanResignDTO.getNipAtasan().isEmpty())
+        {
+
+            //nip Atasaan by input sendiri
+            userDetailAtasan = userDetailService.findByUsername(pengajuanResignDTO.getNipAtasan());
+
+        }
+        else {
+            //nip Atasaan by automatis
+            userDetailAtasan = userDetailService.findByUsername(userDetail.getNipAtasan());
+        }
 
         if (userDetailAtasan == null) {
             return buildResponseEntity("Supervisor details not found", HttpStatus.NOT_FOUND, "No user details found for supervisor with NIP: " + pengajuanResignDTO.getNipAtasan());
         }
 
         saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, username);
-
         sendNotificationsAndEmails(userDetail, userDetailAtasan, username);
 
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+
 
     private ResponseEntity<ApiResponse<PengajuanResign>> buildResponseEntity(String message, HttpStatus status, String detail) {
         ApiResponse<PengajuanResign> response = new ApiResponse<>(false, message, status.value(), detail);

@@ -118,7 +118,7 @@ public class AuthController {
     }
 
     private List<UserDetail> fetchUserDetailsByUsername(String username) {
-        String sql = "SELECT DISTINCT h.id, h.c_name AS Nama, h.c_email AS Email, " +
+        String sql = "SELECT DISTINCT h.id, h.c_name AS Nama, h.c_email AS Email, h.c_approver1 AS nipAtasan," +
                 "COALESCE(b.c_location, '-') AS Cabang, COALESCE(d.c_id, '-') AS id_divisi, " +
                 "COALESCE(d.c_name, '-') AS Divisi, COALESCE(t.c_name, '-') AS Jabatan, " +
                 "COALESCE(h.c_externalUser, 'No') AS External_User " +

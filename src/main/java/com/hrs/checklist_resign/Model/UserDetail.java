@@ -46,7 +46,7 @@ public class UserDetail {
     private String jabatan;
     private String externalUser;
 
-
+    private String nipAtasan;
 
     private String nomerWA;
 
@@ -191,7 +191,15 @@ public class UserDetail {
         this.nomerWA = nomerWA;
     }
 
-//    public String getEmailAktif() {
+    public String getNipAtasan() {
+        return nipAtasan;
+    }
+
+    public void setNipAtasan(String nipAtasan) {
+        this.nipAtasan = nipAtasan;
+    }
+
+    //    public String getEmailAktif() {
 //        return emailAktif;
 //    }
 //

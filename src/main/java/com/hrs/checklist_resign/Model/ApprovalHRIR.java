@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -33,6 +34,11 @@ public class ApprovalHRIR {
     private String approvalHRIRStatus;
 
     private String remarks;
+
+    @Column(name = "approved_by")
+    private String approvedBy;
+
+    private String documentPath;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "created_date", nullable = false, updatable = false)
@@ -116,5 +122,21 @@ public class ApprovalHRIR {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

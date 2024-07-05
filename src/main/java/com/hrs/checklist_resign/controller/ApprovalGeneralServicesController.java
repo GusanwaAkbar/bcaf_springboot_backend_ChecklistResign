@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,4 +88,34 @@ public class ApprovalGeneralServicesController {
         ApiResponse<Void> response = new ApiResponse<>(true, "Record deleted successfully", HttpStatus.NO_CONTENT.value());
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/upload-general-services")
+    public ResponseEntity<ApiResponse<ApprovalGeneralServices>> uploadFileGeneralServices(@RequestParam("file") MultipartFile file) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = authentication.getName();
+
+        Optional<ApprovalGeneralServices> approvalOpt = service.findByNipKaryawanResign(nipKaryawanResign);
+        ApprovalGeneralServices approval = approvalOpt.get();
+
+        if (approval == null) {
+            throw new RuntimeException("ApprovalGeneralServices not found");
+        }
+
+        try {
+            ResponseEntity<ApiResponse<ApprovalGeneralServices>> updatedApproval = service.handleFileUpload(approval, file);
+            ApiResponse<ApprovalGeneralServices> response = new ApiResponse(updatedApproval, true, "File uploaded successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IOException e) {
+            ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(null, false, "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

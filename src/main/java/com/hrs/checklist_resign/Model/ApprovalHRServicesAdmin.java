@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -27,6 +28,11 @@ public class ApprovalHRServicesAdmin {
     public void setNipKaryawanResign(String nipKaryawanResign) {
         this.nipKaryawanResign = nipKaryawanResign;
     }
+
+    @Column(name = "approved_by")
+    private String approvedBy;
+
+    private String documentPath;
 
     @OneToOne
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
@@ -134,5 +140,21 @@ public class ApprovalHRServicesAdmin {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

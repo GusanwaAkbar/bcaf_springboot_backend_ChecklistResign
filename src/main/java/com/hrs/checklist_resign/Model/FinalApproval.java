@@ -3,6 +3,8 @@ package com.hrs.checklist_resign.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -67,6 +69,11 @@ public class FinalApproval implements Serializable {
 
     private String finalApprovalStatus;
     private String remarks;
+
+    @Column(name = "approved_by")
+    private String approvedBy;
+
+    private String documentPath;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "created_date", nullable = false, updatable = false)
@@ -214,6 +221,8 @@ public class FinalApproval implements Serializable {
         this.remarks = remarks;
     }
 
+
+
     public UserDetail getUserDetailResign() {
         return userDetailResign;
     }
@@ -229,5 +238,23 @@ public class FinalApproval implements Serializable {
     public void setUserDetailAtasan(UserDetail userDetailAtasan) {
         this.userDetailAtasan = userDetailAtasan;
     }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
+    }
+
+
 }
 

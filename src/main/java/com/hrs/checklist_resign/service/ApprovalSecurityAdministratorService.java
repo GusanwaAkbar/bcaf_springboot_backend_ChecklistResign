@@ -8,7 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +22,8 @@ import java.util.Optional;
 public class ApprovalSecurityAdministratorService {
 
     private final ApprovalSecurityAdministratorRepository repository;
+
+    private  final String uploadDir = "file:///home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalSecurityAdministrator";
 
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
@@ -87,5 +94,17 @@ public class ApprovalSecurityAdministratorService {
 
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    public ResponseEntity<ApiResponse<ApprovalSecurityAdministrator>> handleFileUpload(ApprovalSecurityAdministrator approvalSecurityAdministrator, MultipartFile file) throws IOException
+    {
+
+        String fileName = file.getOriginalFilename();
+        Path path = Paths.get(uploadDir, fileName);
+        Files.copy(file.getInputStream(), path);
+
+        approvalSecurityAdministrator.setDocumentPath(path.toString());
+
+        return save(approvalSecurityAdministrator);
     }
 }

@@ -9,7 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +27,8 @@ public class ApprovalHRIRService {
 
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
+
+    private final String uploadDir = "file:///home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRIR";
 
     public Optional<ApprovalHRIR> findByNipKaryawanResign(String nipKaryawanResign) {
         return approvalHRIRRepository.findByNipKaryawanResign(nipKaryawanResign);
@@ -105,5 +112,19 @@ public class ApprovalHRIRService {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+
+    }
+
+
+
+    public ApprovalHRIR handleFileUpload(ApprovalHRIR approvalHRIR, MultipartFile file) throws IOException
+    {
+
+        String fileName = file.getOriginalFilename();
+        Path path = Paths.get(uploadDir, fileName);
+        Files.copy(file.getInputStream(), path);
+
+        approvalHRIR.setDocumentPath(path.toString());
+        return saveApprovalHRIR(approvalHRIR);
     }
 }

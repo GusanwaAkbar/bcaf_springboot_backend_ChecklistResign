@@ -2,6 +2,7 @@ package com.hrs.checklist_resign.Model;
 
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.Objects;
@@ -34,8 +35,12 @@ public class ApprovalAtasan {
     @Temporal(TemporalType.TIMESTAMP)
     private Date approvedDate;
 
-//    @Column(name = "approved_by")
-//    private String approvedBy;
+    @Column(name = "approved_by")
+    private String approvedBy;
+
+    private String documentPath;
+
+
 
     //change this one to one to many to many
     @ManyToOne
@@ -293,6 +298,22 @@ public class ApprovalAtasan {
 
     public void setNipKaryawanResign(String nipKaryawanResign) {
         this.nipKaryawanResign = nipKaryawanResign;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 
     @Override

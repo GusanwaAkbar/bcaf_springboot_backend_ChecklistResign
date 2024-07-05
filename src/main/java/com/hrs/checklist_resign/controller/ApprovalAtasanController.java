@@ -1,8 +1,11 @@
 package com.hrs.checklist_resign.controller;
 
 import com.hrs.checklist_resign.Model.*;
+import com.hrs.checklist_resign.dto.UserDetailDTO;
+import com.hrs.checklist_resign.dto.UserResponseDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.*;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,10 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/approval-atasan")
@@ -50,6 +50,14 @@ public class ApprovalAtasanController {
     @Autowired
     private PengajuanResignService pengajuanResignService;
 
+    @Autowired
+    private AdminService adminService;
+
+    @Autowired
+    private EmailTemplateService emailTemplateService;
+
+    @Autowired
+    private NotificationService notificationService;
 
 
 
@@ -294,10 +302,64 @@ public class ApprovalAtasanController {
             approvalHRLearning.setApprovalAtasan(approvalAtasan);
             approvalHRLearning.setNipKaryawanResign(nipKaryawan);
             approvalHRLearningService.save(approvalHRLearning);
+
+            List<UserResponseDTO> userAdmin = adminService.findUsersWithRolesNotContainingV2("USER");
+
+            UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+
+            // Send HTML email and notification to users with roles not containing "USER"
+            String subject = "Approval Required: New Resignation Request";
+            String message = "Approval Required: New Resignation Request";
+            String link = "http://your-application-link.com";  // Adjust the link accordingly
+
+            for (UserResponseDTO user : userAdmin) {
+
+                System.out.println(user);
+
+                UserDetail userDetailAdmin = user.getUserDetails();
+
+                sendNotificationsAndEmails(userDetailKaryawan, userDetailAdmin, nipKaryawan );
+
+            }
+
+            String userNama = userDetailKaryawan.getNama();
+
+            notificationService.sendNotification("Resignation Request has been approved by Atasan, check the link below for more details", userDetailKaryawan, nipKaryawan);
+            Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, "Resignation Request has been approved by Atasan, check the link below for more details.", "http://localhost:4200/#/progress-approval");
+
+
         }
 
         ApiResponse<ApprovalAtasan> response = new ApiResponse<>(updatedApprovalAtasan, true, "Approval Atasan updated successfully", HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+
+    private void sendNotificationsAndEmails(UserDetail userDetail, UserDetail userDetailAtasan, String nipKaryawanResign) {
+        String emailAtasan = userDetailAtasan.getEmail();
+        String userEmail = userDetail.getEmail();
+        String userNama = userDetail.getNama();
+        String atasanNama = userDetailAtasan.getNama();
+
+        notificationService.sendNotification("Approval Required: New Resignation Request: " + nipKaryawanResign + ", " + userNama, userDetail, userDetailAtasan.getUserUsername());
+
+
+        //String linkKaryawan = "http://localhost:4200/#/progress-approval";
+        String linkAtasan = "http://localhost:4200/#/";
+
+
+        Map<String, Object> variablesAtasan = emailTemplateService.createEmailVariables(atasanNama, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, linkAtasan);
+
+        try {
+           // emailTemplateService.sendHtmlEmail(userEmail, "Resignation Request has been approved by Atasan", "email-template", variablesKaryawan);
+            emailTemplateService.sendHtmlEmail(emailAtasan, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
+        } catch (MessagingException e) {
+
+            System.out.println("gagal mengirim email");
+            e.printStackTrace();
+            // Handle exception
+        }
     }
 
 

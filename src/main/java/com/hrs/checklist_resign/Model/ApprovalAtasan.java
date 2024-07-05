@@ -34,6 +34,9 @@ public class ApprovalAtasan {
     @Temporal(TemporalType.TIMESTAMP)
     private Date approvedDate;
 
+//    @Column(name = "approved_by")
+//    private String approvedBy;
+
     //change this one to one to many to many
     @ManyToOne
     @JoinColumn(name = "user_detail_atasan_id", referencedColumnName = "id")

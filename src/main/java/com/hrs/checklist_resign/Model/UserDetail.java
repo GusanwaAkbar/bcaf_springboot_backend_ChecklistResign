@@ -45,9 +45,7 @@ public class UserDetail {
     private String divisi;
     private String jabatan;
     private String externalUser;
-
     private String nipAtasan;
-
     private String nomerWA;
 
     @OneToMany(mappedBy = "userDetailAtasan", cascade = CascadeType.ALL, orphanRemoval = true)

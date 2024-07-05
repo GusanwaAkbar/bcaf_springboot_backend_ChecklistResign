@@ -1,10 +1,14 @@
 package com.hrs.checklist_resign.service;
 
 import com.hrs.checklist_resign.Model.*;
+import com.hrs.checklist_resign.dto.UserResponseDTO;
 import com.hrs.checklist_resign.repository.*;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -40,6 +44,15 @@ public class CheckingAllApprovalsStatus {
     @Autowired
     private ApprovalAtasanRepository approvalAtasanRepository;
 
+    @Autowired
+    private  NotificationService notificationService;
+
+    @Autowired
+    private EmailTemplateService emailTemplateService;
+
+    @Autowired
+    private AdminService adminService;
+
     public boolean doCheck(Long id) {
 
         System.out.println("=========================== do checking ===========================");
@@ -59,6 +72,8 @@ public class CheckingAllApprovalsStatus {
     }
 
     public FinalApproval createFinalApproval(Long id) {
+
+        //List<UserResponseDTO> userAdmin = adminService.findUsersWithRolesNotContainingV2("USER");
 
         System.out.println("=========================== do creating ===========================");
 
@@ -83,6 +98,37 @@ public class CheckingAllApprovalsStatus {
         finalApproval.setFinalApprovalStatus("approved");
         finalApproval.setRemarks("All approvals completed successfully.");
 
+
+        List<UserResponseDTO> listUserDTO = adminService.findUsersWithRolesNotContainingV2("USER");
+
         return finalApprovalRepository.save(finalApproval);
+    }
+
+
+
+
+
+    private void sendNotificationsAndEmails(UserDetail userDetail, UserDetail userDetailAtasan, String nipKaryawanResign) {
+        String emailAtasan = userDetailAtasan.getEmail();
+        String userEmail = userDetail.getEmail();
+        String userNama = userDetail.getNama();
+        String atasanNama = userDetailAtasan.getNama();
+
+        notificationService.sendNotification("Approval Required: Resignation Request from: " + nipKaryawanResign + ", " + userNama, userDetail, userDetailAtasan.getUserUsername());
+        notificationService.sendNotification("Resignation request submitted", userDetail, nipKaryawanResign);
+
+        String linkKaryawan = "http://localhost:4200/#/progress-approval";
+        String linkAtasan = "http://localhost:4200/#/approval-atasan";
+
+        Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, "Your resignation request has been submitted.", linkKaryawan);
+        Map<String, Object> variablesAtasan = emailTemplateService.createEmailVariables(atasanNama, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, linkAtasan);
+
+        try {
+            emailTemplateService.sendHtmlEmail(userEmail, "Resignation Request Submitted", "email-template", variablesKaryawan);
+            emailTemplateService.sendHtmlEmail(emailAtasan, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            // Handle exception
+        }
     }
 }

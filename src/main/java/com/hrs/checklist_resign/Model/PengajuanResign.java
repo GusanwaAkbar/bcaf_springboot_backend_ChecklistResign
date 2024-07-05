@@ -10,6 +10,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -54,6 +55,11 @@ public class PengajuanResign {
     @Column(name = "approved_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date approvedDate;
+
+    @Column(name = "approved_by")
+    private String approvedBy;
+
+    private String documentPath;
 
     @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "pengajuanResign")
@@ -167,4 +173,23 @@ public class PengajuanResign {
     public void setFinalApproval(FinalApproval finalApproval) {
         this.finalApproval = finalApproval;
     }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
+    }
+
+
+
 }

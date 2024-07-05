@@ -13,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -91,6 +93,9 @@ public class ApprovalAtasanController {
         String nipKaryawanResign = authentication.getName();
 
         Optional<ApprovalAtasan> approvalAtasan = approvalAtasanService.findByNipKaryawanResign(nipKaryawanResign);
+
+
+
         if (approvalAtasan.isPresent()) {
             ApiResponse<ApprovalAtasan> response = new ApiResponse<>(approvalAtasan.get(), true, "Record fetched successfully", HttpStatus.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -365,6 +370,8 @@ public class ApprovalAtasanController {
 
 
 
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteApproval(@PathVariable Long id) {
 
@@ -382,6 +389,37 @@ public class ApprovalAtasanController {
             return ResponseEntity.ok().<Void>build();
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/upload")
+    public ResponseEntity<ApiResponse<ApprovalAtasan>> uploadFile(@RequestParam("file") MultipartFile file) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = authentication.getName();
+
+        Optional<ApprovalAtasan> approvalAtasanOpt = approvalAtasanService.findByNipKaryawanResign(nipKaryawanResign);
+        ApprovalAtasan approvalAtasan = approvalAtasanOpt.get();
+
+        if (approvalAtasan == null) {
+            throw new RuntimeException("ApprovalAtasan not found");
+        }
+
+        try {
+            ApprovalAtasan updatedApprovalAtasan = approvalAtasanService.handleFileUpload(approvalAtasan, file);
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>(updatedApprovalAtasan, true, "File uploaded successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IOException e) {
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>(null, false, "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
 
 

@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +21,8 @@ import java.util.Optional;
 public class ApprovalHRLearningService {
 
     private final ApprovalHRLearningRepository repository;
+
+    private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRLearning";
 
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
@@ -87,5 +94,15 @@ public class ApprovalHRLearningService {
 
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    public ResponseEntity<ApiResponse<ApprovalHRLearning>> handleFileUpload(ApprovalHRLearning approvalHRLearning, MultipartFile file) throws IOException {
+
+        String fileName = file.getOriginalFilename();
+        Path path = Paths.get(uploadDir, fileName);
+        Files.copy(file.getInputStream(), path);
+
+        approvalHRLearning.setDocumentPath(path.toString());
+        return save(approvalHRLearning);
     }
 }

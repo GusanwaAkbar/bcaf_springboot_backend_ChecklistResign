@@ -91,7 +91,7 @@ public class ApprovalSecurityAdministratorController {
     }
 
 
-    @PostMapping("/upload-security-administrator")
+    @PostMapping("/upload")
     public ResponseEntity<ApiResponse<ApprovalSecurityAdministrator>> uploadFileSecurityAdministrator(@RequestParam("file") MultipartFile file) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

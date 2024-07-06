@@ -25,7 +25,7 @@ public class ApprovalHRPayrollService {
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
-    private final String uploadDir = "file:///home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRIR";
+    private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRPayroll";
 
     @Autowired
     public ApprovalHRPayrollService(ApprovalHRPayrollRepository repository) {

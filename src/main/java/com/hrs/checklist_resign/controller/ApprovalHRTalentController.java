@@ -74,7 +74,7 @@ public class ApprovalHRTalentController {
         return approvalHRTalentService.update(id, approvalHRTalentDetails);
     }
 
-    @PostMapping("/upload-hrtalent")
+    @PostMapping("/upload")
     public ResponseEntity<ApiResponse<ApprovalHRTalent>> uploadFileHRTalent(@RequestParam("file") MultipartFile file) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

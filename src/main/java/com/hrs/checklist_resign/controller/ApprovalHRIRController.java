@@ -100,7 +100,7 @@ public class ApprovalHRIRController {
         return approvalHRIRService.update(id, approvalHRIRDetails);
     }
 
-    @PostMapping("/upload-hrir")
+    @PostMapping("/upload")
     public ResponseEntity<ApiResponse<ApprovalHRIR>> uploadFileHRIR(@RequestParam("file") MultipartFile file) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

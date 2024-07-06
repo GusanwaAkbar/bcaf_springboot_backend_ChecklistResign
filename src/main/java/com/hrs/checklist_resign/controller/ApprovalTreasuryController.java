@@ -91,7 +91,7 @@ public class ApprovalTreasuryController {
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/upload-treasury")
+    @PostMapping("/upload")
     public ResponseEntity<ApiResponse<ApprovalTreasury>> uploadFileTreasury(@RequestParam("file") MultipartFile file) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -115,7 +115,7 @@ public class ApprovalTreasuryController {
             ApiResponse<ApprovalTreasury> response = new ApiResponse(updatedApproval, true, "File uploaded successfully", HttpStatus.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IOException e) {
-            ApiResponse<ApprovalTreasury> response = new ApiResponse<>(null, false, "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            ApiResponse<ApprovalTreasury> response = new ApiResponse<>(null, false, "File upload failed" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

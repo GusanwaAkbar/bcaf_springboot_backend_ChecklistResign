@@ -28,7 +28,7 @@ public class ApprovalHRIRService {
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
-    private final String uploadDir = "file:///home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRIR";
+    private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRIR";
 
     public Optional<ApprovalHRIR> findByNipKaryawanResign(String nipKaryawanResign) {
         return approvalHRIRRepository.findByNipKaryawanResign(nipKaryawanResign);

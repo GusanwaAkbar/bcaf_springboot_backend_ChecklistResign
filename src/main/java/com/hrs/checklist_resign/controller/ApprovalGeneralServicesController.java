@@ -89,7 +89,7 @@ public class ApprovalGeneralServicesController {
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/upload-general-services")
+    @PostMapping("/upload")
     public ResponseEntity<ApiResponse<ApprovalGeneralServices>> uploadFileGeneralServices(@RequestParam("file") MultipartFile file) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -109,7 +109,7 @@ public class ApprovalGeneralServicesController {
         }
 
         try {
-            ResponseEntity<ApiResponse<ApprovalGeneralServices>> updatedApproval = service.handleFileUpload(approval, file);
+            ApprovalGeneralServices updatedApproval = service.handleFileUpload(approval, file);
             ApiResponse<ApprovalGeneralServices> response = new ApiResponse(updatedApproval, true, "File uploaded successfully", HttpStatus.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IOException e) {

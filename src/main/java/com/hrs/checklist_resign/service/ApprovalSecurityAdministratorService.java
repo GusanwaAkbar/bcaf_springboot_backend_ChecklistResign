@@ -23,7 +23,7 @@ public class ApprovalSecurityAdministratorService {
 
     private final ApprovalSecurityAdministratorRepository repository;
 
-    private  final String uploadDir = "file:///home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalSecurityAdministrator";
+    private  final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalSecurityAdministrator";
 
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;

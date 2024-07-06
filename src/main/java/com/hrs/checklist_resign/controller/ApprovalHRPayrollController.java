@@ -92,7 +92,7 @@ public class ApprovalHRPayrollController {
     }
 
 
-    @PostMapping("/upload-hrpayroll")
+    @PostMapping("/upload")
     public ResponseEntity<ApiResponse<ApprovalHRPayroll>> uploadFileHRPayroll(@RequestParam("file") MultipartFile file) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

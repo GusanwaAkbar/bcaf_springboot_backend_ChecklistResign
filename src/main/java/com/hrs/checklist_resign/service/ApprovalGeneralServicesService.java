@@ -1,5 +1,6 @@
 package com.hrs.checklist_resign.service;
 
+import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalGeneralServices;
 import com.hrs.checklist_resign.repository.ApprovalGeneralServicesRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
@@ -22,7 +23,7 @@ public class ApprovalGeneralServicesService {
 
     private final ApprovalGeneralServicesRepository repository;
 
-    private final String uploadDir = "file:///home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalGeneralServices";
+    private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalGeneralServices";
 
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
@@ -96,13 +97,13 @@ public class ApprovalGeneralServicesService {
         repository.deleteById(id);
     }
 
-    public ResponseEntity<ApiResponse<ApprovalGeneralServices>> handleFileUpload(ApprovalGeneralServices approvalGeneralServices, MultipartFile file) throws IOException {
+    public ApprovalGeneralServices handleFileUpload(ApprovalGeneralServices approvalGeneralServices, MultipartFile file) throws IOException {
 
         String fileName = file.getOriginalFilename();
         Path path = Paths.get(uploadDir, fileName);
         Files.copy(file.getInputStream(), path);
 
         approvalGeneralServices.setDocumentPath(path.toString());
-        return save(approvalGeneralServices);
+        return repository.save(approvalGeneralServices);
     }
 }

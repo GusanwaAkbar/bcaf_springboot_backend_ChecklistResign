@@ -90,7 +90,7 @@ public class ApprovalHRServicesAdminController {
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/upload-hrservicesadmin")
+    @PostMapping("/upload")
     public ResponseEntity<ApiResponse<ApprovalHRServicesAdmin>> uploadFileHRServicesAdmin(@RequestParam("file") MultipartFile file) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

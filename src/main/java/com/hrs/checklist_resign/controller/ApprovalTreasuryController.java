@@ -6,7 +6,11 @@ import com.hrs.checklist_resign.Model.ApprovalTreasury;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.ApprovalTreasuryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -119,5 +126,74 @@ public class ApprovalTreasuryController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long id) {
+        Optional<ApprovalTreasury> approvalTreasuryOpt = service.findById(id);
+        if (!approvalTreasuryOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ApprovalTreasury approvalTreasury = approvalTreasuryOpt.get();
+        Path filePath = Paths.get(approvalTreasury.getDocumentPath()); // Assuming getFilePath() returns the file path
+
+        try {
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                String mimeType = Files.probeContentType(filePath);
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(mimeType))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
+            } else {
+                throw new RuntimeException("File not found or not readable");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("File download error", e);
+        }
+    }
+
+
+    @GetMapping("/download")
+    public ResponseEntity<?> downloadFilebyKaryawan() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = authentication.getName();
+
+
+
+        Optional<ApprovalTreasury> approvalTreasuryOpt = service.findByNipKaryawanResign(nipKaryawanResign);
+        if (!approvalTreasuryOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ApprovalTreasury approvalTreasury = approvalTreasuryOpt.get();
+        Path filePath = Paths.get(approvalTreasury.getDocumentPath()); // Assuming getFilePath() returns the file path
+
+        try {
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                String mimeType = Files.probeContentType(filePath);
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(mimeType))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
+            } else {
+                throw new RuntimeException("File not found or not readable");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("File download error", e);
+        }
+    }
+
+
+    
 
 }

@@ -1,11 +1,15 @@
 package com.hrs.checklist_resign.service;
 
+import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalHRPayroll;
+import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.repository.ApprovalHRPayrollRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +24,11 @@ import java.util.Optional;
 @Service
 public class ApprovalHRPayrollService {
 
+
     private final ApprovalHRPayrollRepository repository;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
@@ -56,6 +64,20 @@ public class ApprovalHRPayrollService {
     }
 
     public ResponseEntity<ApiResponse<ApprovalHRPayroll>> update(Long id, ApprovalHRPayroll approvalHRPayrollDetails) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<ApprovalHRPayroll> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+        // End Authentication checking
+
+        String nipApprover = authentication.getName();
+
+        UserDetail userDetailAtasan =  userDetailsService.findByUsername(nipApprover);
+        String namaApprover = userDetailAtasan.getNama();
+
         Optional<ApprovalHRPayroll> optionalApprovalHRPayroll = repository.findById(id);
         if (!optionalApprovalHRPayroll.isPresent()) {
             ApiResponse<ApprovalHRPayroll> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalHRPayroll not found");
@@ -75,6 +97,7 @@ public class ApprovalHRPayrollService {
         if(approvalHRPayroll.getApprovalHRPayrollStatus().equals("accept"))
         {
             approvalHRPayroll.setApprovedDate(new Date());
+            approvalHRPayroll.setApprovedBy(namaApprover);
         }
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");

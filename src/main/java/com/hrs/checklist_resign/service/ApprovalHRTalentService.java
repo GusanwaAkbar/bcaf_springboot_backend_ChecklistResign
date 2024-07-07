@@ -1,6 +1,8 @@
 package com.hrs.checklist_resign.service;
 
+import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalHRTalent;
+import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.repository.ApprovalHRTalentRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class ApprovalHRTalentService {
 
     @Autowired
     ApprovalHRTalentRepository approvalHRTalentRepository;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRTalent";
 
@@ -59,9 +64,15 @@ public class ApprovalHRTalentService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            ApiResponse<ApprovalHRTalent> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
+        // End Authentication checking
+
+        String nipApprover = authentication.getName();
+
+        UserDetail userDetailAtasan =  userDetailsService.findByUsername(nipApprover);
+        String namaApprover = userDetailAtasan.getNama();
         // End Authentication checking
 
         // Get existing item
@@ -80,6 +91,7 @@ public class ApprovalHRTalentService {
         if (existingApprovalHRTalent.getApprovalHRTalentStatus().equals("accept"))
         {
             existingApprovalHRTalent.setApprovedDate(new Date());
+            existingApprovalHRTalent.setApprovedBy(namaApprover);
         }
 
         //save the instance

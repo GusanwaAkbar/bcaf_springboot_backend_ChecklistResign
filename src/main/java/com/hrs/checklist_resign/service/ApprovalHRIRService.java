@@ -1,6 +1,8 @@
 package com.hrs.checklist_resign.service;
 
+import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalHRIR;
+import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.repository.ApprovalHRIRRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class ApprovalHRIRService {
 
     @Autowired
     ApprovalHRIRRepository approvalHRIRRepository;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
@@ -64,11 +69,17 @@ public class ApprovalHRIRService {
 
         // Start Authentication checking
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication == null || !authentication.isAuthenticated()) {
-            ApiResponse<ApprovalHRIR> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
         // End Authentication checking
+
+        String nipApprover = authentication.getName();
+
+        UserDetail userDetailAtasan =  userDetailsService.findByUsername(nipApprover);
+        String namaApprover = userDetailAtasan.getNama();
 
         // Checking current approval HRIR
         Optional<ApprovalHRIR> approvalHRIRObj = approvalHRIRRepository.findById(id);
@@ -87,6 +98,7 @@ public class ApprovalHRIRService {
         if (approvalHRIR.getApprovalHRIRStatus().equals("accept"))
         {
             approvalHRIR.setApprovedDate(new Date());
+            approvalHRIR.setApprovedBy(namaApprover);
         }
 
         // Save the instance

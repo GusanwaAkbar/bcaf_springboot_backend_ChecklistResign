@@ -96,6 +96,8 @@ public class CheckingAllApprovalsStatus {
         finalApproval.setApprovalHRTalent(approvalHRTalentRepository.findById(id).orElse(null));
         finalApproval.setApprovalSecurityAdministrator(approvalSecurityAdministratorRepository.findById(id).orElse(null));
         finalApproval.setFinalApprovalStatus("approved");
+        finalApproval.setNipKaryawanResign(finalApproval.getUserDetailResign().getUserUsername());
+
         finalApproval.setRemarks("All approvals completed successfully.");
 
 

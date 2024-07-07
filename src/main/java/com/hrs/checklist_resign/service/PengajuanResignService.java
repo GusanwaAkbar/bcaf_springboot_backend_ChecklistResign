@@ -50,7 +50,7 @@ public class PengajuanResignService {
         String nipKaryawanResign = pengajuanResign.getNipUser();
 
         pengajuanResignRepository.deleteFinalApprovalByNipKaryawanResign(nipKaryawanResign);
-        pengajuanResignRepository.flush();
+
 
         pengajuanResignRepository.deleteApprovalSecurityAdministratorByNipKaryawanResign(nipKaryawanResign);
         pengajuanResignRepository.deleteApprovalHRTalentByNipKaryawanResign(nipKaryawanResign);

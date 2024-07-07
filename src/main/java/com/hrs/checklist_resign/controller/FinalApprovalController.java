@@ -1,13 +1,18 @@
 package com.hrs.checklist_resign.controller;
 
+import com.hrs.checklist_resign.Model.ApprovalAtasan;
+import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.dto.FinalApprovalDTO;
 import com.hrs.checklist_resign.Model.FinalApproval;
 import com.hrs.checklist_resign.dto.PostFinalApprovalDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.FinalApprovalService;
+import com.hrs.checklist_resign.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -20,6 +25,9 @@ public class FinalApprovalController {
 
     @Autowired
     private FinalApprovalService finalApprovalService;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<FinalApprovalDTO>> getFinalApprovalById(@PathVariable Long id) {
@@ -57,6 +65,19 @@ public class FinalApprovalController {
             @PathVariable Long id,
             @RequestBody PostFinalApprovalDTO postFinalApprovalDTO) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<FinalApproval> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+        // End Authentication checking
+
+        String nipApprover = authentication.getName();
+
+        UserDetail userDetailAtasan =  userDetailsService.findByUsername(nipApprover);
+        String namaApprover = userDetailAtasan.getNama();
+
         // Retrieve the current final approval
         Optional<FinalApproval> finalApprovalObj = finalApprovalService.getFinalApprovalByIdv2(id);
 
@@ -70,6 +91,7 @@ public class FinalApprovalController {
             if (finalApproval.getFinalApprovalStatus().equals("accept"))
             {
                 finalApproval.setApprovedDate(new Date());
+                finalApproval.setApprovedBy(namaApprover);
             }
 
             // Save updated final approval

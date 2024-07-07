@@ -2,11 +2,14 @@ package com.hrs.checklist_resign.service;
 
 import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalGeneralServices;
+import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.repository.ApprovalGeneralServicesRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +25,9 @@ import java.util.Optional;
 public class ApprovalGeneralServicesService {
 
     private final ApprovalGeneralServicesRepository repository;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalGeneralServices";
 
@@ -57,6 +63,22 @@ public class ApprovalGeneralServicesService {
     }
 
     public ResponseEntity<ApiResponse<ApprovalGeneralServices>> update(Long id, ApprovalGeneralServices approvalGeneralServicesDetails) {
+
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+        // End Authentication checking
+
+        String nipApprover = authentication.getName();
+
+        UserDetail userDetailAtasan =  userDetailsService.findByUsername(nipApprover);
+        String namaApprover = userDetailAtasan.getNama();
+
+
         Optional<ApprovalGeneralServices> optionalApprovalGeneralServices = repository.findById(id);
         if (!optionalApprovalGeneralServices.isPresent()) {
             ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalGeneralServices not found");
@@ -72,9 +94,12 @@ public class ApprovalGeneralServicesService {
         approvalGeneralServices.setApprovalGeneralServicesStatus(approvalGeneralServicesDetails.getApprovalGeneralServicesStatus());
         approvalGeneralServices.setRemarks(approvalGeneralServicesDetails.getRemarks());
 
+
         if (approvalGeneralServices.getApprovalGeneralServicesStatus().equals("accept"))
         {
             approvalGeneralServices.setApprovedDate(new Date());
+            approvalGeneralServices.setApprovedBy(namaApprover);
+
         }
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");

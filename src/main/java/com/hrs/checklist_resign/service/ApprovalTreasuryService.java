@@ -1,11 +1,15 @@
 package com.hrs.checklist_resign.service;
 
+import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalTreasury;
+import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.repository.ApprovalTreasuryRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +27,9 @@ import java.util.Optional;
 public class ApprovalTreasuryService {
 
     private final ApprovalTreasuryRepository repository;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalTreasury";
 
@@ -59,6 +66,20 @@ public class ApprovalTreasuryService {
 
 
     public ResponseEntity<ApiResponse<ApprovalTreasury>> update(@PathVariable Long id, @RequestBody ApprovalTreasury approvalTreasuryDetails) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<ApprovalTreasury> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+        // End Authentication checking
+
+        String nipApprover = authentication.getName();
+
+        UserDetail userDetailAtasan =  userDetailsService.findByUsername(nipApprover);
+        String namaApprover = userDetailAtasan.getNama();
+
         Optional<ApprovalTreasury> optionalApprovalTreasury = repository.findById(id);
         if (!optionalApprovalTreasury.isPresent()) {
             ApiResponse<ApprovalTreasury> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalTreasury not found");
@@ -77,6 +98,7 @@ public class ApprovalTreasuryService {
         if(approvalTreasury.getApprovalTreasuryStatus().equals("accept"))
         {
             approvalTreasury.setApprovedDate(new Date());
+            approvalTreasury.setApprovedBy(namaApprover);
         }
 
         if (allApprove) {

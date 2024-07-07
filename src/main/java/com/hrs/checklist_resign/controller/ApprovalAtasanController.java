@@ -61,6 +61,9 @@ public class ApprovalAtasanController {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
 
 
     @PostMapping()
@@ -226,6 +229,8 @@ public class ApprovalAtasanController {
 
         // Find the approval by ID instead of by nipAtasan
         Optional<ApprovalAtasan> approvalAtasanOptional = approvalAtasanService.findById(id);
+        UserDetail userDetailAtasan =  userDetailsService.findByUsername(nipAtasan);
+        String namaAtasan = userDetailAtasan.getNama();
 
         if (!approvalAtasanOptional.isPresent() || !approvalAtasanOptional.get().getNipAtasan().equals(nipAtasan)) {
             ApiResponse<ApprovalAtasan> response = new ApiResponse<>(false, "Update failed", HttpStatus.NOT_FOUND.value(), "No approval found with ID: " + id);
@@ -255,10 +260,13 @@ public class ApprovalAtasanController {
         if (approvalAtasanDetails.getApprovalStatusAtasan().equals("accept")) {
 
 
+
             //set approved date on pengajuan resign
             Optional<PengajuanResign> pengajuanResignOpt = pengajuanResignService.getResignationByNipUser(approvalAtasan.getNipKaryawanResign());
             PengajuanResign pengajuanResign = pengajuanResignOpt.get();
             pengajuanResign.setApprovedDate(new Date());
+            pengajuanResign.setApprovedBy(namaAtasan);
+
             pengajuanResignService.saveResignation(pengajuanResign);
 
             //set approved date on approval atasan

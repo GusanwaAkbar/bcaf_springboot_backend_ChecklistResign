@@ -9,17 +9,17 @@ public class ApprovalSecurityAdministratorDTO {
     private String pengembalianToken;
     private String approvalSecurityAdministratorStatus;
     private String remarks;
-
     private Date approvedDate;
-
     private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
-    public ApprovalSecurityAdministratorDTO() {
-    }
+    public ApprovalSecurityAdministratorDTO() {}
 
     public ApprovalSecurityAdministratorDTO(long id, String permohonanPenutupanUser, String penutupanEmailBCA,
                                             String pengembalianToken, String approvalSecurityAdministratorStatus,
-                                            String remarks, Date approvedDate, Date createdDate) {
+                                            String remarks, Date approvedDate, Date createdDate, String approvedBy,
+                                            String documentPath) {
         this.id = id;
         this.permohonanPenutupanUser = permohonanPenutupanUser;
         this.penutupanEmailBCA = penutupanEmailBCA;
@@ -28,6 +28,8 @@ public class ApprovalSecurityAdministratorDTO {
         this.remarks = remarks;
         this.approvedDate = approvedDate;
         this.createdDate = createdDate;
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
     }
 
     // Getters and setters
@@ -95,5 +97,21 @@ public class ApprovalSecurityAdministratorDTO {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

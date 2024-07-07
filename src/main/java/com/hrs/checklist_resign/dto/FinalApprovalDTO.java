@@ -20,15 +20,17 @@ public class FinalApprovalDTO {
     private String remarks;
     private Date approvedDate;
     private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
-    // Constructor with all fields
     public FinalApprovalDTO(Long id, UserDetailDTO userDetailResign, UserDetailDTO userDetailAtasan,
                             PengajuanResignDTO pengajuanResign, ApprovalAtasanDTO approvalAtasan,
                             ApprovalGeneralServicesDTO approvalGeneralServices, ApprovalHRIRDTO approvalHRIR,
                             ApprovalHRLearningDTO approvalHRLearning, ApprovalHRPayrollDTO approvalHRPayroll,
                             ApprovalHRServicesAdminDTO approvalHRServicesAdmin, ApprovalHRTalentDTO approvalHRTalent,
                             ApprovalSecurityAdministratorDTO approvalSecurityAdministrator, ApprovalTreasuryDTO approvalTreasury,
-                            String finalApprovalStatus, String remarks, Date approvedDate, Date createdDate) {
+                            String finalApprovalStatus, String remarks, Date approvedDate, Date createdDate,
+                            String approvedBy, String documentPath) {
         this.id = id;
         this.userDetailResign = userDetailResign;
         this.userDetailAtasan = userDetailAtasan;
@@ -46,6 +48,8 @@ public class FinalApprovalDTO {
         this.remarks = remarks;
         this.approvedDate = approvedDate;
         this.createdDate = createdDate;
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
     }
 
     // Getters and Setters for all fields
@@ -186,5 +190,21 @@ public class FinalApprovalDTO {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

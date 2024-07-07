@@ -4,54 +4,55 @@ package com.hrs.checklist_resign.dto;
 import java.util.Date;
 
 public class ApprovalAtasanDTO {
-        private Long id;
-        private String nipAtasan;
-        private String emailAtasan;
-        private String serahTerimaTugas;
-        private String pengembalianNotebook;
-        private String pengembalianKunciLoker;
-        private String pengembalianKunciRuangan;
-        private String penyerahanSuratPengunduranDiri;
-        private String pengembalianIdCard;
-        private String hapusAplikasiMobile;
-        private String uninstallSoftwareNotebook;
-        private String uninstallSoftwareUnitKerja;
-        private String approvalStatusAtasan;
-        private String remarksAtasan;
+    private Long id;
+    private String nipAtasan;
+    private String emailAtasan;
+    private String serahTerimaTugas;
+    private String pengembalianNotebook;
+    private String pengembalianKunciLoker;
+    private String pengembalianKunciRuangan;
+    private String penyerahanSuratPengunduranDiri;
+    private String pengembalianIdCard;
+    private String hapusAplikasiMobile;
+    private String uninstallSoftwareNotebook;
+    private String uninstallSoftwareUnitKerja;
+    private String approvalStatusAtasan;
+    private String remarksAtasan;
 
-        private Date approvedDate;
+    private Date approvedDate;
+    private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
-        private Date createdDate;
+    // No-arg constructor
+    public ApprovalAtasanDTO() {}
 
-
-        // No-arg constructor
-        public ApprovalAtasanDTO() {}
-
-        public ApprovalAtasanDTO(Long id, String nipAtasan, String emailAtasan,
-                                 String serahTerimaTugas, String pengembalianNotebook, String pengembalianKunciLoker,
-                                 String pengembalianKunciRuangan, String penyerahanSuratPengunduranDiri,
-                                 String pengembalianIdCard, String hapusAplikasiMobile,
-                                 String uninstallSoftwareNotebook, String uninstallSoftwareUnitKerja,
-                                 String approvalStatusAtasan, String remarksAtasan, Date approvedDate, Date createdDate) {
-            this.id = id;
-            this.nipAtasan = nipAtasan;
-            this.emailAtasan = emailAtasan;
-
-            this.serahTerimaTugas = serahTerimaTugas;
-            this.pengembalianNotebook = pengembalianNotebook;
-            this.pengembalianKunciLoker = pengembalianKunciLoker;
-            this.pengembalianKunciRuangan = pengembalianKunciRuangan;
-            this.penyerahanSuratPengunduranDiri = penyerahanSuratPengunduranDiri;
-            this.pengembalianIdCard = pengembalianIdCard;
-            this.hapusAplikasiMobile = hapusAplikasiMobile;
-            this.uninstallSoftwareNotebook = uninstallSoftwareNotebook;
-            this.uninstallSoftwareUnitKerja = uninstallSoftwareUnitKerja;
-            this.approvalStatusAtasan = approvalStatusAtasan;
-            this.remarksAtasan = remarksAtasan;
-            this.approvedDate = approvedDate;
-            this.createdDate = createdDate;
-
-        }
+    public ApprovalAtasanDTO(Long id, String nipAtasan, String emailAtasan,
+                             String serahTerimaTugas, String pengembalianNotebook, String pengembalianKunciLoker,
+                             String pengembalianKunciRuangan, String penyerahanSuratPengunduranDiri,
+                             String pengembalianIdCard, String hapusAplikasiMobile,
+                             String uninstallSoftwareNotebook, String uninstallSoftwareUnitKerja,
+                             String approvalStatusAtasan, String remarksAtasan, Date approvedDate, Date createdDate,
+                             String approvedBy, String documentPath) {
+        this.id = id;
+        this.nipAtasan = nipAtasan;
+        this.emailAtasan = emailAtasan;
+        this.serahTerimaTugas = serahTerimaTugas;
+        this.pengembalianNotebook = pengembalianNotebook;
+        this.pengembalianKunciLoker = pengembalianKunciLoker;
+        this.pengembalianKunciRuangan = pengembalianKunciRuangan;
+        this.penyerahanSuratPengunduranDiri = penyerahanSuratPengunduranDiri;
+        this.pengembalianIdCard = pengembalianIdCard;
+        this.hapusAplikasiMobile = hapusAplikasiMobile;
+        this.uninstallSoftwareNotebook = uninstallSoftwareNotebook;
+        this.uninstallSoftwareUnitKerja = uninstallSoftwareUnitKerja;
+        this.approvalStatusAtasan = approvalStatusAtasan;
+        this.remarksAtasan = remarksAtasan;
+        this.approvedDate = approvedDate;
+        this.createdDate = createdDate;
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
+    }
 
     //constructor
 
@@ -189,5 +190,21 @@ public class ApprovalAtasanDTO {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

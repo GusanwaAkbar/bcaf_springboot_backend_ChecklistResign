@@ -8,16 +8,16 @@ public class ApprovalTreasuryDTO {
     private String blokirFleet;
     private String approvalTreasuryStatus;
     private String remarks;
-
     private Date approvedDate;
-
     private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
+    public ApprovalTreasuryDTO() {}
 
-    public ApprovalTreasuryDTO() {
-    }
-
-    public ApprovalTreasuryDTO(long id, String biayaAdvance, String blokirFleet, String approvalTreasuryStatus, String remarks, Date approvedDate, Date createdDate) {
+    public ApprovalTreasuryDTO(long id, String biayaAdvance, String blokirFleet, String approvalTreasuryStatus,
+                               String remarks, Date approvedDate, Date createdDate, String approvedBy,
+                               String documentPath) {
         this.id = id;
         this.biayaAdvance = biayaAdvance;
         this.blokirFleet = blokirFleet;
@@ -25,8 +25,9 @@ public class ApprovalTreasuryDTO {
         this.remarks = remarks;
         this.approvedDate = approvedDate;
         this.createdDate = createdDate;
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
     }
-
     // Getters and setters
 
 
@@ -84,5 +85,21 @@ public class ApprovalTreasuryDTO {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

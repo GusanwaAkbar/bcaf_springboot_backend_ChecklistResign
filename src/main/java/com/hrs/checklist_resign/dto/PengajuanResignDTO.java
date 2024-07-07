@@ -11,12 +11,17 @@ public class PengajuanResignDTO {
     private UserDetailDTO userDetailDTO;
     private String nipAtasan;
     private String emailAtasan;
-
     private Date approvedDate;
-
     private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
-    public PengajuanResignDTO(Long id, Boolean isiUntukOrangLain, Date tanggalPembuatanAkunHRIS, Date tanggalBerakhirBekerja, UserDetailDTO userDetailDTO, String nipAtasan, String emailAtasan, Date approvedDate, Date createdDate) {
+    public PengajuanResignDTO() {}
+
+    public PengajuanResignDTO(Long id, Boolean isiUntukOrangLain, Date tanggalPembuatanAkunHRIS,
+                              Date tanggalBerakhirBekerja, UserDetailDTO userDetailDTO, String nipAtasan,
+                              String emailAtasan, Date approvedDate, Date createdDate, String approvedBy,
+                              String documentPath) {
         this.id = id;
         this.isiUntukOrangLain = isiUntukOrangLain;
         this.tanggalPembuatanAkunHRIS = tanggalPembuatanAkunHRIS;
@@ -26,7 +31,10 @@ public class PengajuanResignDTO {
         this.emailAtasan = emailAtasan;
         this.approvedDate = approvedDate;
         this.createdDate = createdDate;
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
     }
+
 
     // Getters and setters (if needed)
 
@@ -101,5 +109,21 @@ public class PengajuanResignDTO {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

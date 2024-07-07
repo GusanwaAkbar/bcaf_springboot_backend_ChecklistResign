@@ -7,21 +7,23 @@ public class ApprovalHRIRDTO {
     private String exitInterview;
     private String approvalHRIRStatus;
     private String remarks;
-
     private Date approvedDate;
-
     private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
-    public ApprovalHRIRDTO() {
-    }
+    public ApprovalHRIRDTO() {}
 
-    public ApprovalHRIRDTO(long id, String exitInterview, String approvalHRIRStatus, String remarks, Date approvedDate,Date createdDate) {
+    public ApprovalHRIRDTO(long id, String exitInterview, String approvalHRIRStatus, String remarks,
+                           Date approvedDate, Date createdDate, String approvedBy, String documentPath) {
         this.id = id;
         this.exitInterview = exitInterview;
         this.approvalHRIRStatus = approvalHRIRStatus;
         this.remarks = remarks;
         this.approvedDate = approvedDate;
         this.createdDate = createdDate;
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
     }
 
     // Getters and setters
@@ -73,5 +75,21 @@ public class ApprovalHRIRDTO {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

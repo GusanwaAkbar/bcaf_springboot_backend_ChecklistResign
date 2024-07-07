@@ -7,21 +7,23 @@ public class ApprovalHRLearningDTO {
     private String pengecekanBiayaTraining;
     private String approvalHRLearningStatus;
     private String remarks;
-
     private Date approvedDate;
-
     private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
-    public ApprovalHRLearningDTO() {
-    }
+    public ApprovalHRLearningDTO() {}
 
-    public ApprovalHRLearningDTO(long id, String pengecekanBiayaTraining, String approvalHRLearningStatus, String remarks, Date approvedDate, Date createdDate) {
+    public ApprovalHRLearningDTO(long id, String pengecekanBiayaTraining, String approvalHRLearningStatus, String remarks,
+                                 Date approvedDate, Date createdDate, String approvedBy, String documentPath) {
         this.id = id;
         this.pengecekanBiayaTraining = pengecekanBiayaTraining;
         this.approvalHRLearningStatus = approvalHRLearningStatus;
         this.remarks = remarks;
         this.approvedDate = approvedDate;
         this.createdDate = createdDate;
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
     }
 
     // Getters and setters
@@ -75,5 +77,19 @@ public class ApprovalHRLearningDTO {
         this.remarks = remarks;
     }
 
+    public String getApprovedBy() {
+        return approvedBy;
+    }
 
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
+    }
 }

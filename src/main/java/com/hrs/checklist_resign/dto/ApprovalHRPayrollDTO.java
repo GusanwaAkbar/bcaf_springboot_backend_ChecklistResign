@@ -12,18 +12,17 @@ public class ApprovalHRPayrollDTO {
     private String laptopLoan;
     private String approvalHRPayrollStatus;
     private String remarks;
-
     private Date approvedDate;
     private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
-
-
-    public ApprovalHRPayrollDTO() {
-    }
+    public ApprovalHRPayrollDTO() {}
 
     public ApprovalHRPayrollDTO(Long id, String softLoan, String emergencyLoan, String smartphoneLoan,
                                 String motorLoan, String umkLoan, String laptopLoan,
-                                String approvalHRPayrollStatus, String remarks, Date approvedDate,Date createdDate) {
+                                String approvalHRPayrollStatus, String remarks, Date approvedDate, Date createdDate,
+                                String approvedBy, String documentPath) {
         this.id = id;
         this.softLoan = softLoan;
         this.emergencyLoan = emergencyLoan;
@@ -35,6 +34,8 @@ public class ApprovalHRPayrollDTO {
         this.remarks = remarks;
         this.approvedDate = approvedDate;
         this.createdDate = createdDate;
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
     }
 
     // Getters and setters
@@ -126,5 +127,21 @@ public class ApprovalHRPayrollDTO {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

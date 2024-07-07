@@ -9,16 +9,17 @@ public class ApprovalHRServicesAdminDTO {
     private String penonaktifanKartuElektronik;
     private String approvalHRServicesAdminStatus;
     private String remarks;
-
     private Date approvedDate;
     private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
-    public ApprovalHRServicesAdminDTO() {
-    }
+    public ApprovalHRServicesAdminDTO() {}
 
     public ApprovalHRServicesAdminDTO(long id, String excessOfClaim, String penyelesaianBiayaHR,
                                       String penonaktifanKartuElektronik, String approvalHRServicesAdminStatus,
-                                      String remarks, Date approvedDate, Date createdDate) {
+                                      String remarks, Date approvedDate, Date createdDate, String approvedBy,
+                                      String documentPath) {
         this.id = id;
         this.excessOfClaim = excessOfClaim;
         this.penyelesaianBiayaHR = penyelesaianBiayaHR;
@@ -27,7 +28,8 @@ public class ApprovalHRServicesAdminDTO {
         this.remarks = remarks;
         this.approvedDate = approvedDate;
         this.createdDate = createdDate;
-
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
     }
 
     // Getters and setters
@@ -95,5 +97,21 @@ public class ApprovalHRServicesAdminDTO {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

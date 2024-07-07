@@ -11,18 +11,18 @@ public class ApprovalGeneralServicesDTO {
     private String pengembalianKendaraanUMK3;
     private String approvalGeneralServicesStatus;
     private String remarks;
-
     private Date approvedDate;
-
     private Date createdDate;
+    private String approvedBy;
+    private String documentPath;
 
-    public ApprovalGeneralServicesDTO() {
-    }
+    public ApprovalGeneralServicesDTO() {}
 
     public ApprovalGeneralServicesDTO(long id, String penutupanPin, String pengembalianKendaraanDinas,
                                       String inventarisKantor, String pengembalianAktiva,
                                       String pengembalianKendaraanUMK3, String approvalGeneralServicesStatus,
-                                      String remarks, Date approvedDate, Date createdDate) {
+                                      String remarks, Date approvedDate, Date createdDate,
+                                      String approvedBy, String documentPath) {
         this.id = id;
         this.penutupanPin = penutupanPin;
         this.pengembalianKendaraanDinas = pengembalianKendaraanDinas;
@@ -33,7 +33,10 @@ public class ApprovalGeneralServicesDTO {
         this.remarks = remarks;
         this.approvedDate = approvedDate;
         this.createdDate = createdDate;
+        this.approvedBy = approvedBy;
+        this.documentPath = documentPath;
     }
+
 
     // Getters and setters
 
@@ -116,5 +119,21 @@ public class ApprovalGeneralServicesDTO {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 }

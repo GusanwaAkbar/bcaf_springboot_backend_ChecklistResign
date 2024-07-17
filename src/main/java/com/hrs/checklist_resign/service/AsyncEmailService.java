@@ -18,25 +18,34 @@ public class AsyncEmailService {
         this.notificationService = notificationService;
     }
 
+
+
     @Async
-    public void sendNotificationsAndEmails(UserDetail userDetail, UserDetail userDetailAtasan, String nipKaryawanResign) {
+    public void sendNotificationsAndEmails(UserDetail userDetail, UserDetail userDetailAtasan, String nipKaryawanResign, String messageForKaryawan, String messageForAdmin) {
         String emailAtasan = userDetailAtasan.getEmail();
         String userEmail = userDetail.getEmail();
         String userNama = userDetail.getNama();
         String atasanNama = userDetailAtasan.getNama();
 
-        notificationService.sendNotification("Approval Required: Resignation Request from: " + nipKaryawanResign + ", " + userNama, userDetail, userDetailAtasan.getUserUsername());
-        notificationService.sendNotification("Resignation request submitted", userDetail, nipKaryawanResign);
+        //notif for admin
+        notificationService.sendNotification(messageForAdmin + nipKaryawanResign + "from: " + userNama, userDetail, userDetailAtasan.getUserUsername());
+
+        //notif for karyawan
+        notificationService.sendNotification(messageForKaryawan, userDetail, nipKaryawanResign);
 
         String linkKaryawan = "http://localhost:4200/#/progress-approval";
         String linkAtasan = "http://localhost:4200/#/approval-atasan";
 
-        Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, "Your resignation request has been submitted.", linkKaryawan);
-        Map<String, Object> variablesAtasan = emailTemplateService.createEmailVariables(atasanNama, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, linkAtasan);
+        Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, messageForKaryawan, linkKaryawan);
+        Map<String, Object> variablesAtasan = emailTemplateService.createEmailVariables(atasanNama, messageForAdmin+ "from: " + nipKaryawanResign + ", " + userNama, linkAtasan);
 
         try {
-            emailTemplateService.sendHtmlEmail(userEmail, "Resignation Request Submitted", "email-template", variablesKaryawan);
-            emailTemplateService.sendHtmlEmail(emailAtasan, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
+            //email for admin
+            emailTemplateService.sendHtmlEmail(emailAtasan, messageForAdmin+ "from: " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
+
+            //email for karyawan
+            emailTemplateService.sendHtmlEmail(userEmail, messageForKaryawan, "email-template", variablesKaryawan);
+
         } catch (MessagingException e) {
             e.printStackTrace();
             // Handle exception

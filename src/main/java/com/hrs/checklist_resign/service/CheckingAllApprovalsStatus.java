@@ -51,6 +51,9 @@ public class CheckingAllApprovalsStatus {
     private EmailTemplateService emailTemplateService;
 
     @Autowired
+    private AsyncEmailService asyncEmailService;
+
+    @Autowired
     private AdminService adminService;
 
     public boolean doCheck(Long id, String approvalName) {
@@ -165,6 +168,9 @@ public class CheckingAllApprovalsStatus {
 
         List<UserResponseDTO> listUserDTO = adminService.findUsersWithRolesNotContainingV2("USER");
 
+        asyncEmailService.sendNotificationsAndEmails(finalApproval.getUserDetailResign(), finalApproval.getUserDetailAtasan(), finalApproval.getNipKaryawanResign(), "Your Resignation Has been Approved by HR Admin and All Departements", "HR Admin and all departments have approved the resignation");
+
+
         return finalApprovalRepository.save(finalApproval);
     }
 
@@ -172,27 +178,29 @@ public class CheckingAllApprovalsStatus {
 
 
 
-    private void sendNotificationsAndEmails(UserDetail userDetail, UserDetail userDetailAtasan, String nipKaryawanResign) {
-        String emailAtasan = userDetailAtasan.getEmail();
-        String userEmail = userDetail.getEmail();
-        String userNama = userDetail.getNama();
-        String atasanNama = userDetailAtasan.getNama();
+//    private void sendNotificationsAndEmails(UserDetail userDetail, UserDetail userDetailAtasan, String nipKaryawanResign) {
+//        String emailAtasan = userDetailAtasan.getEmail();
+//        String userEmail = userDetail.getEmail();
+//        String userNama = userDetail.getNama();
+//        String atasanNama = userDetailAtasan.getNama();
+//
+//        notificationService.sendNotification("Approval Required: Resignation Request from: " + nipKaryawanResign + ", " + userNama, userDetail, userDetailAtasan.getUserUsername());
+//        notificationService.sendNotification("Resignation request submitted", userDetail, nipKaryawanResign);
+//
+//        String linkKaryawan = "http://localhost:4200/#/progress-approval";
+//        String linkAtasan = "http://localhost:4200/#/approval-atasan";
+//
+//        Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, "Your resignation request has been submitted.", linkKaryawan);
+//        Map<String, Object> variablesAtasan = emailTemplateService.createEmailVariables(atasanNama, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, linkAtasan);
+//
+//        try {
+//            emailTemplateService.sendHtmlEmail(userEmail, "Resignation Request Submitted", "email-template", variablesKaryawan);
+//            emailTemplateService.sendHtmlEmail(emailAtasan, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//            // Handle exception
+//        }
+//    }
 
-        notificationService.sendNotification("Approval Required: Resignation Request from: " + nipKaryawanResign + ", " + userNama, userDetail, userDetailAtasan.getUserUsername());
-        notificationService.sendNotification("Resignation request submitted", userDetail, nipKaryawanResign);
 
-        String linkKaryawan = "http://localhost:4200/#/progress-approval";
-        String linkAtasan = "http://localhost:4200/#/approval-atasan";
-
-        Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, "Your resignation request has been submitted.", linkKaryawan);
-        Map<String, Object> variablesAtasan = emailTemplateService.createEmailVariables(atasanNama, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, linkAtasan);
-
-        try {
-            emailTemplateService.sendHtmlEmail(userEmail, "Resignation Request Submitted", "email-template", variablesKaryawan);
-            emailTemplateService.sendHtmlEmail(emailAtasan, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            // Handle exception
-        }
-    }
 }

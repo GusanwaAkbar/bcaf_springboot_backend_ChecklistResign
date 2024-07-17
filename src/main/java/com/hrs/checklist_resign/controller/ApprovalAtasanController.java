@@ -380,7 +380,7 @@ public class ApprovalAtasanController {
             emailTemplateService.sendHtmlEmail(emailAtasan, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
         } catch (MessagingException e) {
 
-            System.out.println("gagal mengirim email");
+            System.out.println("================== error / gagal mengirim email===================");
             e.printStackTrace();
             // Handle exception
         }

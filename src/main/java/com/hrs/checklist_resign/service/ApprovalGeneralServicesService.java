@@ -27,6 +27,9 @@ public class ApprovalGeneralServicesService {
     private final ApprovalGeneralServicesRepository repository;
 
     @Autowired
+    private AsyncEmailService asyncEmailService;
+
+    @Autowired
     private UserDetailsService userDetailsService;
 
     private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalGeneralServices";
@@ -97,8 +100,18 @@ public class ApprovalGeneralServicesService {
 
         if (approvalGeneralServices.getApprovalGeneralServicesStatus().equals("accept"))
         {
+            //Set audit Trail
             approvalGeneralServices.setApprovedDate(new Date());
             approvalGeneralServices.setApprovedBy(namaApprover);
+
+
+
+            //Send the email
+            UserDetail userDetailKaryawan = approvalGeneralServices.getApprovalAtasan().getPengajuanResign().getUserDetailResign();
+            String nipKaryawan = approvalGeneralServices.getNipKaryawanResign();
+
+            asyncEmailService.sendNotificationsAndEmails(userDetailKaryawan, userDetailAtasan, nipKaryawan, "Your Resignation has been approved by General Services Departement", "General Services Departement has been approve the Resignation");
+
 
         }
 

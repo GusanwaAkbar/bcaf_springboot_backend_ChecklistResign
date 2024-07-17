@@ -172,7 +172,7 @@ public class PengajuanResignController {
         }
 
         saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, username);
-        asyncEmailService.sendNotificationsAndEmails(userDetail, userDetailAtasan, username);
+        asyncEmailService.sendNotificationsAndEmails(userDetail, userDetailAtasan, username, "Resignation Request Submitted", "Approval Required: New Resignation Request");
 
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);

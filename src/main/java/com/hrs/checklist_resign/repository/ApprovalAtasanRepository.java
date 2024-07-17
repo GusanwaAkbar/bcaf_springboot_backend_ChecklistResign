@@ -12,5 +12,7 @@ public interface ApprovalAtasanRepository extends JpaRepository<ApprovalAtasan, 
     List<ApprovalAtasan> findByNipAtasan(String nipAtasan);
 
     Optional<ApprovalAtasan> findByNipKaryawanResign(String nipKaryawanResign);
+
+
 }
 

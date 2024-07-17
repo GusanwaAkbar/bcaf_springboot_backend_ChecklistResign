@@ -103,13 +103,15 @@ public class ApprovalGeneralServicesService {
         }
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
-        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id, "GENERALSERVICES");
 
         if (allApprove) {
             // Create the final form
             checkingAllApprovalsStatus.createFinalApproval(id);
         } else {
             // Log or take other actions if final form is not created
+
+            System.out.println("");
 
         }
 

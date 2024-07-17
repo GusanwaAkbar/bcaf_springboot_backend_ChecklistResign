@@ -1,0 +1,194 @@
+{
+	"info": {
+		"_postman_id": "61022445-d0a1-4c82-bb54-3c91f43578bd",
+		"name": "Somasi Digital",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16240516",
+		"_collection_link": "https://dark-sunset-439975.postman.co/workspace/RestAu~b7358421-c6e1-4c3d-b325-23ad0348be5d/collection/16240516-61022445-d0a1-4c82-bb54-3c91f43578bd?action=share&source=collection_link&creator=16240516"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"20230888\",\n    \"password\" : \"tes123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user/v1/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"20230888\",\n    \"privyId\":\"NZ189\",\n    \"idAkses\":\"2\",\n    \"idCabang\":\"1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user/v1/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cabang",
+			"item": [
+				{
+					"name": "Create Cabang",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"namaCabang\": \"Jakarta Utara\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cabang/v1/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cabang",
+								"v1",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Akses",
+			"item": [
+				{
+					"name": "Create Akses",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"namaAkses\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/akses/v1/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"akses",
+								"v1",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LDAP",
+			"item": [
+				{
+					"name": "Login LDAP",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "Admin123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "bcafapps",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TrxId\" : null,\n  \"Credentials\" : {\n    \"UserId\" : \"20250514\",\n    \"UserName\" : null,\n    \"Password\" : \"123Abc+\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.29.71:12103/EnterpriseAuthentication/AuthenticateUserV2",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"29",
+								"71"
+							],
+							"port": "12103",
+							"path": [
+								"EnterpriseAuthentication",
+								"AuthenticateUserV2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

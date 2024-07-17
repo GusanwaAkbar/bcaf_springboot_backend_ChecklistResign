@@ -98,7 +98,7 @@ public class ApprovalSecurityAdministratorService {
         }
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
-        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id,"SECURITYADMINISTRATOR");
 
         if (allApprove) {
             // Create the final form

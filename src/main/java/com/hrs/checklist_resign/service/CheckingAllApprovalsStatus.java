@@ -53,18 +53,80 @@ public class CheckingAllApprovalsStatus {
     @Autowired
     private AdminService adminService;
 
-    public boolean doCheck(Long id) {
+    public boolean doCheck(Long id, String approvalName) {
+
+        String nipKaryawan = "";
+
+        if (approvalName.equals("TREASURY")) {
+            Optional<ApprovalTreasury> approvalTreasuryOpt = approvalTreasuryRepository.findById(id);
+            if (approvalTreasuryOpt.isPresent()) {
+                ApprovalTreasury approvalTreasury = approvalTreasuryOpt.get();
+                nipKaryawan = approvalTreasury.getNipKaryawanResign();
+            }
+        } else if (approvalName.equals("HRPAYROLL")) {
+            Optional<ApprovalHRPayroll> approvalHRPayrollOpt = approvalHRPayrollRepository.findById(id);
+            if (approvalHRPayrollOpt.isPresent()) {
+                ApprovalHRPayroll approvalHRPayroll = approvalHRPayrollOpt.get();
+                nipKaryawan = approvalHRPayroll.getNipKaryawanResign();
+            }
+        } else if (approvalName.equals("GENERALSERVICES")) {
+            Optional<ApprovalGeneralServices> approvalGeneralServicesOpt = approvalGeneralServicesRepository.findById(id);
+            if (approvalGeneralServicesOpt.isPresent()) {
+                ApprovalGeneralServices approvalGeneralServices = approvalGeneralServicesOpt.get();
+                nipKaryawan = approvalGeneralServices.getNipKaryawanResign();
+            }
+        } else if (approvalName.equals("HRIR")) {
+            Optional<ApprovalHRIR> approvalHRIROpt = approvalHRIRRepository.findById(id);
+            if (approvalHRIROpt.isPresent()) {
+                ApprovalHRIR approvalHRIR = approvalHRIROpt.get();
+                nipKaryawan = approvalHRIR.getNipKaryawanResign();
+            }
+        } else if (approvalName.equals("HRLEARNING")) {
+            Optional<ApprovalHRLearning> approvalHRLearningOpt = approvalHRLearningRepository.findById(id);
+            if (approvalHRLearningOpt.isPresent()) {
+                ApprovalHRLearning approvalHRLearning = approvalHRLearningOpt.get();
+                nipKaryawan = approvalHRLearning.getNipKaryawanResign();
+            }
+        } else if (approvalName.equals("HRSERVICESADMIN")) {
+            Optional<ApprovalHRServicesAdmin> approvalHRServicesAdminOpt = approvalHRServicesAdminRepository.findById(id);
+            if (approvalHRServicesAdminOpt.isPresent()) {
+                ApprovalHRServicesAdmin approvalHRServicesAdmin = approvalHRServicesAdminOpt.get();
+                nipKaryawan = approvalHRServicesAdmin.getNipKaryawanResign();
+            }
+        } else if (approvalName.equals("HRTALENT")) {
+            Optional<ApprovalHRTalent> approvalHRTalentOpt = approvalHRTalentRepository.findById(id);
+            if (approvalHRTalentOpt.isPresent()) {
+                ApprovalHRTalent approvalHRTalent = approvalHRTalentOpt.get();
+                nipKaryawan = approvalHRTalent.getNipKaryawanResign();
+            }
+        } else if (approvalName.equals("SECURITYADMINISTRATOR")) {
+            Optional<ApprovalSecurityAdministrator> approvalSecurityAdministratorOpt = approvalSecurityAdministratorRepository.findById(id);
+            if (approvalSecurityAdministratorOpt.isPresent()) {
+                ApprovalSecurityAdministrator approvalSecurityAdministrator = approvalSecurityAdministratorOpt.get();
+                nipKaryawan = approvalSecurityAdministrator.getNipKaryawanResign();
+            }
+        }
+
+        // Fetch approval statuses by nipKaryawan
+        String approvalHRPayrollStatus = approvalHRPayrollRepository.findByNipKaryawanResign(nipKaryawan).map(ApprovalHRPayroll::getApprovalHRPayrollStatus).orElse(null);
+        String approvalGeneralServicesStatus = approvalGeneralServicesRepository.findByNipKaryawanResign(nipKaryawan).map(ApprovalGeneralServices::getApprovalGeneralServicesStatus).orElse(null);
+        String approvalHRIRStatus = approvalHRIRRepository.findByNipKaryawanResign(nipKaryawan).map(ApprovalHRIR::getApprovalHRIRStatus).orElse(null);
+        String approvalHRLearningStatus = approvalHRLearningRepository.findByNipKaryawanResign(nipKaryawan).map(ApprovalHRLearning::getApprovalHRLearningStatus).orElse(null);
+        String approvalHRServicesAdminStatus = approvalHRServicesAdminRepository.findByNipKaryawanResign(nipKaryawan).map(ApprovalHRServicesAdmin::getApprovalHRServicesAdminStatus).orElse(null);
+        String approvalHRTalentStatus = approvalHRTalentRepository.findByNipKaryawanResign(nipKaryawan).map(ApprovalHRTalent::getApprovalHRTalentStatus).orElse(null);
+        String approvalSecurityAdministratorStatus = approvalSecurityAdministratorRepository.findByNipKaryawanResign(nipKaryawan).map(ApprovalSecurityAdministrator::getApprovalSecurityAdministratorStatus).orElse(null);
+        String approvalTreasuryStatus = approvalTreasuryRepository.findByNipKaryawanResign(nipKaryawan).map(ApprovalTreasury::getApprovalTreasuryStatus).orElse(null);
 
         System.out.println("=========================== do checking ===========================");
 
-        return isApprovalStatusAccepted(approvalTreasuryRepository.findById(id).map(ApprovalTreasury::getApprovalTreasuryStatus)) &&
-                isApprovalStatusAccepted(approvalGeneralServicesRepository.findById(id).map(ApprovalGeneralServices::getApprovalGeneralServicesStatus)) &&
-                isApprovalStatusAccepted(approvalHRIRRepository.findById(id).map(ApprovalHRIR::getApprovalHRIRStatus)) &&
-                isApprovalStatusAccepted(approvalHRLearningRepository.findById(id).map(ApprovalHRLearning::getApprovalHRLearningStatus)) &&
-                isApprovalStatusAccepted(approvalHRPayrollRepository.findById(id).map(ApprovalHRPayroll::getApprovalHRPayrollStatus)) &&
-                isApprovalStatusAccepted(approvalHRServicesAdminRepository.findById(id).map(ApprovalHRServicesAdmin::getApprovalHRServicesAdminStatus)) &&
-                isApprovalStatusAccepted(approvalHRTalentRepository.findById(id).map(ApprovalHRTalent::getApprovalHRTalentStatus)) &&
-                isApprovalStatusAccepted(approvalSecurityAdministratorRepository.findById(id).map(ApprovalSecurityAdministrator::getApprovalSecurityAdministratorStatus));
+        return isApprovalStatusAccepted(Optional.ofNullable(approvalHRPayrollStatus)) &&
+                isApprovalStatusAccepted(Optional.ofNullable(approvalGeneralServicesStatus)) &&
+                isApprovalStatusAccepted(Optional.ofNullable(approvalHRIRStatus)) &&
+                isApprovalStatusAccepted(Optional.ofNullable(approvalSecurityAdministratorStatus)) &&
+                isApprovalStatusAccepted(Optional.ofNullable(approvalTreasuryStatus)) &&
+                isApprovalStatusAccepted(Optional.ofNullable(approvalHRTalentStatus)) &&
+                isApprovalStatusAccepted(Optional.ofNullable(approvalHRServicesAdminStatus)) &&
+                isApprovalStatusAccepted(Optional.ofNullable(approvalHRLearningStatus));
     }
 
     private boolean isApprovalStatusAccepted(Optional<String> status) {

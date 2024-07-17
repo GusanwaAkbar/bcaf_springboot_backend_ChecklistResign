@@ -101,7 +101,7 @@ public class ApprovalHRPayrollService {
         }
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
-        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id, "HRPAYROLL");
 
         if (allApprove) {
             // Create the final form

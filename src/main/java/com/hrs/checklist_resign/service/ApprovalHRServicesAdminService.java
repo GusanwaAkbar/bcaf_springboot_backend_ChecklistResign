@@ -97,7 +97,7 @@ public class ApprovalHRServicesAdminService {
         }
 
         // Check all approval status
-        boolean allApprove = checkingAllApprovalsStatus.doCheck(id);
+        boolean allApprove = checkingAllApprovalsStatus.doCheck(id, "HRSERVICESADMIN");
 
         if (allApprove) {
             // Create the final form

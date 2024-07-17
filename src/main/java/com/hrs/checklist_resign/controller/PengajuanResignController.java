@@ -36,6 +36,9 @@ public class PengajuanResignController {
     private EmailService emailService;
 
     @Autowired
+    private AsyncEmailService asyncEmailService;
+
+    @Autowired
     private EmailTemplateService emailTemplateService;
 
 
@@ -158,15 +161,9 @@ public class PengajuanResignController {
 
         UserDetail userDetailAtasan;
 
-        if (!pengajuanResignDTO.getNipAtasan().isEmpty())
-        {
-
-            //nip Atasaan by input sendiri
+        if (!pengajuanResignDTO.getNipAtasan().isEmpty()) {
             userDetailAtasan = userDetailService.findByUsername(pengajuanResignDTO.getNipAtasan());
-
-        }
-        else {
-            //nip Atasaan by automatis
+        } else {
             userDetailAtasan = userDetailService.findByUsername(userDetail.getNipAtasan());
         }
 
@@ -175,7 +172,7 @@ public class PengajuanResignController {
         }
 
         saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, username);
-        sendNotificationsAndEmails(userDetail, userDetailAtasan, username);
+        asyncEmailService.sendNotificationsAndEmails(userDetail, userDetailAtasan, username);
 
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -202,6 +199,7 @@ public class PengajuanResignController {
 
     private void saveApprovalAtasan(PengajuanResign savedPengajuanResign, PengajuanResignDTO pengajuanResignDTO, UserDetail userDetailAtasan, String nipKaryawanResign) {
         ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
+        approvalAtasanObj.setId(savedPengajuanResign.getId());
         approvalAtasanObj.setNipKaryawanResign(nipKaryawanResign);
         approvalAtasanObj.setNipAtasan(pengajuanResignDTO.getNipAtasan());
         approvalAtasanObj.setEmailAtasan(pengajuanResignDTO.getEmailAtasan());
@@ -210,29 +208,6 @@ public class PengajuanResignController {
         approvalAtasanService.saveApproval(approvalAtasanObj);
     }
 
-    private void sendNotificationsAndEmails(UserDetail userDetail, UserDetail userDetailAtasan, String nipKaryawanResign) {
-        String emailAtasan = userDetailAtasan.getEmail();
-        String userEmail = userDetail.getEmail();
-        String userNama = userDetail.getNama();
-        String atasanNama = userDetailAtasan.getNama();
-
-        notificationService.sendNotification("Approval Required: Resignation Request from: " + nipKaryawanResign + ", " + userNama, userDetail, userDetailAtasan.getUserUsername());
-        notificationService.sendNotification("Resignation request submitted", userDetail, nipKaryawanResign);
-
-        String linkKaryawan = "http://localhost:4200/#/progress-approval";
-        String linkAtasan = "http://localhost:4200/#/approval-atasan";
-
-        Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, "Your resignation request has been submitted.", linkKaryawan);
-        Map<String, Object> variablesAtasan = emailTemplateService.createEmailVariables(atasanNama, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, linkAtasan);
-
-        try {
-            emailTemplateService.sendHtmlEmail(userEmail, "Resignation Request Submitted", "email-template", variablesKaryawan);
-            emailTemplateService.sendHtmlEmail(emailAtasan, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            // Handle exception
-        }
-    }
 
 
 

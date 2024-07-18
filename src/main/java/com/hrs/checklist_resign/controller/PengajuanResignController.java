@@ -2,6 +2,7 @@ package com.hrs.checklist_resign.controller;
 
 import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.PengajuanResign;
+import com.hrs.checklist_resign.Model.User;
 import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.payload.PengajuanResignDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
@@ -40,6 +41,9 @@ public class PengajuanResignController {
 
     @Autowired
     private EmailTemplateService emailTemplateService;
+
+    @Autowired
+    private UserService userService;
 
 
     @GetMapping
@@ -139,6 +143,8 @@ public class PengajuanResignController {
         }
     }
 
+
+
     @PostMapping()
     public ResponseEntity<ApiResponse<PengajuanResign>> createResignation(@RequestBody PengajuanResignDTO pengajuanResignDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -156,19 +162,13 @@ public class PengajuanResignController {
 
         UserDetail userDetail = userDetailOpt.get();
         PengajuanResign pengajuanResign = buildPengajuanResign(pengajuanResignDTO, username, userDetail);
-
         PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
 
-        UserDetail userDetailAtasan;
-
-        if (!pengajuanResignDTO.getNipAtasan().isEmpty()) {
-            userDetailAtasan = userDetailService.findByUsername(pengajuanResignDTO.getNipAtasan());
-        } else {
-            userDetailAtasan = userDetailService.findByUsername(userDetail.getNipAtasan());
-        }
+        String nipAtasan = pengajuanResignDTO.getNipAtasan();
+        UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, userDetail.getNipAtasan());
 
         if (userDetailAtasan == null) {
-            return buildResponseEntity("Supervisor details not found", HttpStatus.NOT_FOUND, "No user details found for supervisor with NIP: " + pengajuanResignDTO.getNipAtasan());
+            return buildResponseEntity("Supervisor details not found", HttpStatus.NOT_FOUND, "No user details found for supervisor with NIP: " + nipAtasan);
         }
 
         saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, username);
@@ -177,6 +177,46 @@ public class PengajuanResignController {
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    private UserDetail fetchOrCreateUserDetail(String nipAtasanFromDTO, String nipAtasanFromUserDetail) {
+        String nipAtasan = nipAtasanFromDTO != null && !nipAtasanFromDTO.isEmpty() ? nipAtasanFromDTO : nipAtasanFromUserDetail;
+
+        if (nipAtasan == null || nipAtasan.isEmpty()) {
+            return null;
+        }
+
+        UserDetail userDetailAtasan = userDetailService.findByUsername(nipAtasan);
+
+        if (userDetailAtasan == null) {
+            List<UserDetail> userDetailsList = userDetailService.fetchUserDetailsByUsername(nipAtasan);
+
+            if (!userDetailsList.isEmpty()) {
+                userDetailAtasan = userDetailsList.get(0);
+
+                Optional<User> atasanUserOpt = userService.findByUsername(nipAtasan);
+
+                User userAtasan;
+                if (atasanUserOpt.isEmpty()) {
+                    userAtasan = new User();
+                    userAtasan.setUsername(nipAtasan);
+                    userAtasan.setPassword(nipAtasan); // Consider using a more secure default password
+                    userAtasan.setRoles("USER");
+                    userService.saveUser(userAtasan);
+                } else {
+                    userAtasan = atasanUserOpt.get();
+                }
+
+                userDetailAtasan.setUser(userAtasan);
+                userDetailService.saveUserDetails(userDetailAtasan);
+            } else {
+                return null; // If the NIP Atasan is not found in HRIS
+            }
+        }
+
+        return userDetailAtasan;
+    }
+
+
 
 
 

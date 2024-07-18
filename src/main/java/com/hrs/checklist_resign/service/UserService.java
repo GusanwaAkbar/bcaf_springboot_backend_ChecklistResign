@@ -1,8 +1,6 @@
 package com.hrs.checklist_resign.service;
 
 import com.hrs.checklist_resign.Model.User;
-import com.hrs.checklist_resign.Model.UserDetail;
-import com.hrs.checklist_resign.repository.UserDetailsRepository;
 import com.hrs.checklist_resign.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +23,7 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public void saveUser(User user) {
+    public User saveUser(User user) {
 
         System.out.println("--------- bintang -----------");
         System.out.println(user.getPassword());
@@ -37,7 +35,7 @@ public class UserService {
         userRepository.save(user);
 
 
-
+        return user;
     }
 
 

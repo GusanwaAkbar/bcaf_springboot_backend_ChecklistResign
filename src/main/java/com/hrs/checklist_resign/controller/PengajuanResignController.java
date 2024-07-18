@@ -172,7 +172,7 @@ public class PengajuanResignController {
         }
 
         saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, username);
-        asyncEmailService.sendNotificationsAndEmails(userDetail, userDetailAtasan, username, "Resignation Request Submitted", "Approval Required: New Resignation Request");
+        //asyncEmailService.sendNotificationsAndEmails(userDetail, userDetailAtasan, username, "Resignation Request Submitted", "Approval Required: New Resignation Request");
 
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -199,7 +199,6 @@ public class PengajuanResignController {
 
     private void saveApprovalAtasan(PengajuanResign savedPengajuanResign, PengajuanResignDTO pengajuanResignDTO, UserDetail userDetailAtasan, String nipKaryawanResign) {
         ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
-        approvalAtasanObj.setId(savedPengajuanResign.getId());
         approvalAtasanObj.setNipKaryawanResign(nipKaryawanResign);
         approvalAtasanObj.setNipAtasan(pengajuanResignDTO.getNipAtasan());
         approvalAtasanObj.setEmailAtasan(pengajuanResignDTO.getEmailAtasan());

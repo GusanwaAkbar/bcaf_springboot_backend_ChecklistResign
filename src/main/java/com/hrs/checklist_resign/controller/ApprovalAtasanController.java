@@ -279,49 +279,41 @@ public class ApprovalAtasanController {
 
 
             ApprovalHRTalent approvalHRTalent = new ApprovalHRTalent();
-            //approvalHRTalent.setId(pengajuanResignId);
             approvalHRTalent.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRTalent.setNipKaryawanResign(nipKaryawan);
             approvalHRTalentService.saveApprovalHRTalent(approvalHRTalent);
 
             ApprovalHRIR approvalHRIR = new ApprovalHRIR();
-            //approvalHRIR.setId(pengajuanResignId);
             approvalHRIR.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRIR.setNipKaryawanResign(nipKaryawan);
             approvalHRIRService.saveApprovalHRIR(approvalHRIR);
 
             ApprovalTreasury approvalTreasury = new ApprovalTreasury();
-            //approvalTreasury.setId(pengajuanResignId);
             approvalTreasury.setApprovalAtasan(updatedApprovalAtasan);
             approvalTreasury.setNipKaryawanResign(nipKaryawan);
             approvalTreasuryService.save(approvalTreasury);
 
             ApprovalHRServicesAdmin approvalHRServicesAdmin = new ApprovalHRServicesAdmin();
-            //approvalHRServicesAdmin.setId(pengajuanResignId);
             approvalHRServicesAdmin.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRServicesAdmin.setNipKaryawanResign(nipKaryawan);
             approvalHRServicesAdminService.save(approvalHRServicesAdmin);
 
             ApprovalHRPayroll approvalHRPayroll = new ApprovalHRPayroll();
-            //approvalHRPayroll.setId(pengajuanResignId);
             approvalHRPayroll.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRPayroll.setNipKaryawanResign(nipKaryawan);
             approvalHRPayrollService.save(approvalHRPayroll);
 
             ApprovalSecurityAdministrator approvalSecurityAdministrator = new ApprovalSecurityAdministrator();
-            //approvalSecurityAdministrator.setId(pengajuanResignId);
             approvalSecurityAdministrator.setApprovalAtasan(updatedApprovalAtasan);
             approvalSecurityAdministrator.setNipKaryawanResign(nipKaryawan);
             approvalSecurityAdministratorService.save(approvalSecurityAdministrator);
 
             ApprovalGeneralServices approvalGeneralServices = new ApprovalGeneralServices();
-            //approvalGeneralServices.setId(pengajuanResignId);
             approvalGeneralServices.setApprovalAtasan(updatedApprovalAtasan);
             approvalGeneralServices.setNipKaryawanResign(nipKaryawan);
             approvalGeneralServicesService.save(approvalGeneralServices);
 
             ApprovalHRLearning approvalHRLearning = new ApprovalHRLearning();
-            //approvalHRLearning.setId(pengajuanResignId);
             approvalHRLearning.setApprovalAtasan(approvalAtasan);
             approvalHRLearning.setNipKaryawanResign(nipKaryawan);
             approvalHRLearningService.save(approvalHRLearning);

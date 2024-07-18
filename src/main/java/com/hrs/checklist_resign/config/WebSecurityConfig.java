@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                 )
                 .authorizeHttpRequests(requests -> requests
 //                        .requestMatchers("/resign").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/auth/signin", "/api/auth/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signin", "/api/auth/signup", "/api/auth/signin/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/signin", "/api/auth/signup").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -14,6 +14,9 @@ import com.hrs.checklist_resign.service.UserService;
 import com.hrs.checklist_resign.util.JwtUtils;
 import com.hrs.checklist_resign.util.UserDetailsRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,10 +26,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -147,6 +150,122 @@ public class AuthController {
         } else {
             return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User not found", 400));
         }
+    }
+
+
+    @PostMapping("/signin/V2")
+    public ResponseEntity<?> authenticateUserWithLDAP(@RequestBody LoginRequest loginRequest) {
+        try {
+            // Authenticate against LDAP
+            if (ldapAuthenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
+
+                System.out.println("===========METHOD CALLED ====================");
+
+                // If LDAP authentication is successful, generate JWT token
+                String jwt = jwtUtils.generateJwtToken(loginRequest.getUsername());
+
+                // Fetch or create user in your app's database
+                User user = userRepository.findByUsername(loginRequest.getUsername())
+                        .orElseGet(() -> createNewUser(loginRequest.getUsername()));
+
+                if (user == null)
+                {
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User not found in HRIS Database", 400));
+                }
+
+                // Fetch UserDetail
+                UserDetail userDetail = userDetailsService.findByUsername(user.getUsername());
+
+                // Create UserDetailsImpl object
+                UserDetailsImpl userDetailObj = new UserDetailsImpl(
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getAuthorities(),
+                        user.getUserDetails()
+                );
+                userDetailObj.setUserDetail(userDetail);
+
+                // Return ApiResponse with successful response
+                return ResponseEntity.ok(new ApiResponse<>(
+                        new JwtResponse(jwt, userDetailObj.getUsername(), userDetailObj.getAuthorities(), userDetailObj.getUserDetail()),
+                        true,
+                        "User authenticated successfully with LDAP",
+                        200
+                ));
+            } else {
+                return ResponseEntity.status(401).body(new ApiResponse<>(null, false, "Invalid LDAP credentials", 401));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ApiResponse<>(null, false, "Error: An internal server error occurred!", 500));
+        }
+    }
+
+    private boolean ldapAuthenticate(String username, String password) {
+        String url = "http://192.168.29.71:12103/EnterpriseAuthentication/AuthenticateUserV2";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        //add basic auth
+        String auth = "bcafapps:Admin123";
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+        String authHeader = "Basic " + new String(encodedAuth);
+        headers.set("Authorization", authHeader);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("TrxId", null);
+        Map<String, Object> credentials = new HashMap<>();
+        credentials.put("UserId", username);
+        credentials.put("UserName", null);
+        credentials.put("Password", password);
+        requestBody.put("Credentials", credentials);
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
+
+        try {
+            ResponseEntity<Map> response = new RestTemplate().postForEntity(url, request, Map.class);
+            Map<String, Object> responseBody = response.getBody();
+            Map<String, Object> responseHeader = (Map<String, Object>) responseBody.get("ResponseHeader");
+            return "0".equals(responseHeader.get("ErrorCode"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private User createNewUser(String username) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(username); // Empty password as we're using LDAP
+        user.setRoles("USER"); // Set default role
+
+
+
+
+        //CREATE AND FETCH USER DETAIL FROM DATABASE
+        List<UserDetail> userDetailList = userDetailsService.fetchUserDetailsByUsername(username);
+        UserDetail userDetail = new UserDetail();
+
+        //IF USER DETAIL NOT EMPTY
+        if (!userDetailList.isEmpty())
+        {
+            userDetail = userDetailList.get(0);
+
+            user = userService.saveUser(user);
+
+            //set user
+            userDetail.setUser(user);
+
+            //save user and user detail
+            user.setUserDetails(userDetail);
+        } else {
+            return  null;
+        }
+
+        userDetailsService.saveUserDetails(userDetail);
+
+
+        return user;
     }
 
 }

@@ -49,6 +49,10 @@ public class AuthController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+
+
+
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
@@ -89,7 +93,7 @@ public class AuthController {
         }
 
         // Fetch user details based on the provided username
-        List<UserDetail> userDetailsList = fetchUserDetailsByUsername(signUpRequest.getUsername());
+        List<UserDetail> userDetailsList = userDetailsService.fetchUserDetailsByUsername(signUpRequest.getUsername());
 
         if (userDetailsList.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User details not found for the provided username!", 400));
@@ -117,21 +121,6 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse<>("User registered successfully!", true, "User registered successfully", 200));
     }
 
-    private List<UserDetail> fetchUserDetailsByUsername(String username) {
-        String sql = "SELECT DISTINCT h.id, h.c_name AS Nama, h.c_email AS Email, h.c_approver1 AS nipAtasan," +
-                "COALESCE(b.c_location, '-') AS Cabang, COALESCE(d.c_id, '-') AS id_divisi, " +
-                "COALESCE(d.c_name, '-') AS Divisi, COALESCE(t.c_name, '-') AS Jabatan, " +
-                "COALESCE(h.c_externalUser, 'No') AS External_User " +
-                "FROM app_fd_bcafs_hris h WITH (NOLOCK) " +
-                "LEFT JOIN dir_user du WITH (NOLOCK) ON (h.id = du.username) " +
-                "LEFT JOIN app_fd_bcafs_branch b WITH (NOLOCK) ON (h.c_branchId = b.c_branchCode) " +
-                "LEFT JOIN app_fd_bcafs_title t WITH (NOLOCK) ON (h.c_titleId = t.id) " +
-                "LEFT JOIN app_fd_bcafs_division d WITH (NOLOCK) ON (t.c_divisionId = d.id) " +
-                "WHERE (h.c_active = 'Yes' OR h.c_externaluser = 'Yes') " +
-                "AND h.id = ?";
-
-        return jdbcTemplate.query(sql, new UserDetailsRowMapper(), username);
-    }
 
 
     @PostMapping("/changeRole")

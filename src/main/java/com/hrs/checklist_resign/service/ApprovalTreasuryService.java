@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -135,12 +136,21 @@ public class ApprovalTreasuryService {
     }
 
 
+
+
+
     public Page<ApprovalTreasury> findAllWithFiltersAndPagination(
-            String nipKaryawanResign, String namaKaryawan, int page, int size) {
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalTreasuryStatus,
+            int page,
+            int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return repository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCase(
+
+        return repository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalTreasuryStatusIsOrApprovalTreasuryStatusIsNull(
                 nipKaryawanResign != null ? nipKaryawanResign : "",
                 namaKaryawan != null ? namaKaryawan : "",
+                approvalTreasuryStatus,
                 pageable
         );
     }

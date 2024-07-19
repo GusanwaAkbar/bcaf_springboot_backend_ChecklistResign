@@ -198,11 +198,12 @@ public class ApprovalTreasuryController {
     public ResponseEntity<ApiResponse<Page<ApprovalTreasury>>> getAllWithFiltersAndPagination(
             @RequestParam(required = false) String nipKaryawanResign,
             @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(required = false) String approvalTreasuryStatus,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Page<ApprovalTreasury> approvalTreasuryPage = service.findAllWithFiltersAndPagination(
-                nipKaryawanResign, namaKaryawan, page, size);
+                nipKaryawanResign, namaKaryawan, approvalTreasuryStatus, page, size);
 
         ApiResponse<Page<ApprovalTreasury>> response = new ApiResponse<>(
                 approvalTreasuryPage,

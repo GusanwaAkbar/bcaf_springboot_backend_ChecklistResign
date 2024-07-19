@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ApprovalTreasuryRepository extends JpaRepository<ApprovalTreasury, Long> {
@@ -21,6 +22,10 @@ public interface ApprovalTreasuryRepository extends JpaRepository<ApprovalTreasu
 
     Optional <ApprovalTreasury> findByApprovalAtasanId(Long id);
 
-    Page<ApprovalTreasury> findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCase(
-            String nipKaryawanResign, String namaKaryawan, Pageable pageable);
+    Page<ApprovalTreasury> findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalTreasuryStatusIsOrApprovalTreasuryStatusIsNull(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalTreasuryStatus,
+            Pageable pageable
+    );
 }

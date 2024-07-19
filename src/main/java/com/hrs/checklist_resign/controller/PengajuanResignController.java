@@ -161,8 +161,6 @@ public class PengajuanResignController {
         }
 
         UserDetail userDetail = userDetailOpt.get();
-        PengajuanResign pengajuanResign = buildPengajuanResign(pengajuanResignDTO, username, userDetail);
-        PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
 
         String nipAtasan = pengajuanResignDTO.getNipAtasan();
         UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, userDetail.getNipAtasan());
@@ -171,7 +169,13 @@ public class PengajuanResignController {
             return buildResponseEntity("Supervisor details not found", HttpStatus.NOT_FOUND, "No user details found for supervisor with NIP: " + nipAtasan);
         }
 
-        saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, username);
+
+        PengajuanResign pengajuanResign = buildPengajuanResign(pengajuanResignDTO, username, userDetail, userDetailAtasan);
+        PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
+
+
+
+        saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, userDetail);
         //asyncEmailService.sendNotificationsAndEmails(userDetail, userDetailAtasan, username, "Resignation Request Submitted", "Approval Required: New Resignation Request");
 
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
@@ -225,9 +229,11 @@ public class PengajuanResignController {
         return new ResponseEntity<>(response, status);
     }
 
-    private PengajuanResign buildPengajuanResign(PengajuanResignDTO pengajuanResignDTO, String nipKaryawanResign, UserDetail userDetail) {
+    private PengajuanResign buildPengajuanResign(PengajuanResignDTO pengajuanResignDTO, String nipKaryawanResign, UserDetail userDetail, UserDetail userDetailAtasan) {
         PengajuanResign pengajuanResign = new PengajuanResign();
         pengajuanResign.setNipUser(nipKaryawanResign);
+        pengajuanResign.setNamaKaryawan(userDetail.getNama());
+        pengajuanResign.setNamaAtasan(userDetailAtasan.getNama());
         pengajuanResign.setIsiUntukOrangLain(pengajuanResignDTO.isIsiUntukOrangLain());
         pengajuanResign.setTanggalPembuatanAkunHRIS(pengajuanResignDTO.getTanggalPembuatanAkunHRIS());
         pengajuanResign.setTanggalBerakhirBekerja(pengajuanResignDTO.getTanggalBerakhirBekerja());
@@ -237,10 +243,12 @@ public class PengajuanResignController {
         return pengajuanResign;
     }
 
-    private void saveApprovalAtasan(PengajuanResign savedPengajuanResign, PengajuanResignDTO pengajuanResignDTO, UserDetail userDetailAtasan, String nipKaryawanResign) {
+    private void saveApprovalAtasan(PengajuanResign savedPengajuanResign, PengajuanResignDTO pengajuanResignDTO, UserDetail userDetailAtasan, UserDetail userDetailKaryawan) {
         ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
-        approvalAtasanObj.setNipKaryawanResign(nipKaryawanResign);
+        approvalAtasanObj.setNipKaryawanResign(userDetailKaryawan.getUserUsername());
+        approvalAtasanObj.setNamaKaryawan(userDetailKaryawan.getNama());
         approvalAtasanObj.setNipAtasan(pengajuanResignDTO.getNipAtasan());
+        approvalAtasanObj.setNamaAtasan(userDetailAtasan.getNama());
         approvalAtasanObj.setEmailAtasan(pengajuanResignDTO.getEmailAtasan());
         approvalAtasanObj.setUserDetailAtasan(userDetailAtasan);
         approvalAtasanObj.setPengajuanResign(savedPengajuanResign);

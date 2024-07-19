@@ -144,9 +144,12 @@ public class CheckingAllApprovalsStatus {
 
         FinalApproval finalApproval = new FinalApproval();
 
-        finalApproval.setUserDetailAtasan(approvalTreasuryRepository.findById(id).get().getApprovalAtasan().getUserDetailAtasan());
+        UserDetail userDetailAtasan = approvalTreasuryRepository.findById(id).get().getApprovalAtasan().getUserDetailAtasan();
+        UserDetail userDetailKaryawan = approvalTreasuryRepository.findById(id).get().getApprovalAtasan().getPengajuanResign().getUserDetailResign();
 
-        finalApproval.setUserDetailResign(approvalTreasuryRepository.findById(id).get().getApprovalAtasan().getPengajuanResign().getUserDetailResign());
+        finalApproval.setUserDetailAtasan(userDetailAtasan);
+
+        finalApproval.setUserDetailResign(userDetailKaryawan);
 
         finalApproval.setApprovalAtasan(approvalTreasuryRepository.findById(id).get().getApprovalAtasan() );
 
@@ -162,6 +165,9 @@ public class CheckingAllApprovalsStatus {
         finalApproval.setApprovalSecurityAdministrator(approvalSecurityAdministratorRepository.findById(id).orElse(null));
         finalApproval.setFinalApprovalStatus("approved");
         finalApproval.setNipKaryawanResign(finalApproval.getUserDetailResign().getUserUsername());
+        finalApproval.setNamaKaryawan(userDetailKaryawan.getNama());
+        finalApproval.setNipAtasan(userDetailAtasan.getUserUsername());
+        finalApproval.setNamaAtasan(userDetailAtasan.getNama());
 
         finalApproval.setRemarks("All approvals completed successfully.");
 

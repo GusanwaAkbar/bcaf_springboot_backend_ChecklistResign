@@ -19,8 +19,14 @@ public class ApprovalAtasan {
     @Column(name = "nip_karyawan")
     private String nipKaryawanResign;
 
+    @Column(name = "nama_karyawan")
+    private String namaKaryawan;
+
     @Column(name = "nip_atasan")
     private String nipAtasan;
+
+    @Column(name = "nama_atasan")
+    private String namaAtasan;
 
     @Column(name = "email_atasan")
     private String emailAtasan;
@@ -314,6 +320,22 @@ public class ApprovalAtasan {
 
     public void setDocumentPath(String documentPath) {
         this.documentPath = documentPath;
+    }
+
+    public String getNamaKaryawan() {
+        return namaKaryawan;
+    }
+
+    public void setNamaKaryawan(String namaKaryawan) {
+        this.namaKaryawan = namaKaryawan;
+    }
+
+    public String getNamaAtasan() {
+        return namaAtasan;
+    }
+
+    public void setNamaAtasan(String namaAtasan) {
+        this.namaAtasan = namaAtasan;
     }
 
     @Override

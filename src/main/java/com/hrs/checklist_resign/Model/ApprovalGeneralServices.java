@@ -19,6 +19,16 @@ public class ApprovalGeneralServices {
     @Column(name = "nip_karyawan_resign")
     private String nipKaryawanResign;
 
+
+    @Column(name = "nama_karyawan")
+    private String namaKaryawan;
+
+    @Column(name = "nip_atasan")
+    private String nipAtasan;
+
+    @Column(name = "nama_atasan")
+    private String namaAtasan;
+
     @OneToOne
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
     @JsonManagedReference(value = "approvalGeneralServices")
@@ -179,5 +189,30 @@ public class ApprovalGeneralServices {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+
+    public String getNamaKaryawan() {
+        return namaKaryawan;
+    }
+
+    public void setNamaKaryawan(String namaKaryawan) {
+        this.namaKaryawan = namaKaryawan;
+    }
+
+    public String getNipAtasan() {
+        return nipAtasan;
+    }
+
+    public void setNipAtasan(String nipAtasan) {
+        this.nipAtasan = nipAtasan;
+    }
+
+    public String getNamaAtasan() {
+        return namaAtasan;
+    }
+
+    public void setNamaAtasan(String namaAtasan) {
+        this.namaAtasan = namaAtasan;
     }
 }

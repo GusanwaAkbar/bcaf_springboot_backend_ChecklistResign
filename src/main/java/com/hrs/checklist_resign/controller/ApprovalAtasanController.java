@@ -239,6 +239,7 @@ public class ApprovalAtasanController {
         }
 
         ApprovalAtasan approvalAtasan = approvalAtasanOptional.get();
+        UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
 
 
         //Setup nip karyawan
@@ -277,50 +278,78 @@ public class ApprovalAtasanController {
 
             Long pengajuanResignId = pengajuanResign.getId();
 
+            String namaKaryawan = userDetailKaryawan.getNama();
+
+
 
             ApprovalHRTalent approvalHRTalent = new ApprovalHRTalent();
             approvalHRTalent.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRTalent.setNipKaryawanResign(nipKaryawan);
+            approvalHRTalent.setNamaKaryawan(namaKaryawan);
+            approvalHRTalent.setNipAtasan(nipAtasan);
+            approvalHRTalent.setNamaAtasan(namaAtasan);
             approvalHRTalentService.saveApprovalHRTalent(approvalHRTalent);
+
 
             ApprovalHRIR approvalHRIR = new ApprovalHRIR();
             approvalHRIR.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRIR.setNipKaryawanResign(nipKaryawan);
+            approvalHRIR.setNamaKaryawan(namaKaryawan);
+            approvalHRIR.setNipAtasan(nipAtasan);
+            approvalHRIR.setNamaAtasan(namaAtasan);
             approvalHRIRService.saveApprovalHRIR(approvalHRIR);
 
             ApprovalTreasury approvalTreasury = new ApprovalTreasury();
             approvalTreasury.setApprovalAtasan(updatedApprovalAtasan);
             approvalTreasury.setNipKaryawanResign(nipKaryawan);
+            approvalTreasury.setNamaKaryawan(namaKaryawan);
+            approvalTreasury.setNipAtasan(nipAtasan);
+            approvalTreasury.setNamaAtasan(namaAtasan);
             approvalTreasuryService.save(approvalTreasury);
 
             ApprovalHRServicesAdmin approvalHRServicesAdmin = new ApprovalHRServicesAdmin();
             approvalHRServicesAdmin.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRServicesAdmin.setNipKaryawanResign(nipKaryawan);
+            approvalHRServicesAdmin.setNamaKaryawan(namaKaryawan);
+            approvalHRServicesAdmin.setNipAtasan(nipAtasan);
+            approvalHRServicesAdmin.setNamaAtasan(namaAtasan);
             approvalHRServicesAdminService.save(approvalHRServicesAdmin);
 
             ApprovalHRPayroll approvalHRPayroll = new ApprovalHRPayroll();
             approvalHRPayroll.setApprovalAtasan(updatedApprovalAtasan);
             approvalHRPayroll.setNipKaryawanResign(nipKaryawan);
+            approvalHRPayroll.setNamaKaryawan(namaKaryawan);
+            approvalHRPayroll.setNipAtasan(nipAtasan);
+            approvalHRPayroll.setNamaAtasan(namaAtasan);
             approvalHRPayrollService.save(approvalHRPayroll);
 
             ApprovalSecurityAdministrator approvalSecurityAdministrator = new ApprovalSecurityAdministrator();
             approvalSecurityAdministrator.setApprovalAtasan(updatedApprovalAtasan);
             approvalSecurityAdministrator.setNipKaryawanResign(nipKaryawan);
+            approvalSecurityAdministrator.setNamaKaryawan(namaKaryawan);
+            approvalSecurityAdministrator.setNipAtasan(nipAtasan);
+            approvalSecurityAdministrator.setNamaAtasan(namaAtasan);
             approvalSecurityAdministratorService.save(approvalSecurityAdministrator);
 
             ApprovalGeneralServices approvalGeneralServices = new ApprovalGeneralServices();
             approvalGeneralServices.setApprovalAtasan(updatedApprovalAtasan);
             approvalGeneralServices.setNipKaryawanResign(nipKaryawan);
+            approvalGeneralServices.setNamaKaryawan(namaKaryawan);
+            approvalGeneralServices.setNipAtasan(nipAtasan);
+            approvalGeneralServices.setNamaAtasan(namaAtasan);
             approvalGeneralServicesService.save(approvalGeneralServices);
 
             ApprovalHRLearning approvalHRLearning = new ApprovalHRLearning();
             approvalHRLearning.setApprovalAtasan(approvalAtasan);
             approvalHRLearning.setNipKaryawanResign(nipKaryawan);
+            approvalHRLearning.setNamaKaryawan(namaKaryawan);
+            approvalHRLearning.setNipAtasan(nipAtasan);
+            approvalHRLearning.setNamaAtasan(namaAtasan);
             approvalHRLearningService.save(approvalHRLearning);
 
             List<UserResponseDTO> userAdmin = adminService.findUsersWithRolesNotContainingV2("USER");
 
-            UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+
 
             // Send HTML email and notification to users with roles not containing "USER"
             String subject = "Approval Required: New Resignation Request";

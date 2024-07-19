@@ -19,6 +19,16 @@ public class ApprovalHRLearning {
     @Column(name = "nip_karyawan_resign")
     private String nipKaryawanResign;
 
+
+    @Column(name = "nama_karyawan")
+    private String namaKaryawan;
+
+    @Column(name = "nip_atasan")
+    private String nipAtasan;
+
+    @Column(name = "nama_atasan")
+    private String namaAtasan;
+
     @OneToOne
     @JoinColumn(name = "approval_atasan_id", referencedColumnName = "id")
     @JsonManagedReference(value = "approvalHRLearning")
@@ -134,5 +144,29 @@ public class ApprovalHRLearning {
 
     public void setDocumentPath(String documentPath) {
         this.documentPath = documentPath;
+    }
+
+    public String getNamaKaryawan() {
+        return namaKaryawan;
+    }
+
+    public void setNamaKaryawan(String namaKaryawan) {
+        this.namaKaryawan = namaKaryawan;
+    }
+
+    public String getNipAtasan() {
+        return nipAtasan;
+    }
+
+    public void setNipAtasan(String nipAtasan) {
+        this.nipAtasan = nipAtasan;
+    }
+
+    public String getNamaAtasan() {
+        return namaAtasan;
+    }
+
+    public void setNamaAtasan(String namaAtasan) {
+        this.namaAtasan = namaAtasan;
     }
 }

@@ -8,6 +8,7 @@ import com.hrs.checklist_resign.service.ApprovalTreasuryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -191,6 +192,26 @@ public class ApprovalTreasuryController {
         } catch (Exception e) {
             throw new RuntimeException("File download error", e);
         }
+    }
+
+    @GetMapping("/V2")
+    public ResponseEntity<ApiResponse<Page<ApprovalTreasury>>> getAllWithFiltersAndPagination(
+            @RequestParam(required = false) String nipKaryawanResign,
+            @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ApprovalTreasury> approvalTreasuryPage = service.findAllWithFiltersAndPagination(
+                nipKaryawanResign, namaKaryawan, page, size);
+
+        ApiResponse<Page<ApprovalTreasury>> response = new ApiResponse<>(
+                approvalTreasuryPage,
+                true,
+                "Fetched records successfully",
+                HttpStatus.OK.value()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

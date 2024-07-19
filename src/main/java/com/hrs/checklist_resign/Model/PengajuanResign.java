@@ -39,8 +39,14 @@ public class PengajuanResign {
     @JoinColumn(name = "user_detail_id", referencedColumnName = "id")
     private UserDetail userDetailResign;
 
+    @Column(name = "nama_karyawan")
+    private String namaKaryawan;
+
     @Column(name = "nip_atasan")
     private String nipAtasan;
+
+    @Column(name = "nama_atasan")
+    private String namaAtasan;
 
     @Column(name = "email_atasan")
     private String emailAtasan;
@@ -190,6 +196,19 @@ public class PengajuanResign {
         this.documentPath = documentPath;
     }
 
+    public String getNamaKaryawan() {
+        return namaKaryawan;
+    }
 
+    public void setNamaKaryawan(String namaKaryawan) {
+        this.namaKaryawan = namaKaryawan;
+    }
 
+    public String getNamaAtasan() {
+        return namaAtasan;
+    }
+
+    public void setNamaAtasan(String namaAtasan) {
+        this.namaAtasan = namaAtasan;
+    }
 }

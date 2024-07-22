@@ -8,6 +8,7 @@ import com.hrs.checklist_resign.service.ApprovalSecurityAdministratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -153,5 +154,27 @@ public class ApprovalSecurityAdministratorController {
             throw new RuntimeException("File download error", e);
         }
     }
+
+    @GetMapping("/V2/approval-security-administrator")
+    public ResponseEntity<ApiResponse<Page<ApprovalSecurityAdministrator>>> getAllWithFiltersAndPagination(
+            @RequestParam(required = false) String nipKaryawanResign,
+            @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(required = false) String approvalSecurityAdministratorStatus,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ApprovalSecurityAdministrator> approvalSecurityAdministratorPage = service.findAllWithFiltersAndPagination(
+                nipKaryawanResign, namaKaryawan, approvalSecurityAdministratorStatus, page, size);
+
+        ApiResponse<Page<ApprovalSecurityAdministrator>> response = new ApiResponse<>(
+                approvalSecurityAdministratorPage,
+                true,
+                "Fetched records successfully",
+                HttpStatus.OK.value()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

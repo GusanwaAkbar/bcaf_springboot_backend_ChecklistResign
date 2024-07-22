@@ -8,6 +8,7 @@ import com.hrs.checklist_resign.service.ApprovalHRPayrollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -154,5 +155,27 @@ public class ApprovalHRPayrollController {
             throw new RuntimeException("File download error", e);
         }
     }
+
+    @GetMapping("/V2/approval-hrpayroll")
+    public ResponseEntity<ApiResponse<Page<ApprovalHRPayroll>>> getAllWithFiltersAndPagination(
+            @RequestParam(required = false) String nipKaryawanResign,
+            @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(required = false) String approvalHRPayrollStatus,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ApprovalHRPayroll> approvalHRPayrollPage = service.findAllWithFiltersAndPagination(
+                nipKaryawanResign, namaKaryawan, approvalHRPayrollStatus, page, size);
+
+        ApiResponse<Page<ApprovalHRPayroll>> response = new ApiResponse<>(
+                approvalHRPayrollPage,
+                true,
+                "Fetched records successfully",
+                HttpStatus.OK.value()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

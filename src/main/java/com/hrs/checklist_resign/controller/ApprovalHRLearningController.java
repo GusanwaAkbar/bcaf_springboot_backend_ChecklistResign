@@ -8,6 +8,7 @@ import com.hrs.checklist_resign.service.ApprovalHRLearningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -152,6 +153,28 @@ public class ApprovalHRLearningController {
             throw new RuntimeException("File download error", e);
         }
     }
+
+    @GetMapping("/V2/approval-hrlearning")
+    public ResponseEntity<ApiResponse<Page<ApprovalHRLearning>>> getAllWithFiltersAndPagination(
+            @RequestParam(required = false) String nipKaryawanResign,
+            @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(required = false) String approvalHRLearningStatus,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ApprovalHRLearning> approvalHRLearningPage = service.findAllWithFiltersAndPagination(
+                nipKaryawanResign, namaKaryawan, approvalHRLearningStatus, page, size);
+
+        ApiResponse<Page<ApprovalHRLearning>> response = new ApiResponse<>(
+                approvalHRLearningPage,
+                true,
+                "Fetched records successfully",
+                HttpStatus.OK.value()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 
 }

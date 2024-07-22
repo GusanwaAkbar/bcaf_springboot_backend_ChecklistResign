@@ -7,6 +7,9 @@ import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.repository.ApprovalSecurityAdministratorRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -129,4 +132,23 @@ public class ApprovalSecurityAdministratorService {
 
         return save(approvalSecurityAdministrator);
     }
+
+    public Page<ApprovalSecurityAdministrator> findAllWithFiltersAndPagination(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalSecurityAdministratorStatus,
+            int page,
+            int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return repository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalSecurityAdministratorStatusIsOrApprovalSecurityAdministratorStatusIsNull(
+                nipKaryawanResign != null ? nipKaryawanResign : "",
+                namaKaryawan != null ? namaKaryawan : "",
+                approvalSecurityAdministratorStatus,
+                pageable
+        );
+    }
+
+
+
 }

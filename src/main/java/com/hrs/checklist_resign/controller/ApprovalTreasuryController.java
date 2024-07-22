@@ -200,10 +200,12 @@ public class ApprovalTreasuryController {
             @RequestParam(required = false) String namaKaryawan,
             @RequestParam(required = false) String approvalTreasuryStatus,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
 
         Page<ApprovalTreasury> approvalTreasuryPage = service.findAllWithFiltersAndPagination(
-                nipKaryawanResign, namaKaryawan, approvalTreasuryStatus, page, size);
+                nipKaryawanResign, namaKaryawan, approvalTreasuryStatus, page, size, sortBy, sortDirection);
 
         ApiResponse<Page<ApprovalTreasury>> response = new ApiResponse<>(
                 approvalTreasuryPage,

@@ -460,7 +460,7 @@ public class ApprovalAtasanController {
         }
     }
 
-    @GetMapping("/V2/approval-atasan")
+    @GetMapping("/V2")
     public ResponseEntity<ApiResponse<Page<ApprovalAtasan>>> getAllWithFiltersAndPagination(
             @RequestParam(required = false) String nipKaryawanResign,
             @RequestParam(required = false) String namaKaryawan,

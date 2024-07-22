@@ -138,16 +138,18 @@ public class ApprovalHRTalentController {
         }
     }
 
-    @GetMapping("/V2/approval-hrtalent")
+    @GetMapping("/V2")
     public ResponseEntity<ApiResponse<Page<ApprovalHRTalent>>> getAllWithFiltersAndPagination(
             @RequestParam(required = false) String nipKaryawanResign,
             @RequestParam(required = false) String namaKaryawan,
             @RequestParam(required = false) String approvalHRTalentStatus,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
 
         Page<ApprovalHRTalent> approvalHRTalentPage = approvalHRTalentService.findAllWithFiltersAndPagination(
-                nipKaryawanResign, namaKaryawan, approvalHRTalentStatus, page, size);
+                nipKaryawanResign, namaKaryawan, approvalHRTalentStatus, page, size, sortBy, sortDirection);
 
         ApiResponse<Page<ApprovalHRTalent>> response = new ApiResponse<>(
                 approvalHRTalentPage,
@@ -158,6 +160,7 @@ public class ApprovalHRTalentController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 
 }

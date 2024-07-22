@@ -29,4 +29,12 @@ public interface ApprovalGeneralServicesRepository extends JpaRepository<Approva
             Pageable pageable
     );
 
+    Page<ApprovalGeneralServices> findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalGeneralServicesStatusContainingIgnoreCase(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalGeneralServicesStatus,
+            Pageable pageable
+    );
+
+
 }

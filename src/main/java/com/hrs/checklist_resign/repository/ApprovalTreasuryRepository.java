@@ -28,4 +28,12 @@ public interface ApprovalTreasuryRepository extends JpaRepository<ApprovalTreasu
             String approvalTreasuryStatus,
             Pageable pageable
     );
+
+     Page<ApprovalTreasury> findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalTreasuryStatusContainingIgnoreCase(
+                String nipKaryawanResign,
+                String namaKaryawan,
+                String approvalTreasuryStatus,
+                Pageable pageable
+        );
+
 }

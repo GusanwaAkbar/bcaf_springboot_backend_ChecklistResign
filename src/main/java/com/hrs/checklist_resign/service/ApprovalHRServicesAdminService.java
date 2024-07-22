@@ -6,6 +6,9 @@ import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.repository.ApprovalHRServicesAdminRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -126,4 +129,21 @@ public class ApprovalHRServicesAdminService {
         approvalHRServicesAdmin.setDocumentPath(path.toString());
         return save(approvalHRServicesAdmin);
     }
+
+    public Page<ApprovalHRServicesAdmin> findAllWithFiltersAndPagination(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalHRServicesAdminStatus,
+            int page,
+            int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return repository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalHRServicesAdminStatusIsOrApprovalHRServicesAdminStatusIsNull(
+                nipKaryawanResign != null ? nipKaryawanResign : "",
+                namaKaryawan != null ? namaKaryawan : "",
+                approvalHRServicesAdminStatus,
+                pageable
+        );
+    }
+
 }

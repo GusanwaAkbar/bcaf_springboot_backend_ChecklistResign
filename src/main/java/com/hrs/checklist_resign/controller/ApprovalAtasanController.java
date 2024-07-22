@@ -7,6 +7,7 @@ import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.*;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -458,6 +459,28 @@ public class ApprovalAtasanController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/V2/approval-atasan")
+    public ResponseEntity<ApiResponse<Page<ApprovalAtasan>>> getAllWithFiltersAndPagination(
+            @RequestParam(required = false) String nipKaryawanResign,
+            @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(required = false) String approvalAtasanStatus,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ApprovalAtasan> approvalAtasanPage = approvalAtasanService.findAllWithFiltersAndPagination(
+                nipKaryawanResign, namaKaryawan, approvalAtasanStatus, page, size);
+
+        ApiResponse<Page<ApprovalAtasan>> response = new ApiResponse<>(
+                approvalAtasanPage,
+                true,
+                "Fetched records successfully",
+                HttpStatus.OK.value()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 
 }

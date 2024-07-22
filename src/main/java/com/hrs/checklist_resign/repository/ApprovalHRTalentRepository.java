@@ -4,6 +4,8 @@ import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalGeneralServices;
 import com.hrs.checklist_resign.Model.ApprovalHRIR;
 import com.hrs.checklist_resign.Model.ApprovalHRTalent;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,5 +21,13 @@ public interface ApprovalHRTalentRepository extends JpaRepository<ApprovalHRTale
 
 
     Optional <ApprovalHRTalent> findByApprovalAtasanId(Long id);
+
+    Page<ApprovalHRTalent> findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalHRTalentStatusIsOrApprovalHRTalentStatusIsNull(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalHRTalentStatus,
+            Pageable pageable
+    );
+
 
 }

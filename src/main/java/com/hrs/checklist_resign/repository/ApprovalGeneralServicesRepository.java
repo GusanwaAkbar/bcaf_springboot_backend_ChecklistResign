@@ -2,6 +2,8 @@ package com.hrs.checklist_resign.repository;
 
 import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalGeneralServices;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +21,12 @@ public interface ApprovalGeneralServicesRepository extends JpaRepository<Approva
 
 
     Optional <ApprovalGeneralServices> findByApprovalAtasanId(Long id);
+
+    Page<ApprovalGeneralServices> findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalGeneralServicesStatusIsOrApprovalGeneralServicesStatusIsNull(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalGeneralServicesStatus,
+            Pageable pageable
+    );
+
 }

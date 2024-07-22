@@ -4,6 +4,9 @@ import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalGeneralServices;
 import com.hrs.checklist_resign.repository.ApprovalAtasanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,6 +58,23 @@ public class ApprovalAtasanService {
         approvalAtasan.setDocumentPath(path.toString());
         return saveApproval(approvalAtasan);
     }
+
+    public Page<ApprovalAtasan> findAllWithFiltersAndPagination(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalAtasanStatus,
+            int page,
+            int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return approvalAtasanRepository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalStatusAtasanIsOrApprovalStatusAtasanIsNull(
+                nipKaryawanResign != null ? nipKaryawanResign : "",
+                namaKaryawan != null ? namaKaryawan : "",
+                approvalAtasanStatus,
+                pageable
+        );
+    }
+
 
 
 

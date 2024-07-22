@@ -154,16 +154,18 @@ public class ApprovalHRLearningController {
         }
     }
 
-    @GetMapping("/V2/approval-hrlearning")
+    @GetMapping("/V2")
     public ResponseEntity<ApiResponse<Page<ApprovalHRLearning>>> getAllWithFiltersAndPagination(
             @RequestParam(required = false) String nipKaryawanResign,
             @RequestParam(required = false) String namaKaryawan,
             @RequestParam(required = false) String approvalHRLearningStatus,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
 
         Page<ApprovalHRLearning> approvalHRLearningPage = service.findAllWithFiltersAndPagination(
-                nipKaryawanResign, namaKaryawan, approvalHRLearningStatus, page, size);
+                nipKaryawanResign, namaKaryawan, approvalHRLearningStatus, page, size, sortBy, sortDirection);
 
         ApiResponse<Page<ApprovalHRLearning>> response = new ApiResponse<>(
                 approvalHRLearningPage,
@@ -174,6 +176,7 @@ public class ApprovalHRLearningController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 
 

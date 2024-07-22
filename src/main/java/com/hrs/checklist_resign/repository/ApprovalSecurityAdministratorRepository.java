@@ -29,5 +29,13 @@ public interface ApprovalSecurityAdministratorRepository extends JpaRepository <
             Pageable pageable
     );
 
+    Page<ApprovalSecurityAdministrator> findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalSecurityAdministratorStatusContainingIgnoreCase(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalSecurityAdministratorStatus,
+            Pageable pageable
+    );
+
+
 
 }

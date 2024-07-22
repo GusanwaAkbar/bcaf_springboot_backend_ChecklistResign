@@ -156,16 +156,18 @@ public class ApprovalHRPayrollController {
         }
     }
 
-    @GetMapping("/V2/approval-hrpayroll")
+    @GetMapping("/V2")
     public ResponseEntity<ApiResponse<Page<ApprovalHRPayroll>>> getAllWithFiltersAndPagination(
             @RequestParam(required = false) String nipKaryawanResign,
             @RequestParam(required = false) String namaKaryawan,
             @RequestParam(required = false) String approvalHRPayrollStatus,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
 
         Page<ApprovalHRPayroll> approvalHRPayrollPage = service.findAllWithFiltersAndPagination(
-                nipKaryawanResign, namaKaryawan, approvalHRPayrollStatus, page, size);
+                nipKaryawanResign, namaKaryawan, approvalHRPayrollStatus, page, size, sortBy, sortDirection);
 
         ApiResponse<Page<ApprovalHRPayroll>> response = new ApiResponse<>(
                 approvalHRPayrollPage,

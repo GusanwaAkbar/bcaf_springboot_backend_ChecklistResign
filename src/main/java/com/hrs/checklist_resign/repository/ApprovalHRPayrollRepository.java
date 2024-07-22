@@ -26,6 +26,16 @@ public interface ApprovalHRPayrollRepository extends JpaRepository<ApprovalHRPay
             Pageable pageable
     );
 
+    Page<ApprovalHRPayroll> findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalHRPayrollStatusContainingIgnoreCase(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalHRPayrollStatus,
+            Pageable pageable
+    );
+
+
+
+
 
 
 }

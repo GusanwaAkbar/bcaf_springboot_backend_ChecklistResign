@@ -155,16 +155,18 @@ public class ApprovalSecurityAdministratorController {
         }
     }
 
-    @GetMapping("/V2/approval-security-administrator")
+    @GetMapping("/V2")
     public ResponseEntity<ApiResponse<Page<ApprovalSecurityAdministrator>>> getAllWithFiltersAndPagination(
             @RequestParam(required = false) String nipKaryawanResign,
             @RequestParam(required = false) String namaKaryawan,
             @RequestParam(required = false) String approvalSecurityAdministratorStatus,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
 
         Page<ApprovalSecurityAdministrator> approvalSecurityAdministratorPage = service.findAllWithFiltersAndPagination(
-                nipKaryawanResign, namaKaryawan, approvalSecurityAdministratorStatus, page, size);
+                nipKaryawanResign, namaKaryawan, approvalSecurityAdministratorStatus, page, size, sortBy, sortDirection);
 
         ApiResponse<Page<ApprovalSecurityAdministrator>> response = new ApiResponse<>(
                 approvalSecurityAdministratorPage,
@@ -175,6 +177,7 @@ public class ApprovalSecurityAdministratorController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 
 }

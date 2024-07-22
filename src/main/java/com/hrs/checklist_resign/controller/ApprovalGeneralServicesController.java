@@ -153,16 +153,18 @@ public class ApprovalGeneralServicesController {
         }
     }
 
-    @GetMapping("/V2/approval-general-services")
+    @GetMapping("/V2")
     public ResponseEntity<ApiResponse<Page<ApprovalGeneralServices>>> getAllWithFiltersAndPagination(
             @RequestParam(required = false) String nipKaryawanResign,
             @RequestParam(required = false) String namaKaryawan,
             @RequestParam(required = false) String approvalGeneralServicesStatus,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
 
         Page<ApprovalGeneralServices> approvalGeneralServicesPage = service.findAllWithFiltersAndPagination(
-                nipKaryawanResign, namaKaryawan, approvalGeneralServicesStatus, page, size);
+                nipKaryawanResign, namaKaryawan, approvalGeneralServicesStatus, page, size, sortBy, sortDirection);
 
         ApiResponse<Page<ApprovalGeneralServices>> response = new ApiResponse<>(
                 approvalGeneralServicesPage,
@@ -173,6 +175,7 @@ public class ApprovalGeneralServicesController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 
 

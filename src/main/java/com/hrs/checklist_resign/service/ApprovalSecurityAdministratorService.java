@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -148,6 +149,26 @@ public class ApprovalSecurityAdministratorService {
                 pageable
         );
     }
+
+    public Page<ApprovalSecurityAdministrator> findAllWithFiltersAndPagination(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalSecurityAdministratorStatus,
+            int page,
+            int size,
+            String sortBy,
+            String sortDirection) {
+        Sort sort = Sort.by(sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return repository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalSecurityAdministratorStatusContainingIgnoreCase(
+                nipKaryawanResign != null ? nipKaryawanResign : "",
+                namaKaryawan != null ? namaKaryawan : "",
+                approvalSecurityAdministratorStatus != null ? approvalSecurityAdministratorStatus : "",
+                pageable
+        );
+    }
+
 
 
 

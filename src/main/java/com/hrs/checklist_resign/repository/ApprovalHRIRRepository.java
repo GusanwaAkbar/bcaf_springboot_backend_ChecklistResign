@@ -27,5 +27,13 @@ public interface ApprovalHRIRRepository extends JpaRepository<ApprovalHRIR, Long
             Pageable pageable
     );
 
+    Page<ApprovalHRIR> findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalHRIRStatusContainingIgnoreCase(
+            String nipKaryawanResign,
+            String namaKaryawan,
+            String approvalHRIRStatus,
+            Pageable pageable
+    );
+
+
 
 }

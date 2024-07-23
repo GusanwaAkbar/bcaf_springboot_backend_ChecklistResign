@@ -159,13 +159,14 @@ public class ApprovalHRLearningService {
         Sort sort = Sort.by(sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return repository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalHRLearningStatusContainingIgnoreCase(
-                nipKaryawanResign != null ? nipKaryawanResign : "",
-                namaKaryawan != null ? namaKaryawan : "",
-                approvalHRLearningStatus != null ? approvalHRLearningStatus : "",
+        return repository.findWithFilters(
+                nipKaryawanResign,
+                namaKaryawan,
+                approvalHRLearningStatus,
                 pageable
         );
     }
+
 
 
 }

@@ -36,4 +36,18 @@ public interface ApprovalTreasuryRepository extends JpaRepository<ApprovalTreasu
                 Pageable pageable
         );
 
+    @Query("SELECT a FROM ApprovalTreasury a WHERE " +
+            "(:nipKaryawanResign IS NULL OR LOWER(a.nipKaryawanResign) LIKE LOWER(CONCAT('%', :nipKaryawanResign, '%'))) AND " +
+            "(:namaKaryawan IS NULL OR LOWER(a.namaKaryawan) LIKE LOWER(CONCAT('%', :namaKaryawan, '%'))) AND " +
+            "(:approvalStatus = 'null' AND a.approvalTreasuryStatus IS NULL OR " +
+            ":approvalStatus != 'null' AND LOWER(a.approvalTreasuryStatus) = LOWER(:approvalStatus) OR " +
+            ":approvalStatus IS NULL)")
+    Page<ApprovalTreasury> findWithFilters(
+            @Param("nipKaryawanResign") String nipKaryawanResign,
+            @Param("namaKaryawan") String namaKaryawan,
+            @Param("approvalStatus") String approvalStatus,
+            Pageable pageable
+    );
+
+
 }

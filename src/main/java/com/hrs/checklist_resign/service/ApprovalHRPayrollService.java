@@ -162,13 +162,14 @@ public class ApprovalHRPayrollService {
         Sort sort = Sort.by(sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return repository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalHRPayrollStatusContainingIgnoreCase(
-                nipKaryawanResign != null ? nipKaryawanResign : "",
-                namaKaryawan != null ? namaKaryawan : "",
-                approvalHRPayrollStatus != null ? approvalHRPayrollStatus : "",
+        return repository.findWithFilters(
+                nipKaryawanResign,
+                namaKaryawan,
+                approvalHRPayrollStatus,
                 pageable
         );
     }
+
 
 
 }

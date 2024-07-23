@@ -167,13 +167,14 @@ public class ApprovalTreasuryService {
         Sort sort = Sort.by(sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return repository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalTreasuryStatusContainingIgnoreCase(
-                nipKaryawanResign != null ? nipKaryawanResign : "",
-                namaKaryawan != null ? namaKaryawan : "",
-                approvalTreasuryStatus != null ? approvalTreasuryStatus : "",
+        return repository.findWithFilters(
+                nipKaryawanResign,
+                namaKaryawan,
+                approvalTreasuryStatus,
                 pageable
         );
     }
+
 
 
 }

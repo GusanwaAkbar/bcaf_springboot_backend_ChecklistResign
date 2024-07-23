@@ -171,13 +171,14 @@ public class ApprovalHRIRService {
         Sort sort = Sort.by(sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return approvalHRIRRepository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalHRIRStatusContainingIgnoreCase(
-                nipKaryawanResign != null ? nipKaryawanResign : "",
-                namaKaryawan != null ? namaKaryawan : "",
-                approvalHRIRStatus != null ? approvalHRIRStatus : "",
+        return approvalHRIRRepository.findWithFilters(
+                nipKaryawanResign,
+                namaKaryawan,
+                approvalHRIRStatus,
                 pageable
         );
     }
+
 
 
 }

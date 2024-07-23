@@ -178,10 +178,10 @@ public class ApprovalGeneralServicesService {
         Sort sort = Sort.by(sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return repository.findByNipKaryawanResignContainingIgnoreCaseAndNamaKaryawanContainingIgnoreCaseAndApprovalGeneralServicesStatusContainingIgnoreCase(
-                nipKaryawanResign != null ? nipKaryawanResign : "",
-                namaKaryawan != null ? namaKaryawan : "",
-                approvalGeneralServicesStatus != null ? approvalGeneralServicesStatus : "",
+        return repository.findWithFilters(
+                nipKaryawanResign,
+                namaKaryawan,
+                approvalGeneralServicesStatus,
                 pageable
         );
     }

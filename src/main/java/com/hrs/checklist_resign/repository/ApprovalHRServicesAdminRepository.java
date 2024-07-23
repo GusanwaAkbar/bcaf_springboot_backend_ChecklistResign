@@ -35,5 +35,19 @@ public interface ApprovalHRServicesAdminRepository extends JpaRepository <Approv
             Pageable pageable
     );
 
+    @Query("SELECT a FROM ApprovalHRServicesAdmin a WHERE " +
+            "(:nipKaryawanResign IS NULL OR LOWER(a.nipKaryawanResign) LIKE LOWER(CONCAT('%', :nipKaryawanResign, '%'))) AND " +
+            "(:namaKaryawan IS NULL OR LOWER(a.namaKaryawan) LIKE LOWER(CONCAT('%', :namaKaryawan, '%'))) AND " +
+            "(:approvalStatus = 'null' AND a.approvalHRServicesAdminStatus IS NULL OR " +
+            ":approvalStatus != 'null' AND LOWER(a.approvalHRServicesAdminStatus) = LOWER(:approvalStatus) OR " +
+            ":approvalStatus IS NULL)")
+    Page<ApprovalHRServicesAdmin> findWithFilters(
+            @Param("nipKaryawanResign") String nipKaryawanResign,
+            @Param("namaKaryawan") String namaKaryawan,
+            @Param("approvalStatus") String approvalStatus,
+            Pageable pageable
+    );
+
+
 
 }

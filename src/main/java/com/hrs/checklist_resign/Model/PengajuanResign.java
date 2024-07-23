@@ -62,6 +62,16 @@ public class PengajuanResign {
     @Temporal(TemporalType.TIMESTAMP)
     private Date approvedDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "approved_date_all_departement")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date approvedDateAllDepartement;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "approved_date_final")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date approvedDateFinal;
+
     @Column(name = "approved_by")
     private String approvedBy;
 
@@ -74,6 +84,9 @@ public class PengajuanResign {
     @OneToOne(mappedBy = "pengajuanResign", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "FinalApproval")
     private FinalApproval finalApproval;
+
+    @Column(name = "selesai")
+    private String finalStatus;
 
     // Constructor, getter, setter
 

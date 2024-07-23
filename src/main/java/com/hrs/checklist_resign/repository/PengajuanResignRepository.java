@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface PengajuanResignRepository extends JpaRepository<PengajuanResign, Long> {
     Optional<PengajuanResign> findByUserDetailResign(UserDetail userDetailResign);
 
+
+
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM app_hrs_resign_final_approval WHERE nip_karyawan_resign = :nipKaryawanResign", nativeQuery = true)

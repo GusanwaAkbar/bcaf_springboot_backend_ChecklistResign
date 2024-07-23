@@ -7,6 +7,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +53,9 @@ public class CheckingAllApprovalsStatus {
 
     @Autowired
     private AsyncEmailService asyncEmailService;
+
+    @Autowired
+    private PengajuanResignService pengajuanResignService;
 
     @Autowired
     private AdminService adminService;
@@ -170,6 +174,12 @@ public class CheckingAllApprovalsStatus {
         finalApproval.setNamaAtasan(userDetailAtasan.getNama());
 
         finalApproval.setRemarks("All approvals completed successfully.");
+
+        //setApprovedAllDepartement
+        PengajuanResign pengajuanResign = approvalTreasuryRepository.findById(id).get().getApprovalAtasan().getPengajuanResign();
+        pengajuanResign.setApprovedDateAllDepartement(new Date());
+        pengajuanResignService.saveResignation(pengajuanResign);
+
 
 
         List<UserResponseDTO> listUserDTO = adminService.findUsersWithRolesNotContainingV2("USER");

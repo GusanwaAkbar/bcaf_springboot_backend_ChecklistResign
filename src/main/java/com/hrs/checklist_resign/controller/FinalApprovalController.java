@@ -1,12 +1,14 @@
 package com.hrs.checklist_resign.controller;
 
 import com.hrs.checklist_resign.Model.ApprovalAtasan;
+import com.hrs.checklist_resign.Model.PengajuanResign;
 import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.dto.FinalApprovalDTO;
 import com.hrs.checklist_resign.Model.FinalApproval;
 import com.hrs.checklist_resign.dto.PostFinalApprovalDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.FinalApprovalService;
+import com.hrs.checklist_resign.service.PengajuanResignService;
 import com.hrs.checklist_resign.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,9 @@ public class FinalApprovalController {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private PengajuanResignService pengajuanResignService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<FinalApprovalDTO>> getFinalApprovalById(@PathVariable Long id) {
@@ -77,6 +82,10 @@ public class FinalApprovalController {
         String nipApprover = authentication.getName();
 
         UserDetail userDetailAtasan =  userDetailsService.findByUsername(nipApprover);
+
+
+
+
         String namaApprover = userDetailAtasan.getNama();
 
         // Retrieve the current final approval
@@ -91,12 +100,25 @@ public class FinalApprovalController {
 
             if (finalApproval.getFinalApprovalStatus().equals("accept"))
             {
+                //get pengajuanResign
+
+                Optional<PengajuanResign> pengajuanResignOpt = pengajuanResignService.getResignationByNipUser(finalApproval.getNipKaryawanResign());
+
+                PengajuanResign pengajuanResign = pengajuanResignOpt.get();
+
+                //set approvedDate pengajuanResign
                 finalApproval.setApprovedDate(new Date());
                 finalApproval.setApprovedBy(namaApprover);
+                pengajuanResign.setApprovedDateFinal(new Date());
+
+                //save pengajuan resign
+                pengajuanResignService.saveResignation(pengajuanResign);
+
             }
 
             // Save updated final approval
             FinalApproval updatedFinalApproval = finalApprovalService.updateFinalApproval(finalApproval);
+
 
             ApiResponse<FinalApproval> response = new ApiResponse<>(updatedFinalApproval, true, "Update succeeded", HttpStatus.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);

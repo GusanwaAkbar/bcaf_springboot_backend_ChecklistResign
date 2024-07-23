@@ -9,6 +9,7 @@ import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.*;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -254,6 +255,38 @@ public class PengajuanResignController {
         approvalAtasanObj.setPengajuanResign(savedPengajuanResign);
         approvalAtasanService.saveApproval(approvalAtasanObj);
     }
+
+
+    @GetMapping("/V2")
+    public ResponseEntity<ApiResponse<Page<PengajuanResign>>> getAllResignations(
+            @RequestParam(required = false) String nipKaryawan,
+            @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(required = false) Integer filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+
+        Page<PengajuanResign> resignationPage = pengajuanResignService.findAllWithFiltersAndPagination(
+                nipKaryawan,
+                namaKaryawan,
+                filter,
+                page,
+                size,
+                sortBy,
+                sortDirection
+        );
+
+        if (resignationPage.isEmpty()) {
+            ApiResponse<Page<PengajuanResign>> response = new ApiResponse<>(resignationPage, true, "No data found", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        ApiResponse<Page<PengajuanResign>> response = new ApiResponse<>(resignationPage, true, "Resignations successfully fetched", HttpStatus.OK.value());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 
 
 

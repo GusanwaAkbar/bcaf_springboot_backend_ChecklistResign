@@ -3,6 +3,8 @@ package com.hrs.checklist_resign.repository;
 import com.hrs.checklist_resign.Model.PengajuanResign;
 import com.hrs.checklist_resign.Model.UserDetail;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -72,4 +74,21 @@ public interface PengajuanResignRepository extends JpaRepository<PengajuanResign
     @Query(value = "DELETE FROM app_hrs_resign_bucket_pengajuan_resign WHERE nip_user = :nipUser", nativeQuery = true)
     void deletePengajuanResignByNipUser(String nipUser);
     Optional<PengajuanResign> findByNipUser(String nipUser);
+
+
+
+        @Query("SELECT p FROM PengajuanResign p WHERE " +
+                "(:nipKaryawan IS NULL OR LOWER(p.nipUser) LIKE LOWER(CONCAT('%', :nipKaryawan, '%'))) AND " +
+                "(:namaKaryawan IS NULL OR LOWER(p.namaKaryawan) LIKE LOWER(CONCAT('%', :namaKaryawan, '%'))) AND " +
+                "(:filter = 1 AND p.approvedDate IS NULL OR " +
+                ":filter = 2 AND p.approvedDateAllDepartement IS NULL OR " +
+                ":filter = 3 AND p.approvedDateFinal IS NULL OR " +
+                ":filter IS NULL)")
+        Page<PengajuanResign> findWithFilters(
+                @Param("nipKaryawan") String nipKaryawan,
+                @Param("namaKaryawan") String namaKaryawan,
+                @Param("filter") Integer filter,
+                Pageable pageable
+        );
+
 }

@@ -7,6 +7,10 @@ import com.hrs.checklist_resign.repository.PengajuanResignRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,4 +75,29 @@ public class PengajuanResignService {
         // Delete the parent entity
         pengajuanResignRepository.deletePengajuanResignByNipUser(nipUser);
     }
+
+
+
+
+    public Page<PengajuanResign> findAllWithFiltersAndPagination(
+                String nipKaryawan,
+                String namaKaryawan,
+                Integer filter,
+                int page,
+                int size,
+                String sortBy,
+                String sortDirection) {
+            Sort sort = Sort.by(sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+            Pageable pageable = PageRequest.of(page, size, sort);
+
+            return pengajuanResignRepository.findWithFilters(
+                    nipKaryawan,
+                    namaKaryawan,
+                    filter,
+                    pageable
+            );
+        }
+
+
+
 }

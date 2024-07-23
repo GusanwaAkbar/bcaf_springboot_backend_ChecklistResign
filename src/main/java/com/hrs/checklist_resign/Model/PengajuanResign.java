@@ -224,4 +224,28 @@ public class PengajuanResign {
     public void setNamaAtasan(String namaAtasan) {
         this.namaAtasan = namaAtasan;
     }
+
+    public Date getApprovedDateAllDepartement() {
+        return approvedDateAllDepartement;
+    }
+
+    public void setApprovedDateAllDepartement(Date approvedDateAllDepartement) {
+        this.approvedDateAllDepartement = approvedDateAllDepartement;
+    }
+
+    public Date getApprovedDateFinal() {
+        return approvedDateFinal;
+    }
+
+    public void setApprovedDateFinal(Date approvedDateFinal) {
+        this.approvedDateFinal = approvedDateFinal;
+    }
+
+    public String getFinalStatus() {
+        return finalStatus;
+    }
+
+    public void setFinalStatus(String finalStatus) {
+        this.finalStatus = finalStatus;
+    }
 }

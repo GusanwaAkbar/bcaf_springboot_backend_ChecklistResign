@@ -5,6 +5,10 @@ import com.hrs.checklist_resign.Model.FinalApproval;
 import com.hrs.checklist_resign.repository.FinalApprovalRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,6 +45,19 @@ public class FinalApprovalService {
     @Transactional
     public List<FinalApprovalDTO> getAllFinalApproval() {
         return finalApprovalRepository.findAllFinalApprovalDTOs();
+    }
+
+
+    public Page<FinalApprovalDTO> getFinalApprovals(String nipKaryawanResign, String namaKaryawan, String finalApprovalStatus, int page, int size, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return finalApprovalRepository.findFinalApprovalDTOsWithFilters(
+                nipKaryawanResign,
+                namaKaryawan,
+                finalApprovalStatus,
+                pageable
+        );
     }
 
 

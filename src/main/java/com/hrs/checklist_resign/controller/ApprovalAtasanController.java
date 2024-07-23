@@ -482,6 +482,46 @@ public class ApprovalAtasanController {
     }
 
 
+    @GetMapping("/get-approval-by-username/V2")
+    public ResponseEntity<ApiResponse<Page<ApprovalAtasan>>> getApprovalByUsername(
+            @RequestParam(required = false) String nipKaryawanResign,
+            @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(required = false) String approvalStatusAtasan,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<Page<ApprovalAtasan>> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipAtasan = authentication.getName();
+
+        Page<ApprovalAtasan> approvalAtasanPage = approvalAtasanService.findAllWithFiltersAndPagination(
+                nipKaryawanResign,
+                namaKaryawan,
+                approvalStatusAtasan,
+                nipAtasan,
+                page,
+                size,
+                sortBy,
+                sortDirection
+        );
+
+        if (approvalAtasanPage.isEmpty()) {
+            ApiResponse<Page<ApprovalAtasan>> response = new ApiResponse<>(approvalAtasanPage, true, "No data found", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        ApiResponse<Page<ApprovalAtasan>> response = new ApiResponse<>(approvalAtasanPage, true, "Approval atasan successfully fetched", HttpStatus.OK.value());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 
 }
 

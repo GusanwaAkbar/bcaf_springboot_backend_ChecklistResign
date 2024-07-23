@@ -9,6 +9,7 @@ import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.FinalApprovalService;
 import com.hrs.checklist_resign.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -104,5 +105,30 @@ public class FinalApprovalController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/V2")
+    public ResponseEntity<ApiResponse<Page<FinalApprovalDTO>>> getFinalApprovals(
+            @RequestParam(required = false) String nipKaryawanResign,
+            @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(required = false) String finalApprovalStatus,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
+
+        Page<FinalApprovalDTO> finalApprovals = finalApprovalService.getFinalApprovals(
+                nipKaryawanResign, namaKaryawan, finalApprovalStatus, page, size, sortBy, sortDirection);
+
+        if (finalApprovals.hasContent()) {
+            ApiResponse<Page<FinalApprovalDTO>> response = new ApiResponse<>(
+                    finalApprovals, true, "Fetch succeeded", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<Page<FinalApprovalDTO>> response = new ApiResponse<>(
+                    false, "No records found", HttpStatus.NOT_FOUND.value(), "FinalApproval not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }

@@ -65,6 +65,28 @@ public class ApprovalTreasuryController {
         }
     }
 
+    @GetMapping("/admin/{nipKaryawan}")
+    public ResponseEntity<ApiResponse<ApprovalTreasury>> getByNipKaryawanResignAdmin(@PathVariable String nipKaryawan) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = nipKaryawan;
+
+        Optional<ApprovalTreasury> approvalTreasury = service.findByNipKaryawanResign(nipKaryawanResign);
+        if (approvalTreasury.isPresent()) {
+            ApiResponse<ApprovalTreasury> response = new ApiResponse<>(approvalTreasury.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalTreasury> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalGeneralServices not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ApprovalTreasury>> getById(@PathVariable Long id) {
         Optional<ApprovalTreasury> approvalTreasury = service.findById(id);

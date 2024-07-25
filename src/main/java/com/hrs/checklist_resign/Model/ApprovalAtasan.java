@@ -1,6 +1,7 @@
 package com.hrs.checklist_resign.Model;
 
 import com.fasterxml.jackson.annotation.*;
+import com.hrs.checklist_resign.interfaces.Approval;
 import jakarta.persistence.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "app_hrs_resign_bucket_approval_atasan")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApprovalAtasan {
+public class ApprovalAtasan implements Approval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -265,6 +266,7 @@ public class ApprovalAtasan {
         this.approvalStatusAtasan = approvalStatusAtasan;
     }
 
+    @Override
     public String getNipAtasan() {
         return nipAtasan;
     }
@@ -298,6 +300,7 @@ public class ApprovalAtasan {
         this.emailAtasan = emailAtasan;
     }
 
+    @Override
     public String getNipKaryawanResign() {
         return nipKaryawanResign;
     }

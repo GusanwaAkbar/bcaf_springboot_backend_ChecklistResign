@@ -2,6 +2,8 @@ package com.hrs.checklist_resign.repository;
 
 import com.hrs.checklist_resign.Model.PengajuanResign;
 import com.hrs.checklist_resign.Model.UserDetail;
+import com.hrs.checklist_resign.dto.ResignationProgressDTO;
+import com.hrs.checklist_resign.dto.ResignationProgressDetailDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+
+
 
 @Repository
 public interface PengajuanResignRepository extends JpaRepository<PengajuanResign, Long> {
@@ -90,5 +94,57 @@ public interface PengajuanResignRepository extends JpaRepository<PengajuanResign
                 @Param("filter") Integer filter,
                 Pageable pageable
         );
+
+
+
+    @Query("SELECT new com.hrs.checklist_resign.dto.ResignationProgressDTO(pr.id, pr.nipUser, pr.namaKaryawan, pr.tanggalBerakhirBekerja, " +
+            "aa.approvalStatusAtasan, ags.approvalGeneralServicesStatus, hrir.approvalHRIRStatus, " +
+            "hrl.approvalHRLearningStatus, hrp.approvalHRPayrollStatus, hrsa.approvalHRServicesAdminStatus, " +
+            "hrt.approvalHRTalentStatus, sa.approvalSecurityAdministratorStatus, at.approvalTreasuryStatus, " +
+            "fa.finalApprovalStatus, pr.nipAtasan, pr.namaAtasan, pr.emailAtasan, pr.createdDate, pr.approvedDate, " +
+            "pr.approvedDateAllDepartement, pr.approvedDateFinal, aa) " +
+            "FROM PengajuanResign pr " +
+            "LEFT JOIN pr.approvalAtasan aa " +
+            "LEFT JOIN aa.approvalGeneralServices ags " +
+            "LEFT JOIN aa.approvalHRIR hrir " +
+            "LEFT JOIN aa.approvalHRLearning hrl " +
+            "LEFT JOIN aa.approvalHRPayroll hrp " +
+            "LEFT JOIN aa.approvalHRServicesAdmin hrsa " +
+            "LEFT JOIN aa.approvalHRTalent hrt " +
+            "LEFT JOIN aa.approvalSecurityAdministrator sa " +
+            "LEFT JOIN aa.approvalTreasury at " +
+            "LEFT JOIN pr.finalApproval fa " +
+            "WHERE (:nipUser IS NULL OR LOWER(pr.nipUser) LIKE LOWER(CONCAT('%', :nipUser, '%'))) " +
+            "AND (:namaKaryawan IS NULL OR LOWER(pr.namaKaryawan) LIKE LOWER(CONCAT('%', :namaKaryawan, '%')))")
+    Page<ResignationProgressDTO> findResignationProgress(
+            @Param("nipUser") String nipUser,
+            @Param("namaKaryawan") String namaKaryawan,
+            Pageable pageable);
+
+
+
+    @Query("SELECT new com.hrs.checklist_resign.dto.ResignationProgressDTO(pr.id, pr.nipUser, pr.namaKaryawan, pr.tanggalBerakhirBekerja, " +
+            "aa.approvalStatusAtasan, ags.approvalGeneralServicesStatus, hrir.approvalHRIRStatus, " +
+            "hrl.approvalHRLearningStatus, hrp.approvalHRPayrollStatus, hrsa.approvalHRServicesAdminStatus, " +
+            "hrt.approvalHRTalentStatus, sa.approvalSecurityAdministratorStatus, at.approvalTreasuryStatus, " +
+            "fa.finalApprovalStatus, pr.nipAtasan, pr.namaAtasan, pr.emailAtasan, pr.createdDate, pr.approvedDate, " +
+            "pr.approvedDateAllDepartement, pr.approvedDateFinal, aa) " +
+            "FROM PengajuanResign pr " +
+            "LEFT JOIN pr.approvalAtasan aa " +
+            "LEFT JOIN aa.approvalGeneralServices ags " +
+            "LEFT JOIN aa.approvalHRIR hrir " +
+            "LEFT JOIN aa.approvalHRLearning hrl " +
+            "LEFT JOIN aa.approvalHRPayroll hrp " +
+            "LEFT JOIN aa.approvalHRServicesAdmin hrsa " +
+            "LEFT JOIN aa.approvalHRTalent hrt " +
+            "LEFT JOIN aa.approvalSecurityAdministrator sa " +
+            "LEFT JOIN aa.approvalTreasury at " +
+            "LEFT JOIN pr.finalApproval fa " +
+            "WHERE pr.id = :id")
+    ResignationProgressDTO findResignationProgressById(@Param("id") Long id);
+
+
+
+
 
 }

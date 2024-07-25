@@ -63,6 +63,28 @@ public class ApprovalHRTalentController {
         }
     }
 
+    @GetMapping("/admin/{nipKaryawan}")
+    public ResponseEntity<ApiResponse<ApprovalHRTalent>> getByNipKaryawanResignAdmin(@PathVariable String nipKaryawan) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = nipKaryawan;
+
+        Optional<ApprovalHRTalent> approvalHRTalent = approvalHRTalentService.findByNipKaryawanResign(nipKaryawanResign);
+        if (approvalHRTalent.isPresent()) {
+            ApiResponse<ApprovalHRTalent> response = new ApiResponse<>(approvalHRTalent.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalHRTalent> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalGeneralServices not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ApprovalHRTalent>> getApprovalHRTalentById(@PathVariable Long id) {
         Optional<ApprovalHRTalent> approvalHRTalent = approvalHRTalentService.findById(id);

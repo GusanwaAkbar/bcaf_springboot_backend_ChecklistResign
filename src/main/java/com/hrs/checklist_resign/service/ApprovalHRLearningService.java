@@ -3,6 +3,7 @@ package com.hrs.checklist_resign.service;
 import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalHRLearning;
 import com.hrs.checklist_resign.Model.UserDetail;
+import com.hrs.checklist_resign.interfaces.ApprovalService;
 import com.hrs.checklist_resign.repository.ApprovalHRLearningRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ApprovalHRLearningService {
+public class ApprovalHRLearningService implements ApprovalService {
 
     private final ApprovalHRLearningRepository repository;
 
@@ -52,6 +53,7 @@ public class ApprovalHRLearningService {
         return repository.findById(id);
     }
 
+    @Override
     public Optional<ApprovalHRLearning> findByNipKaryawanResign(String nipKaryawanResign) {
         return repository.findByNipKaryawanResign(nipKaryawanResign);
     }

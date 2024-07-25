@@ -4,12 +4,17 @@ import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.PengajuanResign;
 import com.hrs.checklist_resign.Model.User;
 import com.hrs.checklist_resign.Model.UserDetail;
+import com.hrs.checklist_resign.dto.ResignationProgressDTO;
+import com.hrs.checklist_resign.dto.ResignationProgressDetailDTO;
 import com.hrs.checklist_resign.payload.PengajuanResignDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.*;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -45,6 +50,8 @@ public class PengajuanResignController {
 
     @Autowired
     private UserService userService;
+
+
 
 
     @GetMapping
@@ -287,6 +294,47 @@ public class PengajuanResignController {
     }
 
 
+    @GetMapping("/admin")
+    public ResponseEntity<ApiResponse<Page<ResignationProgressDTO>>> getResignationProgress(
+            @RequestParam(required = false) String nipUser,
+            @RequestParam(required = false) String namaKaryawan,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
+
+        Page<ResignationProgressDTO> progressPage = pengajuanResignService.getResignationProgress(
+                nipUser, namaKaryawan, page, size, sortBy, sortDirection);
+
+        if (progressPage.hasContent()) {
+            ApiResponse<Page<ResignationProgressDTO>> response = new ApiResponse<>(
+                    progressPage, true, "Fetch succeeded", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<Page<ResignationProgressDTO>> response = new ApiResponse<>(
+                    false, "No records found", HttpStatus.NOT_FOUND.value(), "Resignation progress not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<ApiResponse<ResignationProgressDTO>> getResignationProgressById(@PathVariable Long id) {
+        ResignationProgressDTO resignationProgressDTO = pengajuanResignService.getResignationProgressById(id);
+        if (resignationProgressDTO != null) {
+            ApiResponse<ResignationProgressDTO> response = new ApiResponse<>(
+                    resignationProgressDTO, true, "Fetch Succeeded", HttpStatus.OK.value());
+
+
+            return  new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+
+            ApiResponse<ResignationProgressDTO> response = new ApiResponse<>(
+                    false, "Resignation Not Found", HttpStatus.NOT_FOUND.value());
+
+
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 

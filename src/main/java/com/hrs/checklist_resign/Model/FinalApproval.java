@@ -2,6 +2,7 @@ package com.hrs.checklist_resign.Model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hrs.checklist_resign.interfaces.Approval;
 import jakarta.persistence.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "app_hrs_resign_final_approval")
-public class FinalApproval implements Serializable {
+public class FinalApproval implements Serializable, Approval {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -273,6 +274,7 @@ public class FinalApproval implements Serializable {
         this.namaKaryawan = namaKaryawan;
     }
 
+    @Override
     public String getNipAtasan() {
         return nipAtasan;
     }

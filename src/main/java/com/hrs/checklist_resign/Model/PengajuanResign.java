@@ -51,6 +51,7 @@ public class PengajuanResign {
     @Column(name = "email_atasan")
     private String emailAtasan;
 
+
     // Field untuk audit trail
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "created_date", nullable = false, updatable = false)

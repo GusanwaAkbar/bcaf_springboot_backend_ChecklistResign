@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 @RequestMapping("/api/approval-atasan")
@@ -109,6 +111,33 @@ public class ApprovalAtasanController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
+
+
+    @GetMapping("/admin/{nipKaryawa}")
+    public ResponseEntity<ApiResponse<ApprovalAtasan>> getByNipKaryawanResignAdmin(@PathVariable String nipKaryawan) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = nipKaryawan;
+
+        Optional<ApprovalAtasan> approvalAtasan = approvalAtasanService.findByNipKaryawanResign(nipKaryawanResign);
+
+
+
+        if (approvalAtasan.isPresent()) {
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>(approvalAtasan.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalAtasan not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getApproval(@PathVariable Long id) {
@@ -519,6 +548,54 @@ public class ApprovalAtasanController {
 
         ApiResponse<Page<ApprovalAtasan>> response = new ApiResponse<>(approvalAtasanPage, true, "Approval atasan successfully fetched", HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
+    @GetMapping("/get-approval/{nipKaryawan}")
+    public ResponseEntity<ApiResponse<ApprovalAtasan>> getApprovalByUser(@PathVariable String nipKaryawan) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String userNip = authentication.getName();
+        String userRole = authentication.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("");
+
+        Optional<ApprovalAtasan> approvalAtasan = approvalAtasanService.findByNipKaryawanResign(nipKaryawan);
+
+        if ("ROLE_ADMIN".equals(userRole)) {
+            // Admin can see all data
+            if (approvalAtasan.isPresent()) {
+                ApiResponse<ApprovalAtasan> response = new ApiResponse<>(approvalAtasan.get(), true, "Approval atasan successfully fetched", HttpStatus.OK.value());
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                ApiResponse<ApprovalAtasan> response = new ApiResponse<>(null, false, "Approval not found", HttpStatus.NOT_FOUND.value());
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } else if ("ROLE_USER".equals(userRole)) {
+            // User logic
+            if (approvalAtasan.isPresent()) {
+                if (userNip.equals(approvalAtasan.get().getNipAtasan())) {
+                    ApiResponse<ApprovalAtasan> response = new ApiResponse<>(approvalAtasan.get(), true, "Approval atasan successfully fetched", HttpStatus.OK.value());
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else {
+                    ApiResponse<ApprovalAtasan> response = new ApiResponse<>( false, "User doesn't have the right to access this item", HttpStatus.UNAUTHORIZED.value(), "Unauthorized access");
+                    return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                ApiResponse<ApprovalAtasan> response = new ApiResponse<>( false, "Approval not found", HttpStatus.NOT_FOUND.value());
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            ApiResponse<ApprovalAtasan> response = new ApiResponse<>( false, "Invalid role", HttpStatus.FORBIDDEN.value(), "Access denied");
+            return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        }
     }
 
 

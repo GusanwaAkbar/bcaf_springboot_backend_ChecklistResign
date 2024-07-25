@@ -76,6 +76,28 @@ public class ApprovalGeneralServicesController {
         }
     }
 
+    @GetMapping("/admin/{nipKaryawan}")
+    public ResponseEntity<ApiResponse<ApprovalGeneralServices>> getByNipKaryawanResignAdmin(@PathVariable String nipKaryawan) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = nipKaryawan;
+
+        Optional<ApprovalGeneralServices> approvalGeneralServices = service.findByNipKaryawanResign(nipKaryawanResign);
+        if (approvalGeneralServices.isPresent()) {
+            ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(approvalGeneralServices.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalGeneralServices not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<ApprovalGeneralServices>> create(@RequestBody ApprovalGeneralServices approvalGeneralServices) {
         return service.save(approvalGeneralServices);

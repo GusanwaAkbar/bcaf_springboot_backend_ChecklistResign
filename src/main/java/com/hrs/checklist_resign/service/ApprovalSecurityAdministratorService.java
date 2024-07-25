@@ -4,6 +4,7 @@ package com.hrs.checklist_resign.service;
 import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.ApprovalSecurityAdministrator;
 import com.hrs.checklist_resign.Model.UserDetail;
+import com.hrs.checklist_resign.interfaces.ApprovalService;
 import com.hrs.checklist_resign.repository.ApprovalSecurityAdministratorRepository;
 import com.hrs.checklist_resign.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ApprovalSecurityAdministratorService {
+public class ApprovalSecurityAdministratorService implements ApprovalService {
 
     private final ApprovalSecurityAdministratorRepository repository;
 
@@ -44,6 +45,7 @@ public class ApprovalSecurityAdministratorService {
         this.repository = repository;
     }
 
+    @Override
     public Optional<ApprovalSecurityAdministrator> findByNipKaryawanResign(String nipKaryawanResign) {
         return repository.findByNipKaryawanResign(nipKaryawanResign);
     }

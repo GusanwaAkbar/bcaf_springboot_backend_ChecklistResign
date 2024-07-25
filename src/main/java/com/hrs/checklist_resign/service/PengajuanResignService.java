@@ -2,6 +2,8 @@ package com.hrs.checklist_resign.service;
 
 import com.hrs.checklist_resign.Model.PengajuanResign;
 import com.hrs.checklist_resign.Model.UserDetail;
+import com.hrs.checklist_resign.dto.ResignationProgressDTO;
+import com.hrs.checklist_resign.dto.ResignationProgressDetailDTO;
 import com.hrs.checklist_resign.repository.ApprovalAtasanRepository;
 import com.hrs.checklist_resign.repository.PengajuanResignRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -97,6 +99,21 @@ public class PengajuanResignService {
                     pageable
             );
         }
+
+
+
+    public Page<ResignationProgressDTO> getResignationProgress(String nipUser, String namaKaryawan, int page, int size, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return pengajuanResignRepository.findResignationProgress(nipUser, namaKaryawan, pageable);
+    }
+
+
+    public ResignationProgressDTO getResignationProgressById(Long id) {
+        return pengajuanResignRepository.findResignationProgressById(id);
+    }
+
 
 
 

@@ -3,6 +3,7 @@ package com.hrs.checklist_resign.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.hrs.checklist_resign.interfaces.Approval;
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +12,7 @@ import java.util.Date;
 
 @Entity
 @Table( name = "app_hrs_resign_approval_hrtalent")
-public class ApprovalHRTalent {
+public class ApprovalHRTalent implements Approval {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -92,6 +93,7 @@ public class ApprovalHRTalent {
         this.id = id;
     }
 
+    @Override
     public String getNipKaryawanResign() {
         return nipKaryawanResign;
     }
@@ -157,6 +159,7 @@ public class ApprovalHRTalent {
         this.namaKaryawan = namaKaryawan;
     }
 
+    @Override
     public String getNipAtasan() {
         return nipAtasan;
     }

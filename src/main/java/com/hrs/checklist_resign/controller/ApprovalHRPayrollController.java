@@ -59,6 +59,30 @@ public class ApprovalHRPayrollController {
         }
     }
 
+
+    @GetMapping("/admin/{nipKaryawan}")
+    public ResponseEntity<ApiResponse<ApprovalHRPayroll>> getByNipKaryawanResignAdmin(@PathVariable String nipKaryawan) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String nipKaryawanResign = nipKaryawan;
+
+        Optional<ApprovalHRPayroll> approvalHRPayroll = service.findByNipKaryawanResign(nipKaryawanResign);
+        if (approvalHRPayroll.isPresent()) {
+            ApiResponse<ApprovalHRPayroll> response = new ApiResponse<>(approvalHRPayroll.get(), true, "Record fetched successfully", HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            ApiResponse<ApprovalHRPayroll> response = new ApiResponse<>(false, "Record not found", HttpStatus.NOT_FOUND.value(), "ApprovalGeneralServices not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<ApprovalHRPayroll>>> getAll() {
         List<ApprovalHRPayroll> approvalHRPayrollList = service.findAll();

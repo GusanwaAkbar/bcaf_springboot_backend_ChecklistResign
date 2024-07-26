@@ -119,6 +119,11 @@ public class PengajuanResignService implements ApprovalService {
         return pengajuanResignRepository.findResignationProgressById(id);
     }
 
+    public Page<ResignationProgressDTO> getResignationProgressByNipAtasan(String nipAtasan, String namaKaryawan, int page, int size, String sortBy, String sortDirection) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy);
+        return pengajuanResignRepository.findResignationProgressByNipAtasan(nipAtasan, namaKaryawan, pageable);
+    }
+
 
 
 

@@ -22,6 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
 
 @RestController
 @RequestMapping("/api/resignations")
@@ -303,8 +306,41 @@ public class PengajuanResignController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection) {
 
-        Page<ResignationProgressDTO> progressPage = pengajuanResignService.getResignationProgress(
-                nipUser, namaKaryawan, page, size, sortBy, sortDirection);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<Page<ResignationProgressDTO>> response = new ApiResponse<>(
+                    false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        String userNip = authentication.getName();
+        String userRole = authentication.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("");
+
+        // Additional logging to debug
+        System.out.println("=======================================");
+        System.out.println("User NIP: " + userNip);
+        System.out.println("User Role: " + userRole);
+        System.out.println("Authorities: " + authentication.getAuthorities());
+
+        Page<ResignationProgressDTO> progressPage;
+
+        if ("ROLE_ADMIN".equals(userRole)) {
+            // Admin logic: retrieve full data
+            progressPage = pengajuanResignService.getResignationProgress(
+                    nipUser, namaKaryawan, page, size, sortBy, sortDirection);
+        } else if ("ROLE_USER".equals(userRole)) {
+            // User logic: retrieve resignations where nipAtasan = userNip
+            progressPage = pengajuanResignService.getResignationProgressByNipAtasan(
+                    userNip, namaKaryawan, page, size, sortBy, sortDirection);
+        } else {
+            ApiResponse<Page<ResignationProgressDTO>> response = new ApiResponse<>(
+                    false, "Invalid role", HttpStatus.FORBIDDEN.value(), "Access denied");
+            return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        }
 
         if (progressPage.hasContent()) {
             ApiResponse<Page<ResignationProgressDTO>> response = new ApiResponse<>(
@@ -316,6 +352,8 @@ public class PengajuanResignController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
+
+
 
     @GetMapping("/admin/{id}")
     public ResponseEntity<ApiResponse<ResignationProgressDTO>> getResignationProgressById(@PathVariable Long id) {

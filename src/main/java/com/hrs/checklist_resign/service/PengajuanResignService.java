@@ -4,6 +4,7 @@ import com.hrs.checklist_resign.Model.PengajuanResign;
 import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.dto.ResignationProgressDTO;
 import com.hrs.checklist_resign.dto.ResignationProgressDetailDTO;
+import com.hrs.checklist_resign.interfaces.ApprovalService;
 import com.hrs.checklist_resign.repository.ApprovalAtasanRepository;
 import com.hrs.checklist_resign.repository.PengajuanResignRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PengajuanResignService {
+public class PengajuanResignService implements ApprovalService {
 
     @Autowired
     private PengajuanResignRepository pengajuanResignRepository;
@@ -41,6 +42,10 @@ public class PengajuanResignService {
 
     public Optional<PengajuanResign> getResignationByNipUser(String nipUser) {
         return pengajuanResignRepository.findByNipUser(nipUser);
+    }
+
+    public Optional<PengajuanResign> findByNipKaryawanResign(String nipKaryawan) {
+        return pengajuanResignRepository.findByNipUser(nipKaryawan);
     }
 
     public PengajuanResign saveResignation(PengajuanResign pengajuanResign) {

@@ -3,6 +3,7 @@ package com.hrs.checklist_resign.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.hrs.checklist_resign.interfaces.Approval;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Objects;
@@ -16,7 +17,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "app_hrs_resign_bucket_pengajuan_resign")
-public class PengajuanResign {
+public class PengajuanResign implements Approval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -109,6 +110,9 @@ public class PengajuanResign {
     public String getNipUser() {
         return nipUser;
     }
+
+    @Override
+    public String getNipKaryawanResign() { return  nipUser;}
 
     public void setNipUser(String nipUser) {
         this.nipUser = nipUser;

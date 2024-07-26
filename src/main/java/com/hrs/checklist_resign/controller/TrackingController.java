@@ -52,6 +52,16 @@ public class TrackingController {
     @Autowired
     private ApprovalAtasanService approvalAtasanService;
 
+    @Autowired
+    private PengajuanResignService pengajuanResignService;
+
+    @GetMapping("/get-resignations/{nipKaryawan}")
+    public ResponseEntity<ApiResponse<PengajuanResign>> getPengajuanResignByUser(@PathVariable String nipKaryawan)
+    {
+        return getApproval(nipKaryawan, (ApprovalService<PengajuanResign>) pengajuanResignService);
+    }
+
+
     @GetMapping("/get-approval-general-services/{nipKaryawan}")
     public ResponseEntity<ApiResponse<ApprovalGeneralServices>> getApprovalGeneralServicesByUser(@PathVariable String nipKaryawan) {
         return getApproval(nipKaryawan, (ApprovalService<ApprovalGeneralServices>) approvalGeneralServicesService);
@@ -115,6 +125,14 @@ public class TrackingController {
                 .findFirst()
                 .map(GrantedAuthority::getAuthority)
                 .orElse("");
+
+
+        // Additional logging to debug
+        System.out.println("=======================================");
+        System.out.println("User NIP: " + userNip);
+        System.out.println("User Role: " + userRole);
+        System.out.println("Authorities: " + authentication.getAuthorities());
+
 
         Optional<T> approval = service.findByNipKaryawanResign(nipKaryawan);
 

@@ -4,6 +4,7 @@ import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.PengajuanResign;
 import com.hrs.checklist_resign.Model.User;
 import com.hrs.checklist_resign.Model.UserDetail;
+import com.hrs.checklist_resign.dto.PengajuanResignAdminDTO;
 import com.hrs.checklist_resign.dto.ResignationProgressDTO;
 import com.hrs.checklist_resign.dto.ResignationProgressDetailDTO;
 import com.hrs.checklist_resign.payload.PengajuanResignDTO;
@@ -254,7 +255,33 @@ public class PengajuanResignController {
         return pengajuanResign;
     }
 
+    private PengajuanResign buildPengajuanResignAdmin(PengajuanResignAdminDTO pengajuanResignDTO, String nipKaryawanResign, UserDetail userDetail, UserDetail userDetailAtasan) {
+        PengajuanResign pengajuanResign = new PengajuanResign();
+        pengajuanResign.setNipUser(nipKaryawanResign);
+        pengajuanResign.setNamaKaryawan(userDetail.getNama());
+        pengajuanResign.setNamaAtasan(userDetailAtasan.getNama());
+        pengajuanResign.setIsiUntukOrangLain(pengajuanResignDTO.isIsiUntukOrangLain());
+        pengajuanResign.setTanggalPembuatanAkunHRIS(pengajuanResignDTO.getTanggalPembuatanAkunHRIS());
+        pengajuanResign.setTanggalBerakhirBekerja(pengajuanResignDTO.getTanggalBerakhirBekerja());
+        pengajuanResign.setUserDetailResign(userDetail);
+        pengajuanResign.setNipAtasan(pengajuanResignDTO.getNipAtasan());
+        pengajuanResign.setEmailAtasan(pengajuanResignDTO.getEmailAtasan());
+        return pengajuanResign;
+    }
+
     private void saveApprovalAtasan(PengajuanResign savedPengajuanResign, PengajuanResignDTO pengajuanResignDTO, UserDetail userDetailAtasan, UserDetail userDetailKaryawan) {
+        ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
+        approvalAtasanObj.setNipKaryawanResign(userDetailKaryawan.getUserUsername());
+        approvalAtasanObj.setNamaKaryawan(userDetailKaryawan.getNama());
+        approvalAtasanObj.setNipAtasan(pengajuanResignDTO.getNipAtasan());
+        approvalAtasanObj.setNamaAtasan(userDetailAtasan.getNama());
+        approvalAtasanObj.setEmailAtasan(pengajuanResignDTO.getEmailAtasan());
+        approvalAtasanObj.setUserDetailAtasan(userDetailAtasan);
+        approvalAtasanObj.setPengajuanResign(savedPengajuanResign);
+        approvalAtasanService.saveApproval(approvalAtasanObj);
+    }
+
+    private void saveApprovalAtasanAdmin (PengajuanResign savedPengajuanResign, PengajuanResignAdminDTO pengajuanResignDTO, UserDetail userDetailAtasan, UserDetail userDetailKaryawan) {
         ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
         approvalAtasanObj.setNipKaryawanResign(userDetailKaryawan.getUserUsername());
         approvalAtasanObj.setNamaKaryawan(userDetailKaryawan.getNama());
@@ -355,23 +382,64 @@ public class PengajuanResignController {
 
 
 
-    @GetMapping("/admin/{id}")
-    public ResponseEntity<ApiResponse<ResignationProgressDTO>> getResignationProgressById(@PathVariable Long id) {
-        ResignationProgressDTO resignationProgressDTO = pengajuanResignService.getResignationProgressById(id);
-        if (resignationProgressDTO != null) {
-            ApiResponse<ResignationProgressDTO> response = new ApiResponse<>(
-                    resignationProgressDTO, true, "Fetch Succeeded", HttpStatus.OK.value());
+//    @GetMapping("/admin/{id}")
+//    public ResponseEntity<ApiResponse<ResignationProgressDTO>> getResignationProgressById(@PathVariable Long id) {
+//        ResignationProgressDTO resignationProgressDTO = pengajuanResignService.getResignationProgressById(id);
+//        if (resignationProgressDTO != null) {
+//            ApiResponse<ResignationProgressDTO> response = new ApiResponse<>(
+//                    resignationProgressDTO, true, "Fetch Succeeded", HttpStatus.OK.value());
+//
+//
+//            return  new ResponseEntity<>(response, HttpStatus.OK);
+//        } else {
+//
+//            ApiResponse<ResignationProgressDTO> response = new ApiResponse<>(
+//                    false, "Resignation Not Found", HttpStatus.NOT_FOUND.value());
+//
+//
+//            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+//        }
+//    }
 
 
-            return  new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
+    @PostMapping("admin")
+    public ResponseEntity<ApiResponse<PengajuanResign>> createResignationAdmin(@RequestBody PengajuanResignAdminDTO pengajuanResignAdminDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            ApiResponse<ResignationProgressDTO> response = new ApiResponse<>(
-                    false, "Resignation Not Found", HttpStatus.NOT_FOUND.value());
-
-
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return buildResponseEntity("User not authenticated", HttpStatus.UNAUTHORIZED, "Authentication required");
         }
+
+        //Fetch nipKaryawan For DTO
+        String nipKaryawanResign = pengajuanResignAdminDTO.getNipKaryawanResign();
+
+        //Fetch by the input of Nip Karyawan
+        Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(nipKaryawanResign));
+
+        if (userDetailOpt.isEmpty()) {
+            return buildResponseEntity("User details not found", HttpStatus.NOT_FOUND, "No user details found for username: " + nipKaryawanResign);
+        }
+
+        UserDetail userDetail = userDetailOpt.get();
+
+        String nipAtasan = pengajuanResignAdminDTO.getNipAtasan();
+        UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, userDetail.getNipAtasan());
+
+        if (userDetailAtasan == null) {
+            return buildResponseEntity("Supervisor details not found", HttpStatus.NOT_FOUND, "No user details found for supervisor with NIP: " + nipAtasan);
+        }
+
+
+        PengajuanResign pengajuanResign = buildPengajuanResignAdmin(pengajuanResignAdminDTO, nipKaryawanResign, userDetail, userDetailAtasan);
+        PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
+
+
+
+        saveApprovalAtasanAdmin(savedPengajuanResign, pengajuanResignAdminDTO, userDetailAtasan, userDetail);
+        //asyncEmailService.sendNotificationsAndEmails(userDetail, userDetailAtasan, username, "Resignation Request Submitted", "Approval Required: New Resignation Request");
+
+        ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 

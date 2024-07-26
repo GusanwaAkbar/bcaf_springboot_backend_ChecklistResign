@@ -1,7 +1,9 @@
 package com.hrs.checklist_resign.dto;
 
+import com.hrs.checklist_resign.Model.UserDetail;
+
 import java.util.Date;
-import com.hrs.checklist_resign.Model.ApprovalAtasan;
+
 
 
 public class ResignationProgressDTO {
@@ -9,16 +11,6 @@ public class ResignationProgressDTO {
     private String nipUser;
     private String namaKaryawan;
     private Date tanggalBerakhirBekerja;
-    private String approvalAtasanStatus;
-    private String approvalGeneralServicesStatus;
-    private String approvalHRIRStatus;
-    private String approvalHRLearningStatus;
-    private String approvalHRPayrollStatus;
-    private String approvalHRServicesAdminStatus;
-    private String approvalHRTalentStatus;
-    private String approvalSecurityAdministratorStatus;
-    private String approvalTreasuryStatus;
-    private String finalApprovalStatus;
     private String nipAtasan;
     private String namaAtasan;
     private String emailAtasan;
@@ -26,24 +18,14 @@ public class ResignationProgressDTO {
     private Date approvedDate;
     private Date approvedDateAllDepartement;
     private Date approvedDateFinal;
-    private ApprovalAtasan approvalAtasan;
+    private UserDetail userDetailResign;
 
+    public ResignationProgressDTO(Long id, String nipUser, String namaKaryawan, Date tanggalBerakhirBekerja, String nipAtasan, String namaAtasan, String emailAtasan, Date createdDate, Date approvedDate, Date approvedDateAllDepartement, Date approvedDateFinal, UserDetail userDetailResign) {
 
-    public ResignationProgressDTO(Long id, String nipUser, String namaKaryawan, Date tanggalBerakhirBekerja, String approvalAtasanStatus, String approvalGeneralServicesStatus, String approvalHRIRStatus, String approvalHRLearningStatus, String approvalHRPayrollStatus, String approvalHRServicesAdminStatus, String approvalHRTalentStatus, String approvalSecurityAdministratorStatus, String approvalTreasuryStatus, String finalApprovalStatus, String nipAtasan, String namaAtasan, String emailAtasan, Date createdDate, Date approvedDate, Date approvedDateAllDepartement, Date approvedDateFinal, ApprovalAtasan approvalAtasan) {
         this.id = id;
         this.nipUser = nipUser;
         this.namaKaryawan = namaKaryawan;
         this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
-        this.approvalAtasanStatus = approvalAtasanStatus;
-        this.approvalGeneralServicesStatus = approvalGeneralServicesStatus;
-        this.approvalHRIRStatus = approvalHRIRStatus;
-        this.approvalHRLearningStatus = approvalHRLearningStatus;
-        this.approvalHRPayrollStatus = approvalHRPayrollStatus;
-        this.approvalHRServicesAdminStatus = approvalHRServicesAdminStatus;
-        this.approvalHRTalentStatus = approvalHRTalentStatus;
-        this.approvalSecurityAdministratorStatus = approvalSecurityAdministratorStatus;
-        this.approvalTreasuryStatus = approvalTreasuryStatus;
-        this.finalApprovalStatus = finalApprovalStatus;
         this.nipAtasan = nipAtasan;
         this.namaAtasan = namaAtasan;
         this.emailAtasan = emailAtasan;
@@ -51,7 +33,7 @@ public class ResignationProgressDTO {
         this.approvedDate = approvedDate;
         this.approvedDateAllDepartement = approvedDateAllDepartement;
         this.approvedDateFinal = approvedDateFinal;
-        this.approvalAtasan = approvalAtasan;
+        this.userDetailResign = userDetailResign;
     }
 
     public Long getId() {
@@ -84,86 +66,6 @@ public class ResignationProgressDTO {
 
     public void setTanggalBerakhirBekerja(Date tanggalBerakhirBekerja) {
         this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
-    }
-
-    public String getApprovalAtasanStatus() {
-        return approvalAtasanStatus;
-    }
-
-    public void setApprovalAtasanStatus(String approvalAtasanStatus) {
-        this.approvalAtasanStatus = approvalAtasanStatus;
-    }
-
-    public String getApprovalGeneralServicesStatus() {
-        return approvalGeneralServicesStatus;
-    }
-
-    public void setApprovalGeneralServicesStatus(String approvalGeneralServicesStatus) {
-        this.approvalGeneralServicesStatus = approvalGeneralServicesStatus;
-    }
-
-    public String getApprovalHRIRStatus() {
-        return approvalHRIRStatus;
-    }
-
-    public void setApprovalHRIRStatus(String approvalHRIRStatus) {
-        this.approvalHRIRStatus = approvalHRIRStatus;
-    }
-
-    public String getApprovalHRLearningStatus() {
-        return approvalHRLearningStatus;
-    }
-
-    public void setApprovalHRLearningStatus(String approvalHRLearningStatus) {
-        this.approvalHRLearningStatus = approvalHRLearningStatus;
-    }
-
-    public String getApprovalHRPayrollStatus() {
-        return approvalHRPayrollStatus;
-    }
-
-    public void setApprovalHRPayrollStatus(String approvalHRPayrollStatus) {
-        this.approvalHRPayrollStatus = approvalHRPayrollStatus;
-    }
-
-    public String getApprovalHRServicesAdminStatus() {
-        return approvalHRServicesAdminStatus;
-    }
-
-    public void setApprovalHRServicesAdminStatus(String approvalHRServicesAdminStatus) {
-        this.approvalHRServicesAdminStatus = approvalHRServicesAdminStatus;
-    }
-
-    public String getApprovalHRTalentStatus() {
-        return approvalHRTalentStatus;
-    }
-
-    public void setApprovalHRTalentStatus(String approvalHRTalentStatus) {
-        this.approvalHRTalentStatus = approvalHRTalentStatus;
-    }
-
-    public String getApprovalSecurityAdministratorStatus() {
-        return approvalSecurityAdministratorStatus;
-    }
-
-    public void setApprovalSecurityAdministratorStatus(String approvalSecurityAdministratorStatus) {
-        this.approvalSecurityAdministratorStatus = approvalSecurityAdministratorStatus;
-    }
-
-    public String getApprovalTreasuryStatus() {
-        return approvalTreasuryStatus;
-    }
-
-    public void setApprovalTreasuryStatus(String approvalTreasuryStatus) {
-        this.approvalTreasuryStatus = approvalTreasuryStatus;
-    }
-
-    public String getFinalApprovalStatus() {
-        return finalApprovalStatus;
-    }
-
-    public void setFinalApprovalStatus(String finalApprovalStatus) {
-        this.finalApprovalStatus = finalApprovalStatus;
     }
 
     public String getNipAtasan() {
@@ -222,11 +124,11 @@ public class ResignationProgressDTO {
         this.approvedDateFinal = approvedDateFinal;
     }
 
-    public ApprovalAtasan getApprovalAtasan() {
-        return approvalAtasan;
+    public UserDetail getUserDetailResign() {
+        return userDetailResign;
     }
 
-    public void setApprovalAtasan(ApprovalAtasan approvalAtasan) {
-        this.approvalAtasan = approvalAtasan;
+    public void setUserDetailResign(UserDetail userDetailResign) {
+        this.userDetailResign = userDetailResign;
     }
 }

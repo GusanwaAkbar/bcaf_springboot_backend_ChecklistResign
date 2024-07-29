@@ -16,13 +16,12 @@ public class PengajuanResignDTO {
     private Date tanggalBerakhirBekerja;
 
 
-    private String nipAtasan;
+    private int Approver;
 
     private String emailAtasan;
 
     private String emailAktif;
 
-    private String nomerWA;
 
     // Getters and setters
 
@@ -58,13 +57,7 @@ public class PengajuanResignDTO {
         this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
     }
 
-    public String getNipAtasan() {
-        return nipAtasan;
-    }
 
-    public void setNipAtasan(String nipAtasan) {
-        this.nipAtasan = nipAtasan;
-    }
 
     public String getEmailAtasan() {
         return emailAtasan;
@@ -82,11 +75,11 @@ public class PengajuanResignDTO {
         this.emailAktif = emailAktif;
     }
 
-    public String getNomerWA() {
-        return nomerWA;
+    public int getApprover() {
+        return Approver;
     }
 
-    public void setNomerWA(String nomerWA) {
-        this.nomerWA = nomerWA;
+    public void setApprover(int approver) {
+        Approver = approver;
     }
 }

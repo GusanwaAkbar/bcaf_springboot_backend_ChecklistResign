@@ -56,38 +56,7 @@ public class AuthController {
 
 
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = jwtUtils.generateJwtToken(authentication.getName());
-
-            UserDetailsImpl userDetailObj = (UserDetailsImpl) authentication.getPrincipal();
-
-            // Fetch UserDetail using the username
-            UserDetail userDetail = (userDetailsService.findByUsername(userDetailObj.getUsername()));
-
-            // Debugging print statements
-            System.out.println("Found user: " + userDetailObj.getUsername());
-            System.out.println("Stored password: " + userDetailObj.getPassword());
-            System.out.println("UserDetails: " + userDetail);
-
-            // Set the fetched UserDetail in the UserDetailsImpl object
-            userDetailObj.setUserDetail(userDetail);
-
-            // Return ApiResponse with successful response
-            return ResponseEntity.ok(new ApiResponse<>(new JwtResponse(jwt, userDetailObj.getUsername(), userDetailObj.getAuthorities(), userDetailObj.getUserDetail()), true, "User authenticated successfully", 200));
-        } catch (BadCredentialsException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(401).body(new ApiResponse<>(null, false, "Invalid username or password", 401));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(new ApiResponse<>(null, false, "Error: An internal server error occurred!", 500));
-        }
-    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
@@ -187,53 +156,6 @@ public class AuthController {
     }
 
 
-    @PostMapping("/signin/V2")
-    public ResponseEntity<?> authenticateUserWithLDAPV2(@RequestBody LoginRequest loginRequest) {
-        try {
-            // Authenticate against LDAP
-            if (ldapAuthenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
-
-                System.out.println("===========METHOD CALLED ====================");
-
-                // If LDAP authentication is successful, generate JWT token
-                String jwt = jwtUtils.generateJwtToken(loginRequest.getUsername());
-
-                // Fetch or create user in your app's database
-                User user = userRepository.findByUsername(loginRequest.getUsername())
-                        .orElseGet(() -> createNewUser(loginRequest.getUsername()));
-
-                if (user == null)
-                {
-                    return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User not found in HRIS Database", 400));
-                }
-
-                // Fetch UserDetail
-                UserDetail userDetail = userDetailsService.findByUsername(user.getUsername());
-
-                // Create UserDetailsImpl object
-                UserDetailsImpl userDetailObj = new UserDetailsImpl(
-                        user.getUsername(),
-                        user.getPassword(),
-                        user.getAuthorities(),
-                        user.getUserDetails()
-                );
-                userDetailObj.setUserDetail(userDetail);
-
-                // Return ApiResponse with successful response
-                return ResponseEntity.ok(new ApiResponse<>(
-                        new JwtResponse(jwt, userDetailObj.getUsername(), userDetailObj.getAuthorities(), userDetailObj.getUserDetail()),
-                        true,
-                        "User authenticated successfully with LDAP",
-                        200
-                ));
-            } else {
-                return ResponseEntity.status(401).body(new ApiResponse<>(null, false, "Invalid LDAP credentials", 401));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(new ApiResponse<>(null, false, "Error: An internal server error occurred!", 500));
-        }
-    }
 
 
     private User createNewUser(String username) {
@@ -276,7 +198,6 @@ public class AuthController {
         try {
             // Authenticate against LDAP
             if (ldapAuthenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
-
                 System.out.println("===========METHOD CALLED ====================");
 
                 // If LDAP authentication is successful, generate JWT token
@@ -292,7 +213,6 @@ public class AuthController {
 
                 // Fetch or create user detail
                 UserDetail userDetail = fetchOrCreateUserDetail(loginRequest.getUsername(), null);
-
                 if (userDetail == null) {
                     return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User detail not found in HRIS Database", 400));
                 }
@@ -300,6 +220,13 @@ public class AuthController {
                 // Update user's userDetail
                 user.setUserDetails(userDetail);
                 userService.saveUser(user);
+
+                // Fetch or create user detail for atasan
+                String nipAtasan = userDetail.getNipAtasan();
+                UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, null);
+                if (userDetailAtasan == null) {
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: Supervisor details not found in HRIS Database", 400));
+                }
 
                 // Create UserDetailsImpl object
                 UserDetailsImpl userDetailObj = new UserDetailsImpl(
@@ -312,7 +239,7 @@ public class AuthController {
 
                 // Return ApiResponse with successful response
                 return ResponseEntity.ok(new ApiResponse<>(
-                        new JwtResponse(jwt, userDetailObj.getUsername(), userDetailObj.getAuthorities(), userDetailObj.getUserDetail()),
+                        new JwtResponse(jwt, userDetailObj.getUsername(), userDetailObj.getAuthorities(), userDetailObj.getUserDetail(), userDetailAtasan),
                         true,
                         "User authenticated successfully with LDAP",
                         200
@@ -334,10 +261,18 @@ public class AuthController {
             return null;
         }
 
+        System.out.println("================nipAtasan======================");
+        System.out.println(nipAtasan);
+
         UserDetail userDetailAtasan = userDetailsService.findByUsername(nipAtasan);
+
+        System.out.println("user detail atasan isinya apa");
+        //System.out.println(userDetailAtasan.getNama());
 
         if (userDetailAtasan == null) {
             List<UserDetail> userDetailsList = userDetailsService.fetchUserDetailsByUsername(nipAtasan);
+
+            System.out.println("user detail atasan");
 
             if (!userDetailsList.isEmpty()) {
                 userDetailAtasan = userDetailsList.get(0);
@@ -365,6 +300,7 @@ public class AuthController {
             Optional<User> userOpt = userService.findByUsername(nipAtasan);
             User user = userOpt.get();
 
+            System.out.println("masuksini =================");
             // Fetch data from HRIS
             List<UserDetail> userDetailsList = userDetailsService.fetchUserDetailsByUsername(nipAtasan);
 
@@ -387,11 +323,53 @@ public class AuthController {
 
             // Update user's userDetail
             user.setUserDetails(userDetailAtasan);
-            userService.saveUser(user);
+
         }
 
         return userDetailAtasan;
     }
+
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication.getName());
+
+            UserDetailsImpl userDetailObj = (UserDetailsImpl) authentication.getPrincipal();
+
+            // Fetch or create UserDetail using the username
+            UserDetail userDetail = fetchOrCreateUserDetail(userDetailObj.getUsername(), null);
+
+            // Debugging print statements
+            System.out.println("Found user: " + userDetailObj.getUsername());
+            System.out.println("Stored password: " + userDetailObj.getPassword());
+            System.out.println("UserDetails: " + userDetail);
+
+            // Set the fetched UserDetail in the UserDetailsImpl object
+            userDetailObj.setUserDetail(userDetail);
+
+            // Fetch or create UserDetail for the atasan (supervisor)
+            String nipAtasan = userDetail.getNipAtasan();
+            UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, null);
+
+
+
+            // Return ApiResponse with successful response
+            return ResponseEntity.ok(new ApiResponse<>(
+                    new JwtResponse(jwt, userDetailObj.getUsername(), userDetailObj.getAuthorities(), userDetail, userDetailAtasan),
+                    true, "User authenticated successfully", 200));
+        } catch (BadCredentialsException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(401).body(new ApiResponse<>(null, false, "Invalid username or password", 401));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ApiResponse<>(null, false, "Error: An internal server error occurred!", 500));
+        }
+    }
+
 
 
 

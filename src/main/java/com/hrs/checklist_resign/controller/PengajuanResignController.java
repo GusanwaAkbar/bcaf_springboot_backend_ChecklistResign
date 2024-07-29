@@ -97,6 +97,100 @@ public class PengajuanResignController {
 
 
 
+    @GetMapping("/user-detail/V2")
+    public ResponseEntity<ApiResponse<UserDetailsResponseDTO>> getUserDetailsV2() {
+
+        // Start Authentication checking
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+        // End Authentication checking
+
+        String username = authentication.getName();
+
+        Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(username));
+
+        // Check if user detail is null
+        if (!userDetailOpt.isPresent()) {
+            ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(true, "User Detail Not Found", HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        UserDetail userDetail = userDetailOpt.get();
+
+        // Fetch or create user detail for atasan
+        String nipAtasan = userDetail.getNipAtasan();
+        UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, null);
+
+        if (userDetailAtasan == null) {
+            ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(true, "Supervisor details not found", HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        // Create a response object that includes both userDetail and userDetailAtasan
+        UserDetailsResponseDTO userDetailResponse = new UserDetailsResponseDTO(userDetail, userDetailAtasan);
+
+        ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(userDetailResponse, true, "User details retrieved successfully", HttpStatus.OK.value());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/user-detail-atasan2")
+    public ResponseEntity<ApiResponse<UserDetailsResponseDTO>> getUserDetailsAtasan2() {
+
+        // Start Authentication checking
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(false, "User not authenticated", HttpStatus.UNAUTHORIZED.value(), "Authentication required");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+        // End Authentication checking
+
+        String username = authentication.getName();
+
+        Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(username));
+
+        // Check if user detail is null
+        if (!userDetailOpt.isPresent()) {
+            ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(true, "User Detail Not Found", HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        UserDetail userDetail = userDetailOpt.get();
+
+        // Fetch or create user detail for atasan
+        String nipAtasan = userDetail.getNipAtasan();
+
+        UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, null);
+
+        if (userDetailAtasan == null) {
+            ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(true, "Supervisor details not found", HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        String nipAtasan2 = userDetailAtasan.getNipAtasan();
+
+        UserDetail userDetailAtasan2 = fetchOrCreateUserDetail(nipAtasan2, null);
+
+        if (userDetailAtasan2 == null) {
+            ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(true, "Supervisor's supervisor details not found", HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        // Create a response object that includes both userDetail and userDetailAtasan2
+        UserDetailsResponseDTO userDetailResponse = new UserDetailsResponseDTO(userDetail, userDetailAtasan2);
+
+        ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(userDetailResponse, true, "User details retrieved successfully", HttpStatus.OK.value());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
+
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getResignationById(@PathVariable Long id) {
         Optional<PengajuanResign> pengajuanResign = pengajuanResignService.getResignationById(id);
@@ -157,7 +251,6 @@ public class PengajuanResignController {
     }
 
 
-
     @PostMapping()
     public ResponseEntity<ApiResponse<PengajuanResign>> createResignation(@RequestBody PengajuanResignDTO pengajuanResignDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -175,25 +268,36 @@ public class PengajuanResignController {
 
         UserDetail userDetail = userDetailOpt.get();
 
-        String nipAtasan = pengajuanResignDTO.getNipAtasan();
-        UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, userDetail.getNipAtasan());
+        // Determine the NIP Atasan based on Approver input
+        String nipAtasan = "";
+        UserDetail userDetailAtasan = null;
+
+        if (pengajuanResignDTO.getApprover() == 1) {
+            nipAtasan = userDetail.getNipAtasan();
+            userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, null);
+        } else if (pengajuanResignDTO.getApprover() == 2) {
+            nipAtasan = userDetail.getNipAtasan();
+            UserDetail intermediateAtasan = fetchOrCreateUserDetail(nipAtasan, null);
+
+            if (intermediateAtasan != null) {
+                nipAtasan = intermediateAtasan.getNipAtasan();
+                userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, null);
+            }
+        }
 
         if (userDetailAtasan == null) {
             return buildResponseEntity("Supervisor details not found in HRIS Database", HttpStatus.NOT_FOUND, "No user details found for supervisor with NIP: " + nipAtasan);
         }
 
-
-        PengajuanResign pengajuanResign = buildPengajuanResign(pengajuanResignDTO, username, userDetail, userDetailAtasan);
+        PengajuanResign pengajuanResign = buildPengajuanResign(pengajuanResignDTO, username, userDetail, userDetailAtasan, nipAtasan);
         PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
 
-
-
-        saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, userDetail);
-        //asyncEmailService.sendNotificationsAndEmails(userDetail, userDetailAtasan, username, "Resignation Request Submitted", "Approval Required: New Resignation Request");
+        saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, userDetail, nipAtasan);
 
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
 
 
 
@@ -270,7 +374,7 @@ public class PengajuanResignController {
         return new ResponseEntity<>(response, status);
     }
 
-    private PengajuanResign buildPengajuanResign(PengajuanResignDTO pengajuanResignDTO, String nipKaryawanResign, UserDetail userDetail, UserDetail userDetailAtasan) {
+    private PengajuanResign buildPengajuanResign(PengajuanResignDTO pengajuanResignDTO, String nipKaryawanResign, UserDetail userDetail, UserDetail userDetailAtasan, String nipAtasan) {
         PengajuanResign pengajuanResign = new PengajuanResign();
         pengajuanResign.setNipUser(nipKaryawanResign);
         pengajuanResign.setNamaKaryawan(userDetail.getNama());
@@ -279,7 +383,7 @@ public class PengajuanResignController {
         pengajuanResign.setTanggalPembuatanAkunHRIS(pengajuanResignDTO.getTanggalPembuatanAkunHRIS());
         pengajuanResign.setTanggalBerakhirBekerja(pengajuanResignDTO.getTanggalBerakhirBekerja());
         pengajuanResign.setUserDetailResign(userDetail);
-        pengajuanResign.setNipAtasan(pengajuanResignDTO.getNipAtasan());
+        pengajuanResign.setNipAtasan(nipAtasan);
         pengajuanResign.setEmailAtasan(pengajuanResignDTO.getEmailAtasan());
         return pengajuanResign;
     }
@@ -298,11 +402,11 @@ public class PengajuanResignController {
         return pengajuanResign;
     }
 
-    private void saveApprovalAtasan(PengajuanResign savedPengajuanResign, PengajuanResignDTO pengajuanResignDTO, UserDetail userDetailAtasan, UserDetail userDetailKaryawan) {
+    private void saveApprovalAtasan(PengajuanResign savedPengajuanResign, PengajuanResignDTO pengajuanResignDTO, UserDetail userDetailAtasan, UserDetail userDetailKaryawan, String nipAtasan) {
         ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
         approvalAtasanObj.setNipKaryawanResign(userDetailKaryawan.getUserUsername());
         approvalAtasanObj.setNamaKaryawan(userDetailKaryawan.getNama());
-        approvalAtasanObj.setNipAtasan(pengajuanResignDTO.getNipAtasan());
+        approvalAtasanObj.setNipAtasan(nipAtasan);
         approvalAtasanObj.setNamaAtasan(userDetailAtasan.getNama());
         approvalAtasanObj.setEmailAtasan(pengajuanResignDTO.getEmailAtasan());
         approvalAtasanObj.setUserDetailAtasan(userDetailAtasan);

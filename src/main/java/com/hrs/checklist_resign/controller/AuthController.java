@@ -153,8 +153,42 @@ public class AuthController {
     }
 
 
+
+    private boolean ldapAuthenticate(String username, String password) {
+        String url = "http://192.168.29.71:12103/EnterpriseAuthentication/AuthenticateUserV2";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        //add basic auth
+        String auth = "bcafapps:Admin123";
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+        String authHeader = "Basic " + new String(encodedAuth);
+        headers.set("Authorization", authHeader);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("TrxId", null);
+        Map<String, Object> credentials = new HashMap<>();
+        credentials.put("UserId", username);
+        credentials.put("UserName", null);
+        credentials.put("Password", password);
+        requestBody.put("Credentials", credentials);
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
+
+        try {
+            ResponseEntity<Map> response = new RestTemplate().postForEntity(url, request, Map.class);
+            Map<String, Object> responseBody = response.getBody();
+            Map<String, Object> responseHeader = (Map<String, Object>) responseBody.get("ResponseHeader");
+            return "0".equals(responseHeader.get("ErrorCode"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     @PostMapping("/signin/V2")
-    public ResponseEntity<?> authenticateUserWithLDAP(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUserWithLDAPV2(@RequestBody LoginRequest loginRequest) {
         try {
             // Authenticate against LDAP
             if (ldapAuthenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
@@ -201,37 +235,6 @@ public class AuthController {
         }
     }
 
-    private boolean ldapAuthenticate(String username, String password) {
-        String url = "http://192.168.29.71:12103/EnterpriseAuthentication/AuthenticateUserV2";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        //add basic auth
-        String auth = "bcafapps:Admin123";
-        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
-        String authHeader = "Basic " + new String(encodedAuth);
-        headers.set("Authorization", authHeader);
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("TrxId", null);
-        Map<String, Object> credentials = new HashMap<>();
-        credentials.put("UserId", username);
-        credentials.put("UserName", null);
-        credentials.put("Password", password);
-        requestBody.put("Credentials", credentials);
-
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
-
-        try {
-            ResponseEntity<Map> response = new RestTemplate().postForEntity(url, request, Map.class);
-            Map<String, Object> responseBody = response.getBody();
-            Map<String, Object> responseHeader = (Map<String, Object>) responseBody.get("ResponseHeader");
-            return "0".equals(responseHeader.get("ErrorCode"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     private User createNewUser(String username) {
         User user = new User();
@@ -267,5 +270,129 @@ public class AuthController {
 
         return user;
     }
+
+    @PostMapping("/signin/V3")
+    public ResponseEntity<?> authenticateUserWithLDAPV3(@RequestBody LoginRequest loginRequest) {
+        try {
+            // Authenticate against LDAP
+            if (ldapAuthenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
+
+                System.out.println("===========METHOD CALLED ====================");
+
+                // If LDAP authentication is successful, generate JWT token
+                String jwt = jwtUtils.generateJwtToken(loginRequest.getUsername());
+
+                // Fetch or create user in your app's database
+                User user = userRepository.findByUsername(loginRequest.getUsername())
+                        .orElseGet(() -> createNewUser(loginRequest.getUsername()));
+
+                if (user == null) {
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User not found in HRIS Database", 400));
+                }
+
+                // Fetch or create user detail
+                UserDetail userDetail = fetchOrCreateUserDetail(loginRequest.getUsername(), null);
+
+                if (userDetail == null) {
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(null, false, "Error: User detail not found in HRIS Database", 400));
+                }
+
+                // Update user's userDetail
+                user.setUserDetails(userDetail);
+                userService.saveUser(user);
+
+                // Create UserDetailsImpl object
+                UserDetailsImpl userDetailObj = new UserDetailsImpl(
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getAuthorities(),
+                        user.getUserDetails()
+                );
+                userDetailObj.setUserDetail(userDetail);
+
+                // Return ApiResponse with successful response
+                return ResponseEntity.ok(new ApiResponse<>(
+                        new JwtResponse(jwt, userDetailObj.getUsername(), userDetailObj.getAuthorities(), userDetailObj.getUserDetail()),
+                        true,
+                        "User authenticated successfully with LDAP",
+                        200
+                ));
+            } else {
+                return ResponseEntity.status(401).body(new ApiResponse<>(null, false, "Invalid LDAP credentials", 401));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ApiResponse<>(null, false, "Error: An internal server error occurred!", 500));
+        }
+    }
+
+
+    private UserDetail fetchOrCreateUserDetail(String nipAtasanFromDTO, String nipAtasanFromUserDetail) {
+        String nipAtasan = nipAtasanFromDTO != null && !nipAtasanFromDTO.isEmpty() ? nipAtasanFromDTO : nipAtasanFromUserDetail;
+
+        if (nipAtasan == null || nipAtasan.isEmpty()) {
+            return null;
+        }
+
+        UserDetail userDetailAtasan = userDetailsService.findByUsername(nipAtasan);
+
+        if (userDetailAtasan == null) {
+            List<UserDetail> userDetailsList = userDetailsService.fetchUserDetailsByUsername(nipAtasan);
+
+            if (!userDetailsList.isEmpty()) {
+                userDetailAtasan = userDetailsList.get(0);
+
+                Optional<User> atasanUserOpt = userService.findByUsername(nipAtasan);
+
+                User userAtasan;
+                if (atasanUserOpt.isEmpty()) {
+                    userAtasan = new User();
+                    userAtasan.setUsername(nipAtasan);
+                    userAtasan.setPassword(nipAtasan); // Consider using a more secure default password
+                    userAtasan.setRoles("USER");
+                    userService.saveUser(userAtasan);
+                } else {
+                    userAtasan = atasanUserOpt.get();
+                }
+
+                userDetailAtasan.setUser(userAtasan);
+                userDetailsService.saveUserDetails(userDetailAtasan);
+            } else {
+                return null; // If the NIP Atasan is not found in HRIS
+            }
+        } else {
+            // Update userDetail Atasan
+            Optional<User> userOpt = userService.findByUsername(nipAtasan);
+            User user = userOpt.get();
+
+            // Fetch data from HRIS
+            List<UserDetail> userDetailsList = userDetailsService.fetchUserDetailsByUsername(nipAtasan);
+
+            // Update user detail's user
+            if (!userDetailsList.isEmpty()) {
+                UserDetail updatedUserDetail = userDetailsList.get(0);
+
+                // Merge fields from HRIS data to existing user detail
+                userDetailAtasan.setCabang(updatedUserDetail.getCabang());
+                userDetailAtasan.setDivisi(updatedUserDetail.getDivisi());
+                userDetailAtasan.setEmail(updatedUserDetail.getEmail());
+                userDetailAtasan.setIdDivisi(updatedUserDetail.getIdDivisi());
+                userDetailAtasan.setJabatan(updatedUserDetail.getJabatan());
+                userDetailAtasan.setNama(updatedUserDetail.getNama());
+                userDetailAtasan.setNipAtasan(updatedUserDetail.getNipAtasan());
+                userDetailAtasan.setUser(user);
+
+                userDetailsService.saveUserDetails(userDetailAtasan);
+            }
+
+            // Update user's userDetail
+            user.setUserDetails(userDetailAtasan);
+            userService.saveUser(user);
+        }
+
+        return userDetailAtasan;
+    }
+
+
 
 }

@@ -7,6 +7,7 @@ import com.hrs.checklist_resign.Model.UserDetail;
 import com.hrs.checklist_resign.dto.PengajuanResignAdminDTO;
 import com.hrs.checklist_resign.dto.ResignationProgressDTO;
 import com.hrs.checklist_resign.dto.ResignationProgressDetailDTO;
+import com.hrs.checklist_resign.dto.UserDetailsResponseDTO;
 import com.hrs.checklist_resign.payload.PengajuanResignDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
 import com.hrs.checklist_resign.service.*;
@@ -169,7 +170,7 @@ public class PengajuanResignController {
         Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(username));
 
         if (userDetailOpt.isEmpty()) {
-            return buildResponseEntity("User details not found", HttpStatus.NOT_FOUND, "No user details found for username: " + username);
+            return buildResponseEntity("User details not found in HRIS", HttpStatus.NOT_FOUND, "No user details found for username: " + username);
         }
 
         UserDetail userDetail = userDetailOpt.get();
@@ -178,7 +179,7 @@ public class PengajuanResignController {
         UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, userDetail.getNipAtasan());
 
         if (userDetailAtasan == null) {
-            return buildResponseEntity("Supervisor details not found", HttpStatus.NOT_FOUND, "No user details found for supervisor with NIP: " + nipAtasan);
+            return buildResponseEntity("Supervisor details not found in HRIS Database", HttpStatus.NOT_FOUND, "No user details found for supervisor with NIP: " + nipAtasan);
         }
 
 
@@ -193,6 +194,8 @@ public class PengajuanResignController {
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+
 
     private UserDetail fetchOrCreateUserDetail(String nipAtasanFromDTO, String nipAtasanFromUserDetail) {
         String nipAtasan = nipAtasanFromDTO != null && !nipAtasanFromDTO.isEmpty() ? nipAtasanFromDTO : nipAtasanFromUserDetail;
@@ -227,12 +230,38 @@ public class PengajuanResignController {
             } else {
                 return null; // If the NIP Atasan is not found in HRIS
             }
+        } else {
+            // Update userDetail Atasan
+            Optional<User> userOpt = userService.findByUsername(nipAtasan);
+            User user = userOpt.get();
+
+            // Fetch data from HRIS
+            List<UserDetail> userDetailsList = userDetailService.fetchUserDetailsByUsername(nipAtasan);
+
+            // Update user detail's user
+            if (!userDetailsList.isEmpty()) {
+                UserDetail updatedUserDetail = userDetailsList.get(0);
+
+                // Merge fields from HRIS data to existing user detail
+                userDetailAtasan.setCabang(updatedUserDetail.getCabang());
+                userDetailAtasan.setDivisi(updatedUserDetail.getDivisi());
+                userDetailAtasan.setEmail(updatedUserDetail.getEmail());
+                userDetailAtasan.setIdDivisi(updatedUserDetail.getIdDivisi());
+                userDetailAtasan.setJabatan(updatedUserDetail.getJabatan());
+                userDetailAtasan.setNama(updatedUserDetail.getNama());
+                userDetailAtasan.setNipAtasan(updatedUserDetail.getNipAtasan());
+                userDetailAtasan.setUser(user);
+
+                userDetailService.saveUserDetails(userDetailAtasan);
+            }
+
+            // Update user's userDetail
+            user.setUserDetails(userDetailAtasan);
+            userService.saveUser(user);
         }
 
         return userDetailAtasan;
     }
-
-
 
 
 
@@ -410,37 +439,63 @@ public class PengajuanResignController {
             return buildResponseEntity("User not authenticated", HttpStatus.UNAUTHORIZED, "Authentication required");
         }
 
-        //Fetch nipKaryawan For DTO
+        // Fetch nipKaryawan for DTO
         String nipKaryawanResign = pengajuanResignAdminDTO.getNipKaryawanResign();
 
-        //Fetch by the input of Nip Karyawan
-        Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(nipKaryawanResign));
-
-        if (userDetailOpt.isEmpty()) {
+        // Fetch or create user details for the employee
+        UserDetail userDetail = fetchOrCreateUserDetail(nipKaryawanResign, null);
+        if (userDetail == null) {
             return buildResponseEntity("User details not found", HttpStatus.NOT_FOUND, "No user details found for username: " + nipKaryawanResign);
         }
 
-        UserDetail userDetail = userDetailOpt.get();
-
+        // Fetch or create user details for the supervisor
         String nipAtasan = pengajuanResignAdminDTO.getNipAtasan();
         UserDetail userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, userDetail.getNipAtasan());
-
         if (userDetailAtasan == null) {
             return buildResponseEntity("Supervisor details not found", HttpStatus.NOT_FOUND, "No user details found for supervisor with NIP: " + nipAtasan);
         }
 
-
+        // Build and save the resignation request
         PengajuanResign pengajuanResign = buildPengajuanResignAdmin(pengajuanResignAdminDTO, nipKaryawanResign, userDetail, userDetailAtasan);
         PengajuanResign savedPengajuanResign = pengajuanResignService.saveResignation(pengajuanResign);
 
-
-
+        // Save approval details
         saveApprovalAtasanAdmin(savedPengajuanResign, pengajuanResignAdminDTO, userDetailAtasan, userDetail);
-        //asyncEmailService.sendNotificationsAndEmails(userDetail, userDetailAtasan, username, "Resignation Request Submitted", "Approval Required: New Resignation Request");
 
+        // Construct the response
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+
+    @GetMapping("admin/check-nip-karyawan/{nipKaryawanResign}")
+    public ResponseEntity<ApiResponse<UserDetailsResponseDTO>> checkNipKaryawan(@PathVariable String nipKaryawanResign) {
+        // Fetch or create Karyawan user detail
+        UserDetail karyawanUserDetail = fetchOrCreateUserDetail(nipKaryawanResign, null);
+
+        if (karyawanUserDetail == null) {
+            return new ResponseEntity<>(new ApiResponse<>(null, false, "Karyawan not found in HRIS", HttpStatus.NOT_FOUND.value()), HttpStatus.NOT_FOUND);
+        }
+
+        // Fetch or create Atasan user detail
+        String nipAtasan = karyawanUserDetail.getNipAtasan();
+        UserDetail atasanUserDetail = fetchOrCreateUserDetail(nipAtasan, null);
+
+        if (atasanUserDetail == null) {
+            return new ResponseEntity<>(new ApiResponse<>(null, false, "Atasan not found in HRIS", HttpStatus.NOT_FOUND.value()), HttpStatus.NOT_FOUND);
+        }
+
+        // Create response DTO with user details of Karyawan and Atasan
+        UserDetailsResponseDTO userDetailsResponseDTO = new UserDetailsResponseDTO(karyawanUserDetail, atasanUserDetail);
+
+        ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(userDetailsResponseDTO, true, "User details fetched successfully", HttpStatus.OK.value());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
+
+
 
 
 

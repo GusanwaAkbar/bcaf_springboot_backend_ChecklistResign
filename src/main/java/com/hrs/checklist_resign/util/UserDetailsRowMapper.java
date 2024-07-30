@@ -12,7 +12,6 @@ import java.sql.SQLException;
     public UserDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
         UserDetail userDetailObj = new UserDetail();
         User user = new User(); // Create a new User object
-        // user.setId(rs.getLong("id")); // Set user id
         userDetailObj.setUser(user); // Set user details
         userDetailObj.setNama(rs.getString("Nama"));
         userDetailObj.setEmail(rs.getString("Email"));
@@ -22,6 +21,8 @@ import java.sql.SQLException;
         userDetailObj.setJabatan(rs.getString("Jabatan"));
         userDetailObj.setExternalUser(rs.getString("External_User"));
         userDetailObj.setNipAtasan(rs.getString("nipAtasan"));
+        userDetailObj.setDateCreated(rs.getDate("dateCreated")); // Add this line
         return userDetailObj;
     }
+
 }

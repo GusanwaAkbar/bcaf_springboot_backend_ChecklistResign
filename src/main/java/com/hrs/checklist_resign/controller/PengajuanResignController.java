@@ -263,7 +263,7 @@ public class PengajuanResignController {
         Optional<UserDetail> userDetailOpt = Optional.ofNullable(userDetailService.findByUsername(username));
 
         if (userDetailOpt.isEmpty()) {
-            return buildResponseEntity("User details not found in HRIS", HttpStatus.NOT_FOUND, "No user details found for username: " + username);
+            return buildResponseEntity("User details USER LOGIN not found in HRIS", HttpStatus.NOT_FOUND, "No user details found for username: " + username);
         }
 
         UserDetail userDetail = userDetailOpt.get();
@@ -272,10 +272,12 @@ public class PengajuanResignController {
         String nipAtasan = "";
         UserDetail userDetailAtasan = null;
 
-        if (pengajuanResignDTO.getApprover() == 1) {
+        int selectedApprover = pengajuanResignDTO.getApprover();
+
+        if (selectedApprover == 1) {
             nipAtasan = userDetail.getNipAtasan();
             userDetailAtasan = fetchOrCreateUserDetail(nipAtasan, null);
-        } else if (pengajuanResignDTO.getApprover() == 2) {
+        } else if (selectedApprover == 2) {
             nipAtasan = userDetail.getNipAtasan();
             UserDetail intermediateAtasan = fetchOrCreateUserDetail(nipAtasan, null);
 
@@ -361,7 +363,7 @@ public class PengajuanResignController {
 
             // Update user's userDetail
             user.setUserDetails(userDetailAtasan);
-            userService.saveUser(user);
+
         }
 
         return userDetailAtasan;
@@ -380,11 +382,12 @@ public class PengajuanResignController {
         pengajuanResign.setNamaKaryawan(userDetail.getNama());
         pengajuanResign.setNamaAtasan(userDetailAtasan.getNama());
         pengajuanResign.setIsiUntukOrangLain(pengajuanResignDTO.isIsiUntukOrangLain());
-        pengajuanResign.setTanggalPembuatanAkunHRIS(pengajuanResignDTO.getTanggalPembuatanAkunHRIS());
+        pengajuanResign.setTanggalPembuatanAkunHRIS(userDetail.getDateCreated());
         pengajuanResign.setTanggalBerakhirBekerja(pengajuanResignDTO.getTanggalBerakhirBekerja());
         pengajuanResign.setUserDetailResign(userDetail);
-        pengajuanResign.setNipAtasan(nipAtasan);
-        pengajuanResign.setEmailAtasan(pengajuanResignDTO.getEmailAtasan());
+        pengajuanResign.setNipAtasan(userDetailAtasan.getUserUsername());
+        pengajuanResign.setEmailAtasan(userDetailAtasan.getEmail());
+
         return pengajuanResign;
     }
 
@@ -406,9 +409,9 @@ public class PengajuanResignController {
         ApprovalAtasan approvalAtasanObj = new ApprovalAtasan();
         approvalAtasanObj.setNipKaryawanResign(userDetailKaryawan.getUserUsername());
         approvalAtasanObj.setNamaKaryawan(userDetailKaryawan.getNama());
-        approvalAtasanObj.setNipAtasan(nipAtasan);
+        approvalAtasanObj.setNipAtasan(userDetailAtasan.getUserUsername());
         approvalAtasanObj.setNamaAtasan(userDetailAtasan.getNama());
-        approvalAtasanObj.setEmailAtasan(pengajuanResignDTO.getEmailAtasan());
+        approvalAtasanObj.setEmailAtasan(userDetailAtasan.getEmail());
         approvalAtasanObj.setUserDetailAtasan(userDetailAtasan);
         approvalAtasanObj.setPengajuanResign(savedPengajuanResign);
         approvalAtasanService.saveApproval(approvalAtasanObj);

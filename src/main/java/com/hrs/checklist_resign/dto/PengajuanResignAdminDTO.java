@@ -8,34 +8,24 @@ import jakarta.persistence.Column;
 import java.util.Date;
 
 public class PengajuanResignAdminDTO {
-    private Long id;
+
     private boolean isiUntukOrangLain;
 
     private String nipKaryawanResign;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date tanggalPembuatanAkunHRIS;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date tanggalBerakhirBekerja;
 
-
-    private String nipAtasan;
-
-    private String emailAtasan;
-
-    private String emailAktif;
-
-    private String nomerWA;
+    private int approver;
 
     // Getters and setters
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
+    public PengajuanResignAdminDTO(boolean isiUntukOrangLain, String nipKaryawanResign, Date tanggalBerakhirBekerja, int approver) {
+        this.isiUntukOrangLain = isiUntukOrangLain;
+        this.nipKaryawanResign = nipKaryawanResign;
+        this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
+        this.approver = approver;
     }
 
     public boolean isIsiUntukOrangLain() {
@@ -46,12 +36,12 @@ public class PengajuanResignAdminDTO {
         this.isiUntukOrangLain = isiUntukOrangLain;
     }
 
-    public Date getTanggalPembuatanAkunHRIS() {
-        return tanggalPembuatanAkunHRIS;
+    public String getNipKaryawanResign() {
+        return nipKaryawanResign;
     }
 
-    public void setTanggalPembuatanAkunHRIS(Date tanggalPembuatanAkunHRIS) {
-        this.tanggalPembuatanAkunHRIS = tanggalPembuatanAkunHRIS;
+    public void setNipKaryawanResign(String nipKaryawanResign) {
+        this.nipKaryawanResign = nipKaryawanResign;
     }
 
     public Date getTanggalBerakhirBekerja() {
@@ -62,45 +52,11 @@ public class PengajuanResignAdminDTO {
         this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
     }
 
-    public String getNipAtasan() {
-        return nipAtasan;
+    public int getApprover() {
+        return approver;
     }
 
-    public void setNipAtasan(String nipAtasan) {
-        this.nipAtasan = nipAtasan;
+    public void setApprover(int approver) {
+        this.approver = approver;
     }
-
-    public String getEmailAtasan() {
-        return emailAtasan;
-    }
-
-    public void setEmailAtasan(String emailAtasan) {
-        this.emailAtasan = emailAtasan;
-    }
-
-    public String getEmailAktif() {
-        return emailAktif;
-    }
-
-    public void setEmailAktif(String emailAktif) {
-        this.emailAktif = emailAktif;
-    }
-
-    public String getNomerWA() {
-        return nomerWA;
-    }
-
-    public void setNomerWA(String nomerWA) {
-        this.nomerWA = nomerWA;
-    }
-
-    public String getNipKaryawanResign() {
-        return nipKaryawanResign;
-    }
-
-    public void setNipKaryawanResign(String nipKaryawanResign) {
-        this.nipKaryawanResign = nipKaryawanResign;
-    }
-
-
 }

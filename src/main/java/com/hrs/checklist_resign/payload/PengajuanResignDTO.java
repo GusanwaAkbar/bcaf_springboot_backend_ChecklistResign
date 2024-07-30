@@ -6,7 +6,7 @@ import jakarta.persistence.Column;
 import java.util.Date;
 
 public class PengajuanResignDTO {
-    private Long id;
+
     private boolean isiUntukOrangLain;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -15,23 +15,18 @@ public class PengajuanResignDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date tanggalBerakhirBekerja;
 
+    private int approver;
 
-    private int Approver;
-
-    private String emailAtasan;
-
-    private String emailAktif;
-
+    public PengajuanResignDTO(boolean isiUntukOrangLain, Date tanggalPembuatanAkunHRIS, Date tanggalBerakhirBekerja, int approver) {
+        this.isiUntukOrangLain = isiUntukOrangLain;
+        this.tanggalPembuatanAkunHRIS = tanggalPembuatanAkunHRIS;
+        this.tanggalBerakhirBekerja = tanggalBerakhirBekerja;
+        this.approver = approver;
+    }
 
     // Getters and setters
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public boolean isIsiUntukOrangLain() {
         return isiUntukOrangLain;
@@ -59,27 +54,13 @@ public class PengajuanResignDTO {
 
 
 
-    public String getEmailAtasan() {
-        return emailAtasan;
-    }
-
-    public void setEmailAtasan(String emailAtasan) {
-        this.emailAtasan = emailAtasan;
-    }
-
-    public String getEmailAktif() {
-        return emailAktif;
-    }
-
-    public void setEmailAktif(String emailAktif) {
-        this.emailAktif = emailAktif;
-    }
-
     public int getApprover() {
-        return Approver;
+        return approver;
     }
+
+
 
     public void setApprover(int approver) {
-        Approver = approver;
+        approver = approver;
     }
 }

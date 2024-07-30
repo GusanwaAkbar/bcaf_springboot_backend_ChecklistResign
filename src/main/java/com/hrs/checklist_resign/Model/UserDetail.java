@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -47,6 +48,7 @@ public class UserDetail {
     private String externalUser;
     private String nipAtasan;
     private String nomerWA;
+    private Date dateCreated;
 
     @OneToMany(mappedBy = "userDetailAtasan", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -76,6 +78,7 @@ public class UserDetail {
                 ", divisi='" + divisi + '\'' +
                 ", jabatan='" + jabatan + '\'' +
                 ", externalUser='" + externalUser + '\'' +
+                ", dateCreated='" + dateCreated + '\'' +
                 '}';
     }
 
@@ -181,13 +184,6 @@ public class UserDetail {
         this.pengajuanResign = pengajuanResign;
     }
 
-    public String getNomerWA() {
-        return nomerWA;
-    }
-
-    public void setNomerWA(String nomerWA) {
-        this.nomerWA = nomerWA;
-    }
 
     public String getNipAtasan() {
         return nipAtasan;
@@ -197,6 +193,14 @@ public class UserDetail {
         this.nipAtasan = nipAtasan;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     //    public String getEmailAktif() {
 //        return emailAktif;
 //    }
@@ -204,4 +208,13 @@ public class UserDetail {
 //    public void setEmailAktif(String emailAktif) {
 //        this.emailAktif = emailAktif;
 //    }
+
+
+    public String getNomerWA() {
+        return nomerWA;
+    }
+
+    public void setNomerWA(String nomerWA) {
+        this.nomerWA = nomerWA;
+    }
 }

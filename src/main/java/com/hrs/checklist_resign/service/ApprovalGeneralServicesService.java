@@ -151,7 +151,7 @@ public class ApprovalGeneralServicesService implements ApprovalService {
             asyncEmailService.sendNotificationsAndEmails(userDetailKaryawan, userDetailAtasanResign, nipKaryawan,"Your Resignation is Pending by General Service Departement, please contact the admin." ,  "Resignation of " +nipKaryawan +" " + namaKaryawan  + " is Pending by General Service Departement, please contact the admin.");
         }
 
-        
+
 
         ApprovalGeneralServices updatedApprovalGeneralServices = repository.save(approvalGeneralServices);
         ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(updatedApprovalGeneralServices, true, "Update succeeded", HttpStatus.OK.value());

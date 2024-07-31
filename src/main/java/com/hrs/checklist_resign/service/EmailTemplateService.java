@@ -24,6 +24,12 @@ public class EmailTemplateService {
     private SpringTemplateEngine templateEngine;
 
     public void sendHtmlEmail(String to, String subject, String template, Map<String, Object> variables) throws MessagingException {
+        if (to == null || to.isEmpty()) {
+            // Log the error or handle it as needed, but don't throw an exception
+            System.err.println("Email address is missing or invalid: " + to);
+            return;
+        }
+
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 

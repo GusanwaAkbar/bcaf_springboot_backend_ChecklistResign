@@ -40,17 +40,28 @@ public class AsyncEmailService {
         Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, messageForKaryawan, linkKaryawan);
         Map<String, Object> variablesAtasan = emailTemplateService.createEmailVariables(atasanNama, messageForAdmin+ "from: " + nipKaryawanResign + ", " + userNama, linkAtasan);
 
-        try {
-            //email for admin
-            emailTemplateService.sendHtmlEmail(emailAtasan, messageForAdmin+ "from: " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
 
-            //email for karyawan
-            emailTemplateService.sendHtmlEmail(userEmail, messageForKaryawan, "email-template", variablesKaryawan);
+
+        try {
+
+            if (emailAtasan != null)
+            {
+                //email for admin
+                emailTemplateService.sendHtmlEmail(emailAtasan, messageForAdmin+ "from: " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
+            }
+            if (userEmail != null)
+            {
+                //email for karyawan
+                emailTemplateService.sendHtmlEmail(userEmail, messageForKaryawan, "email-template", variablesKaryawan);
+            }
+
 
         } catch (MessagingException e) {
             e.printStackTrace();
             // Handle exception
         }
+
+
     }
 
     public void sendNotificationAndEmailsV2(String namaDepartement,ApprovalAtasan approvalAtasan, boolean isAccept)

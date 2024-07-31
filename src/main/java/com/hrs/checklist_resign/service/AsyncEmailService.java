@@ -1,5 +1,6 @@
 package com.hrs.checklist_resign.service;
 
+import com.hrs.checklist_resign.Model.ApprovalAtasan;
 import com.hrs.checklist_resign.Model.UserDetail;
 import jakarta.mail.MessagingException;
 import org.springframework.scheduling.annotation.Async;
@@ -51,5 +52,26 @@ public class AsyncEmailService {
             // Handle exception
         }
     }
+
+    public void sendNotificationAndEmailsV2(String namaDepartement,ApprovalAtasan approvalAtasan, boolean isAccept)
+    {
+        UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+        String nipKaryawan = approvalAtasan.getNipKaryawanResign();
+        String namaKaryawan = approvalAtasan.getNamaKaryawan();
+
+        //Set User Detail Atasan
+        UserDetail userDetailAtasanResign = approvalAtasan.getUserDetailAtasan();
+
+        // Send the email
+        if (isAccept)
+        {
+            sendNotificationsAndEmails(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "Your Resignation has been approved by "+ namaDepartement, "Resignation of " +nipKaryawan +" " + namaKaryawan  +" has been approved by " + namaDepartement);
+        }
+        else {
+            sendNotificationsAndEmails(userDetailKaryawan, userDetailAtasanResign, nipKaryawan,"Your Resignation is Pending by "+namaDepartement+ ", please contact the admin." ,  "Resignation of " +nipKaryawan +" " + namaKaryawan  + " is Pending by "+namaDepartement+", please contact the admin.");
+        }
+    }
+
+
 }
 

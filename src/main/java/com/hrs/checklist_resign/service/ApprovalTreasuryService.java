@@ -43,6 +43,9 @@ public class ApprovalTreasuryService implements ApprovalService {
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
     @Autowired
+    private AsyncEmailService asyncEmailService;
+
+    @Autowired
     public ApprovalTreasuryService(ApprovalTreasuryRepository repository) {
         this.repository = repository;
     }
@@ -102,11 +105,23 @@ public class ApprovalTreasuryService implements ApprovalService {
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id, "TREASURY");
 
+        boolean isAccept = false;
+
         if(approvalTreasury.getApprovalTreasuryStatus().equals("accept"))
         {
+            //Set audit Trail if accept
             approvalTreasury.setApprovedDate(new Date());
             approvalTreasury.setApprovedBy(namaApprover);
+            isAccept = true;
         }
+        else {
+            isAccept = false;
+        }
+
+        ApprovalAtasan approvalAtasan = approvalTreasury.getApprovalAtasan();
+        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
+
+
 
         if (allApprove) {
             // Create the final form
@@ -115,6 +130,8 @@ public class ApprovalTreasuryService implements ApprovalService {
             // Log or take other actions if final form is not created
 
         }
+
+
 
         ApprovalTreasury updatedApprovalTreasury = repository.save(approvalTreasury);
         ApiResponse<ApprovalTreasury> response = new ApiResponse<>(updatedApprovalTreasury, true, "Update succeeded", HttpStatus.OK.value());

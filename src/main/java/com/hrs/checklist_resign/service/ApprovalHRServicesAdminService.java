@@ -37,6 +37,9 @@ public class ApprovalHRServicesAdminService implements ApprovalService {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private AsyncEmailService asyncEmailService;
+
     private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRServicesAdmin";
 
     @Autowired
@@ -96,11 +99,22 @@ public class ApprovalHRServicesAdminService implements ApprovalService {
         approvalHRServicesAdmin.setApprovalHRServicesAdminStatus(approvalHRServicesAdminDetails.getApprovalHRServicesAdminStatus());
         approvalHRServicesAdmin.setRemarks(approvalHRServicesAdminDetails.getRemarks());
 
+        boolean isAccept = false;
+
         if(approvalHRServicesAdmin.getApprovalHRServicesAdminStatus().equals("accept"))
         {
+            //Set audit Trail if accept
             approvalHRServicesAdmin.setApprovedDate(new Date());
             approvalHRServicesAdmin.setApprovedBy(namaApprover);
+            isAccept = true;
         }
+        else {
+            isAccept = false;
+        }
+
+        ApprovalAtasan approvalAtasan = approvalHRServicesAdmin.getApprovalAtasan();
+        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
+
 
         // Check all approval status
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id, "HRSERVICESADMIN");

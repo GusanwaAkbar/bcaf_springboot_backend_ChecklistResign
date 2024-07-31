@@ -40,6 +40,9 @@ public class ApprovalHRTalentService implements ApprovalService {
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
+    @Autowired
+    private AsyncEmailService asyncEmailService;
+
     public ApprovalHRTalent saveApprovalHRTalent (ApprovalHRTalent approvalHRTalent)
     {
         return approvalHRTalentRepository.save(approvalHRTalent);
@@ -89,16 +92,28 @@ public class ApprovalHRTalentService implements ApprovalService {
         }
 
         ApprovalHRTalent existingApprovalHRTalent = approvalHRTalentOptional.get();
+
         // Update fields
         existingApprovalHRTalent.setPengecekanBiaya(approvalHRTalentDetails.getPengecekanBiaya());
         existingApprovalHRTalent.setApprovalHRTalentStatus(approvalHRTalentDetails.getApprovalHRTalentStatus());
         existingApprovalHRTalent.setRemarks(approvalHRTalentDetails.getRemarks());
 
-        if (existingApprovalHRTalent.getApprovalHRTalentStatus().equals("accept"))
+        boolean isAccept = false;
+
+        if(existingApprovalHRTalent.getApprovalHRTalentStatus().equals("accept"))
         {
+            //Set audit Trail if accept
             existingApprovalHRTalent.setApprovedDate(new Date());
             existingApprovalHRTalent.setApprovedBy(namaApprover);
+            isAccept = true;
         }
+        else {
+            isAccept = false;
+        }
+
+        ApprovalAtasan approvalAtasan = existingApprovalHRTalent.getApprovalAtasan();
+        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
+
 
         //save the instance
         ApprovalHRTalent approvalHRTalent = approvalHRTalentRepository.save(existingApprovalHRTalent);

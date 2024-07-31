@@ -38,6 +38,9 @@ public class ApprovalHRIRService implements ApprovalService {
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
+    @Autowired
+    private  AsyncEmailService asyncEmailService;
+
     private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRIR";
 
     public Optional<ApprovalHRIR> findByNipKaryawanResign(String nipKaryawanResign) {
@@ -100,11 +103,22 @@ public class ApprovalHRIRService implements ApprovalService {
         approvalHRIR.setApprovalHRIRStatus(approvalHRIRDetails.getApprovalHRIRStatus());
         approvalHRIR.setRemarks(approvalHRIRDetails.getRemarks());
 
-        if (approvalHRIR.getApprovalHRIRStatus().equals("accept"))
+        boolean isAccept = false;
+
+        if(approvalHRIR.getApprovalHRIRStatus().equals("accept"))
         {
+            //Set audit Trail if accept
             approvalHRIR.setApprovedDate(new Date());
             approvalHRIR.setApprovedBy(namaApprover);
+            isAccept = true;
         }
+        else {
+            isAccept = false;
+        }
+
+        ApprovalAtasan approvalAtasan = approvalHRIR.getApprovalAtasan();
+        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
+
 
         // Save the instance
         ApprovalHRIR savedApprovalHRIR = approvalHRIRRepository.save(approvalHRIR);

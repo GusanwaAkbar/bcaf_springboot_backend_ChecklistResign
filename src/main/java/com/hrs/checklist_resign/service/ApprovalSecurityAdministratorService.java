@@ -41,6 +41,9 @@ public class ApprovalSecurityAdministratorService implements ApprovalService {
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
     @Autowired
+    private AsyncEmailService asyncEmailService;
+
+    @Autowired
     public ApprovalSecurityAdministratorService(ApprovalSecurityAdministratorRepository repository) {
         this.repository = repository;
     }
@@ -97,11 +100,23 @@ public class ApprovalSecurityAdministratorService implements ApprovalService {
         approvalSecurityAdministrator.setApprovalSecurityAdministratorStatus(approvalSecurityAdministratorDetails.getApprovalSecurityAdministratorStatus());
         approvalSecurityAdministrator.setRemarks(approvalSecurityAdministratorDetails.getRemarks());
 
+
+        boolean isAccept = false;
+
         if(approvalSecurityAdministrator.getApprovalSecurityAdministratorStatus().equals("accept"))
         {
+            //Set audit Trail if accept
             approvalSecurityAdministrator.setApprovedDate(new Date());
             approvalSecurityAdministrator.setApprovedBy(namaApprover);
+            isAccept = true;
         }
+        else {
+            isAccept = false;
+        }
+
+        ApprovalAtasan approvalAtasan = approvalSecurityAdministrator.getApprovalAtasan();
+        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
+
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id,"SECURITYADMINISTRATOR");

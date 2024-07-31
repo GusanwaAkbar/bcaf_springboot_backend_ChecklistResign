@@ -341,6 +341,10 @@ public class PengajuanResignController {
 
         saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, userDetail, nipAtasan);
 
+        // Send notifications and emails
+        sendNotificationsAndEmails(userDetail, userDetailAtasan, userDetail.getUserUsername());
+
+
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -537,7 +541,7 @@ public class PengajuanResignController {
         System.out.println("User Role: " + userRole);
         System.out.println("Authorities: " + authentication.getAuthorities());
 
-        Page<ResignationProgressDTO> progressPage;
+        Page<ResignationProgressDTO> progressPage = null;
 
         if ("ROLE_ADMIN".equals(userRole)) {
             // Admin logic: retrieve full data
@@ -547,12 +551,9 @@ public class PengajuanResignController {
             // User logic: retrieve resignations where nipAtasan = userNip
             progressPage = pengajuanResignService.getResignationProgressByNipAtasan(
                     userNip, namaKaryawan, page, size, sortBy, sortDirection);
-        } else {
-            ApiResponse<Page<ResignationProgressDTO>> response = new ApiResponse<>(
-                    false, "Invalid role", HttpStatus.FORBIDDEN.value(), "Access denied");
-            return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
         }
-
+        
+     
         if (progressPage.hasContent()) {
             ApiResponse<Page<ResignationProgressDTO>> response = new ApiResponse<>(
                     progressPage, true, "Fetch succeeded", HttpStatus.OK.value());
@@ -634,6 +635,9 @@ public class PengajuanResignController {
         // Save approval details
         saveApprovalAtasanAdmin(savedPengajuanResign, pengajuanResignAdminDTO, userDetailAtasan, userDetail);
 
+        // Send notifications and emails
+        sendNotificationsAndEmails(userDetail, userDetailAtasan, userDetail.getUserUsername());
+
         // Construct the response
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -662,6 +666,29 @@ public class PengajuanResignController {
 
         ApiResponse<UserDetailsResponseDTO> response = new ApiResponse<>(userDetailsResponseDTO, true, "User details fetched successfully", HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    private void sendNotificationsAndEmails(UserDetail userDetail, UserDetail userDetailAtasan, String nipKaryawanResign) {
+        String emailAtasan = userDetailAtasan.getEmail();
+        String userEmail = userDetail.getEmail();
+        String userNama = userDetail.getNama();
+        String atasanNama = userDetailAtasan.getNama();
+        notificationService.sendNotification("Approval Required: Resignation Request from: " + nipKaryawanResign + ", " + userNama, userDetail, userDetailAtasan.getUserUsername());
+        notificationService.sendNotification("Resignation request submitted", userDetail, nipKaryawanResign);
+        String linkKaryawan = "http://localhost:4200/#/progress-approval";
+        String linkAtasan = "http://localhost:4200/#/approval-atasan";
+        Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, "Your resignation request has been submitted.", linkKaryawan);
+        Map<String, Object> variablesAtasan = emailTemplateService.createEmailVariables(atasanNama, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, linkAtasan);
+        try {
+            emailTemplateService.sendHtmlEmail(userEmail, "Resignation Request Submitted", "email-template", variablesKaryawan);
+            emailTemplateService.sendHtmlEmail(emailAtasan, "Approval Required: New Resignation Request from " + nipKaryawanResign + ", " + userNama, "email-template", variablesAtasan);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            // Handle exception
+        }
+
+
     }
 
 

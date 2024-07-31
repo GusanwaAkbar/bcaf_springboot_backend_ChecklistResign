@@ -40,6 +40,9 @@ public class ApprovalHRLearningService implements ApprovalService {
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
     @Autowired
+    private  AsyncEmailService asyncEmailService;
+
+    @Autowired
     public ApprovalHRLearningService(ApprovalHRLearningRepository repository) {
         this.repository = repository;
     }
@@ -95,11 +98,22 @@ public class ApprovalHRLearningService implements ApprovalService {
         approvalHRLearning.setApprovalHRLearningStatus(approvalHRLearningDetails.getApprovalHRLearningStatus());
         approvalHRLearning.setRemarks(approvalHRLearningDetails.getRemarks());
 
+        boolean isAccept = false;
+
         if(approvalHRLearning.getApprovalHRLearningStatus().equals("accept"))
         {
+            //Set audit Trail if accept
             approvalHRLearning.setApprovedDate(new Date());
             approvalHRLearning.setApprovedBy(namaApprover);
+            isAccept = true;
         }
+        else {
+            isAccept = false;
+        }
+
+        ApprovalAtasan approvalAtasan = approvalHRLearning.getApprovalAtasan();
+        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
+
 
         ApprovalHRLearning updatedApprovalHRLearning = repository.save(approvalHRLearning);
 

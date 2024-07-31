@@ -38,6 +38,10 @@ public class ApprovalHRPayrollService implements ApprovalService {
     @Autowired
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
+    @Autowired
+    private AsyncEmailService asyncEmailService;
+
+
     private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRPayroll";
 
     @Autowired
@@ -100,11 +104,22 @@ public class ApprovalHRPayrollService implements ApprovalService {
         approvalHRPayroll.setApprovalHRPayrollStatus(approvalHRPayrollDetails.getApprovalHRPayrollStatus());
         approvalHRPayroll.setRemarks(approvalHRPayrollDetails.getRemarks());
 
+        boolean isAccept = false;
+
         if(approvalHRPayroll.getApprovalHRPayrollStatus().equals("accept"))
         {
+            //Set audit Trail if accept
             approvalHRPayroll.setApprovedDate(new Date());
             approvalHRPayroll.setApprovedBy(namaApprover);
+            isAccept = true;
         }
+        else {
+            isAccept = false;
+        }
+
+        ApprovalAtasan approvalAtasan = approvalHRPayroll.getApprovalAtasan();
+        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
+
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id, "HRPAYROLL");

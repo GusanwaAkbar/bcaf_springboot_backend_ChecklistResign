@@ -103,23 +103,22 @@ public class ApprovalGeneralServicesService implements ApprovalService {
         approvalGeneralServices.setApprovalGeneralServicesStatus(approvalGeneralServicesDetails.getApprovalGeneralServicesStatus());
         approvalGeneralServices.setRemarks(approvalGeneralServicesDetails.getRemarks());
 
+        boolean isAccept = false;
 
-        if (approvalGeneralServices.getApprovalGeneralServicesStatus().equals("accept"))
+        if(approvalGeneralServices.getApprovalGeneralServicesStatus().equals("accept"))
         {
-            //Set audit Trail
+            //Set audit Trail if accept
             approvalGeneralServices.setApprovedDate(new Date());
             approvalGeneralServices.setApprovedBy(namaApprover);
-
-
-
-            //Send the email
-            UserDetail userDetailKaryawan = approvalGeneralServices.getApprovalAtasan().getPengajuanResign().getUserDetailResign();
-            String nipKaryawan = approvalGeneralServices.getNipKaryawanResign();
-
-            asyncEmailService.sendNotificationsAndEmails(userDetailKaryawan, userDetailAtasan, nipKaryawan, "Your Resignation has been approved by General Services Departement", "General Services Departement has been approve the Resignation");
-
-
+            isAccept = true;
         }
+        else {
+            isAccept = false;
+        }
+
+        ApprovalAtasan approvalAtasan = approvalGeneralServices.getApprovalAtasan();
+        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
+
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id, "GENERALSERVICES");
@@ -133,6 +132,26 @@ public class ApprovalGeneralServicesService implements ApprovalService {
             System.out.println("");
 
         }
+
+        //Send the email
+        //Set User Detail Karyawan
+        UserDetail userDetailKaryawan = approvalGeneralServices.getApprovalAtasan().getPengajuanResign().getUserDetailResign();
+        String nipKaryawan = approvalGeneralServices.getApprovalAtasan().getNipKaryawanResign();
+        String namaKaryawan = approvalGeneralServices.getApprovalAtasan().getNamaKaryawan();
+
+        //Set User Detail Atasan
+        UserDetail userDetailAtasanResign = approvalGeneralServices.getApprovalAtasan().getUserDetailAtasan();
+
+        // Send the email
+        if (approvalGeneralServices.getApprovalGeneralServicesStatus().equals("accept"))
+        {
+            asyncEmailService.sendNotificationsAndEmails(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "Your Resignation has been approved by General Services Departement", "Resignation of " +nipKaryawan +" " + namaKaryawan  +" has been approved by General Services Departement");
+        }
+        else {
+            asyncEmailService.sendNotificationsAndEmails(userDetailKaryawan, userDetailAtasanResign, nipKaryawan,"Your Resignation is Pending by General Service Departement, please contact the admin." ,  "Resignation of " +nipKaryawan +" " + namaKaryawan  + " is Pending by General Service Departement, please contact the admin.");
+        }
+
+        
 
         ApprovalGeneralServices updatedApprovalGeneralServices = repository.save(approvalGeneralServices);
         ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(updatedApprovalGeneralServices, true, "Update succeeded", HttpStatus.OK.value());

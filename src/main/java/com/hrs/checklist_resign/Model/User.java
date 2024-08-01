@@ -30,6 +30,8 @@ public class User {
     @JsonManagedReference
     private UserDetail userDetails;
 
+
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.stream(roles.split(","))
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
@@ -85,5 +87,11 @@ public class User {
         return Objects.hash(username);
     }
 
+    public String getRoles() {
+        return roles;
+    }
 
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
 }

@@ -24,19 +24,30 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+        Optional<User> existingUserOptional = userRepository.findByUsername(user.getUsername());
 
-        System.out.println("--------- bintang -----------");
-        System.out.println(user.getPassword());
-        System.out.println("---------------------");
-        //Passsword Encoder
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (existingUserOptional.isPresent()) {
+            // Update existing user
+            User existingUser = existingUserOptional.get();
 
-        //Save User
-        userRepository.save(user);
+            // Only encode the password if it's being updated
+            if (!existingUser.getPassword().equals(user.getPassword())) {
+                existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
 
+            // Update other fields
+            existingUser.setUsername(user.getUsername());
+            existingUser.setRoles(user.getRoles());
+            // Update other fields as necessary
 
-        return user;
+            return userRepository.save(existingUser);
+        } else {
+            // New user
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            return userRepository.save(user);
+        }
     }
+
 
 
 

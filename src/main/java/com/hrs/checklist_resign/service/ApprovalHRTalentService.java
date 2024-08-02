@@ -43,6 +43,9 @@ public class ApprovalHRTalentService implements ApprovalService {
     @Autowired
     private AsyncEmailService asyncEmailService;
 
+    @Autowired
+    private  EmailServiceV2 emailServiceV2;
+
     public ApprovalHRTalent saveApprovalHRTalent (ApprovalHRTalent approvalHRTalent)
     {
         return approvalHRTalentRepository.save(approvalHRTalent);
@@ -112,8 +115,20 @@ public class ApprovalHRTalentService implements ApprovalService {
         }
 
         ApprovalAtasan approvalAtasan = existingApprovalHRTalent.getApprovalAtasan();
-        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
 
+        //============== SEND EMAIL START ==============
+
+        //Send the email
+        //Set User Detail Karyawan
+        UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+        String nipKaryawan = approvalAtasan.getNipKaryawanResign();
+        String namaKaryawan = approvalAtasan.getNamaKaryawan();
+
+        //Set User Detail Atasan
+        UserDetail userDetailAtasanResign = existingApprovalHRTalent.getApprovalAtasan().getUserDetailAtasan();
+        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
+
+        //============== SEND EMAIL END ==============
 
         //save the instance
         ApprovalHRTalent approvalHRTalent = approvalHRTalentRepository.save(existingApprovalHRTalent);

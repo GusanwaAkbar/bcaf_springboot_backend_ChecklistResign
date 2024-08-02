@@ -42,12 +42,12 @@ public class EmailServiceV2 {
             customerName = userDetailAtasan.getNama();
 
             emailBody = createEmailBodyApprovalAtasan(customerName, namaKaryawan, emailSubject, emailMessage);
-        } else  {
+        } else if (tujuan == "ATASAN_UPDATE") {
 
             email = userDetailAtasan.getEmail();
             customerName = userDetailAtasan.getNama();
 
-            emailBody = createEmailBodyApprovalAtasan(customerName, namaKaryawan, emailSubject, emailMessage);
+            emailBody = createEmailBodyApprovalAtasanUpdate(customerName, namaKaryawan, emailSubject, emailMessage);
         }
 
 
@@ -116,6 +116,37 @@ public class EmailServiceV2 {
 
 
 
+    //================ GENERIC SEND EMAIL SESSION =================
+
+
+    public void sendDepartmentEmail(UserDetail userDetailKaryawan, UserDetail userDetailAtasanResign, String nipKaryawan, String departmentName, boolean isAccept) {
+        String subject;
+        String body;
+
+        if (isAccept) {
+            subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved Your Resignation";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved Your Resignation, Check the Progress In the App";
+            sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "KARYAWAN");
+
+            subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved The Resignation";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved The Resignation, please check the progress in the app";
+            sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "ATASAN_UPDATE");
+        } else {
+            subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING Your Resignation";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING Your Resignation, Please Contact the admin and Check the Progress In the App";
+            sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "KARYAWAN");
+
+            subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING the Resignation";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING the Resignation, Please Contact the admin and Check the Progress In the App";
+            sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "ATASAN_UPDATE");
+        }
+    }
+
+
+
+
+    //============== TEMPLATE SESSION ======================
+
     private String createEmailBodyApprovalAtasan(String customerName, String namaKaryawan , String emailSubject, String emailMessage) {
         return "<!DOCTYPE html>" +
                 "<html lang=\"en\">" +
@@ -129,8 +160,30 @@ public class EmailServiceV2 {
                 "</div>" +
                 "<p>Pemberitahuan Pesan Otomatis dari Sistem Pesan Aplikasi Checklist Resign BCA Finance</p>" +
                 "<p>Dear Bapak/Ibu " + customerName + "</p>" +
-                "<p> Approval Required: New Resignation Request from " + namaKaryawan +", " + emailMessage + "</p>" +
+                "<p> Checklist Resign: New Resignation Request from " + namaKaryawan +", " + emailMessage + "</p>" +
                 "<p><a href=\"http://localhost:4200/#/approval-atasan\">Klik di sini untuk membuka aplikasi (Harap terkoneksi dengan LAN) </a></p>" +
+                "<p>Salam penutup,</p>" +
+                "<p>BCA Finance</p>" +
+                "</body>" +
+                "</html>";
+    }
+
+    private String createEmailBodyApprovalAtasanUpdate(String customerName, String namaKaryawan , String emailSubject, String emailMessage) {
+        return "<!DOCTYPE html>" +
+                "<html lang=\"en\">" +
+                "<head>" +
+                "<meta charset=\"UTF-8\">" +
+                "<title>" + emailSubject + "</title>" +
+                "</head>" +
+                "<body>" +
+                "<div class=\"header\">" +
+                "<img src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/BCA_Finance.svg/798px-BCA_Finance.svg.png\" alt=\"BCA Finance Logo\" width=\"200\">" +
+                "</div>" +
+                "<p>Pemberitahuan Pesan Otomatis dari Sistem Pesan Aplikasi Checklist Resign BCA Finance</p>" +
+                "<p>Dear Bapak/Ibu " + customerName + "</p>" +
+                "<p> Update Checklist Resign of: "+namaKaryawan +  "</p>" +
+                emailMessage +
+                "<p><a href=\"http://localhost:4200/#/admin-pengajuanresign-list\">Klik di sini untuk membuka aplikasi (Harap terkoneksi dengan LAN) </a></p>" +
                 "<p>Salam penutup,</p>" +
                 "<p>BCA Finance</p>" +
                 "</body>" +

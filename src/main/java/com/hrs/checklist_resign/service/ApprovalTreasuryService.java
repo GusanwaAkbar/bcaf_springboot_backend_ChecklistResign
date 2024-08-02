@@ -46,6 +46,9 @@ public class ApprovalTreasuryService implements ApprovalService {
     private AsyncEmailService asyncEmailService;
 
     @Autowired
+    private EmailServiceV2 emailServiceV2;
+
+    @Autowired
     public ApprovalTreasuryService(ApprovalTreasuryRepository repository) {
         this.repository = repository;
     }
@@ -119,8 +122,21 @@ public class ApprovalTreasuryService implements ApprovalService {
         }
 
         ApprovalAtasan approvalAtasan = approvalTreasury.getApprovalAtasan();
-        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
 
+
+        //============== SEND EMAIL START ==============
+
+        //Send the email
+        //Set User Detail Karyawan
+        UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+        String nipKaryawan = approvalAtasan.getNipKaryawanResign();
+        String namaKaryawan = approvalAtasan.getNamaKaryawan();
+
+        //Set User Detail Atasan
+        UserDetail userDetailAtasanResign = approvalTreasury.getApprovalAtasan().getUserDetailAtasan();
+        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
+
+        //============== SEND EMAIL END ==============
 
 
         if (allApprove) {

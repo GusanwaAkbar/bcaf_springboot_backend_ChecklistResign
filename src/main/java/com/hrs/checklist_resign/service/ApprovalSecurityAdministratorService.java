@@ -44,6 +44,9 @@ public class ApprovalSecurityAdministratorService implements ApprovalService {
     private AsyncEmailService asyncEmailService;
 
     @Autowired
+    private EmailServiceV2 emailServiceV2;
+
+    @Autowired
     public ApprovalSecurityAdministratorService(ApprovalSecurityAdministratorRepository repository) {
         this.repository = repository;
     }
@@ -115,8 +118,20 @@ public class ApprovalSecurityAdministratorService implements ApprovalService {
         }
 
         ApprovalAtasan approvalAtasan = approvalSecurityAdministrator.getApprovalAtasan();
-        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
 
+        //============== SEND EMAIL START ==============
+
+        //Send the email
+        //Set User Detail Karyawan
+        UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+        String nipKaryawan = approvalAtasan.getNipKaryawanResign();
+        String namaKaryawan = approvalAtasan.getNamaKaryawan();
+
+        //Set User Detail Atasan
+        UserDetail userDetailAtasanResign = approvalSecurityAdministrator.getApprovalAtasan().getUserDetailAtasan();
+        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
+
+        //============== SEND EMAIL END ==============
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id,"SECURITYADMINISTRATOR");

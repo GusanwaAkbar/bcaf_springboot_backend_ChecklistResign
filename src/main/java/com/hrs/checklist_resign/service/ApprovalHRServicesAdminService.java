@@ -40,6 +40,10 @@ public class ApprovalHRServicesAdminService implements ApprovalService {
     @Autowired
     private AsyncEmailService asyncEmailService;
 
+    @Autowired
+    private EmailServiceV2 emailServiceV2;
+
+
     private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRServicesAdmin";
 
     @Autowired
@@ -113,8 +117,21 @@ public class ApprovalHRServicesAdminService implements ApprovalService {
         }
 
         ApprovalAtasan approvalAtasan = approvalHRServicesAdmin.getApprovalAtasan();
-        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
 
+
+        //============== SEND EMAIL START ==============
+
+        //Send the email
+        //Set User Detail Karyawan
+        UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+        String nipKaryawan = approvalAtasan.getNipKaryawanResign();
+        String namaKaryawan = approvalAtasan.getNamaKaryawan();
+
+        //Set User Detail Atasan
+        UserDetail userDetailAtasanResign = approvalHRServicesAdmin.getApprovalAtasan().getUserDetailAtasan();
+        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
+
+        //============== SEND EMAIL END ==============
 
         // Check all approval status
         boolean allApprove = checkingAllApprovalsStatus.doCheck(id, "HRSERVICESADMIN");

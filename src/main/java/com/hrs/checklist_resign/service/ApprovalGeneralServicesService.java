@@ -43,6 +43,9 @@ public class ApprovalGeneralServicesService implements ApprovalService {
     private CheckingAllApprovalsStatus checkingAllApprovalsStatus;
 
     @Autowired
+    private EmailServiceV2 emailServiceV2;
+
+    @Autowired
     public ApprovalGeneralServicesService(ApprovalGeneralServicesRepository repository) {
         this.repository = repository;
     }
@@ -116,8 +119,8 @@ public class ApprovalGeneralServicesService implements ApprovalService {
             isAccept = false;
         }
 
-        ApprovalAtasan approvalAtasan = approvalGeneralServices.getApprovalAtasan();
-        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
+
+        //asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
 
 
         //checking all approval statuslogAction(id, "Final form not created due to pending approvals");
@@ -135,23 +138,47 @@ public class ApprovalGeneralServicesService implements ApprovalService {
 
         //Send the email
         //Set User Detail Karyawan
-        UserDetail userDetailKaryawan = approvalGeneralServices.getApprovalAtasan().getPengajuanResign().getUserDetailResign();
-        String nipKaryawan = approvalGeneralServices.getApprovalAtasan().getNipKaryawanResign();
-        String namaKaryawan = approvalGeneralServices.getApprovalAtasan().getNamaKaryawan();
+        ApprovalAtasan approvalAtasan = approvalGeneralServices.getApprovalAtasan();
+
+        UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+        String nipKaryawan = approvalAtasan.getNipKaryawanResign();
+        String namaKaryawan = approvalAtasan.getNamaKaryawan();
 
         //Set User Detail Atasan
         UserDetail userDetailAtasanResign = approvalGeneralServices.getApprovalAtasan().getUserDetailAtasan();
 
-        // Send the email
-        if (approvalGeneralServices.getApprovalGeneralServicesStatus().equals("accept"))
-        {
-            asyncEmailService.sendNotificationsAndEmails(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "Your Resignation has been approved by General Services Departement", "Resignation of " +nipKaryawan +" " + namaKaryawan  +" has been approved by General Services Departement");
-        }
-        else {
-            asyncEmailService.sendNotificationsAndEmails(userDetailKaryawan, userDetailAtasanResign, nipKaryawan,"Your Resignation is Pending by General Service Departement, please contact the admin." ,  "Resignation of " +nipKaryawan +" " + namaKaryawan  + " is Pending by General Service Departement, please contact the admin.");
-        }
+        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
 
 
+
+        //
+//        if (isAccept)
+//        {
+//            emailServiceV2.sendEmail(userDetailKaryawan,
+//                                     userDetailAtasanResign,
+//                          "Checklist Resign "+nipKaryawan+ ": General Service Has Been Approved Your Resignation",
+//                         "Checklist Resign "+nipKaryawan+ ": General Service Has Been Approved Your Resignation, Check the Progress In the App",
+//                                "KARYAWAN");
+//
+//            emailServiceV2.sendEmail(userDetailKaryawan,
+//                    userDetailAtasanResign,
+//                    "Checklist Resign "+nipKaryawan+ ": General Service Has Been Approved The Resignation",
+//                    "Checklist Resign "+nipKaryawan+ ": General Service Has Been Approved The Resignation, please check the progress in the app",
+//                    "ATASAN_UPDATE");
+//        }else
+//        {
+//            emailServiceV2.sendEmail(userDetailKaryawan,
+//                    userDetailAtasanResign,
+//                    "Checklist Resign "+nipKaryawan+ ": General Service Has Been  PENDING  Your Resignation",
+//                    "Checklist Resign "+nipKaryawan+ ": General Service Has Been PENDING Your Resignation, Please Contact the admin and Check the Progress In the App",
+//                    "KARYAWAN");
+//
+//            emailServiceV2.sendEmail(userDetailKaryawan,
+//                    userDetailAtasanResign,
+//                    "Checklist Resign "+nipKaryawan+ ": General Service Has Been  PENDING  the Resignation",
+//                    "Checklist Resign "+nipKaryawan+ ": General Service Has Been PENDING Your Resignation, Please Contact the admin and Check the Progress In the App",
+//                    "ATASAN_UPDATE");
+//        }
 
         ApprovalGeneralServices updatedApprovalGeneralServices = repository.save(approvalGeneralServices);
         ApiResponse<ApprovalGeneralServices> response = new ApiResponse<>(updatedApprovalGeneralServices, true, "Update succeeded", HttpStatus.OK.value());

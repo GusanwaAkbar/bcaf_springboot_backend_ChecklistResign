@@ -394,9 +394,9 @@ public class ApprovalAtasanController {
                 System.out.println(user);
 
                 UserDetail userDetailAdmin = user.getUserDetails();
-                String subject2 = " Checklist Resign: New Approval Checklist Resign From "+nipKaryawan;
+                String subject2 = " Checklist Resign: New Resignation Request From "+nipKaryawan;
 
-                emailServiceV2.sendEmail(userDetailKaryawan, userDetailAdmin, subject2, "Please Check the Checklist Resign and Approve", "DEPARTEMENT");
+                emailServiceV2.sendEmail(userDetailKaryawan, userDetailAdmin, subject2, "Please Check the Checklist Resign and Approve", "ATASAN");
                 //sendNotificationsAndEmails(userDetailKaryawan, userDetailAdmin, nipKaryawan );
 
             }

@@ -41,6 +41,9 @@ public class ApprovalHRIRService implements ApprovalService {
     @Autowired
     private  AsyncEmailService asyncEmailService;
 
+    @Autowired
+    private EmailServiceV2 emailServiceV2;
+
     private final String uploadDir = "/home/gusanwa/AA_Programming/checklist-resign-app/checklist-resign/storage/ApprovalHRIR";
 
     public Optional<ApprovalHRIR> findByNipKaryawanResign(String nipKaryawanResign) {
@@ -117,8 +120,20 @@ public class ApprovalHRIRService implements ApprovalService {
         }
 
         ApprovalAtasan approvalAtasan = approvalHRIR.getApprovalAtasan();
-        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
 
+        //============== SEND EMAIL START ==============
+
+        //Send the email
+        //Set User Detail Karyawan
+        UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+        String nipKaryawan = approvalAtasan.getNipKaryawanResign();
+        String namaKaryawan = approvalAtasan.getNamaKaryawan();
+
+        //Set User Detail Atasan
+        UserDetail userDetailAtasanResign = approvalHRIR.getApprovalAtasan().getUserDetailAtasan();
+        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
+
+        //============== SEND EMAIL END ==============
 
         // Save the instance
         ApprovalHRIR savedApprovalHRIR = approvalHRIRRepository.save(approvalHRIR);

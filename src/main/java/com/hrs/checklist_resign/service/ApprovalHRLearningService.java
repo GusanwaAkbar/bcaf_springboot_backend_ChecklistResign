@@ -43,6 +43,9 @@ public class ApprovalHRLearningService implements ApprovalService {
     private  AsyncEmailService asyncEmailService;
 
     @Autowired
+    private EmailServiceV2 emailServiceV2;
+
+    @Autowired
     public ApprovalHRLearningService(ApprovalHRLearningRepository repository) {
         this.repository = repository;
     }
@@ -112,8 +115,20 @@ public class ApprovalHRLearningService implements ApprovalService {
         }
 
         ApprovalAtasan approvalAtasan = approvalHRLearning.getApprovalAtasan();
-        asyncEmailService.sendNotificationAndEmailsV2("General Service Departement", approvalAtasan, isAccept);
 
+        //============== SEND EMAIL START ==============
+
+        //Send the email
+        //Set User Detail Karyawan
+        UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+        String nipKaryawan = approvalAtasan.getNipKaryawanResign();
+        String namaKaryawan = approvalAtasan.getNamaKaryawan();
+
+        //Set User Detail Atasan
+        UserDetail userDetailAtasanResign = approvalHRLearning.getApprovalAtasan().getUserDetailAtasan();
+        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
+
+        //============== SEND EMAIL END ==============
 
         ApprovalHRLearning updatedApprovalHRLearning = repository.save(approvalHRLearning);
 

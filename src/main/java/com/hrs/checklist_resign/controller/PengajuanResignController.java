@@ -56,6 +56,9 @@ public class PengajuanResignController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EmailServiceV2 emailServiceV2;
+
 
 
 
@@ -343,6 +346,7 @@ public class PengajuanResignController {
 
         // Send notifications and emails
         sendNotificationsAndEmails(userDetail, userDetailAtasan, userDetail.getUserUsername());
+        emailServiceV2.sendEmail(userDetail,userDetailAtasan, "Approval Karyawan Keluar", "Please approve");
 
 
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
@@ -547,7 +551,7 @@ public class PengajuanResignController {
             // Admin logic: retrieve full data
             progressPage = pengajuanResignService.getResignationProgress(
                     nipUser, namaKaryawan, page, size, sortBy, sortDirection);
-        } else if ("ROLE_USER".equals(userRole)) {
+        } else  {
             // User logic: retrieve resignations where nipAtasan = userNip
             progressPage = pengajuanResignService.getResignationProgressByNipAtasan(
                     userNip, namaKaryawan, page, size, sortBy, sortDirection);

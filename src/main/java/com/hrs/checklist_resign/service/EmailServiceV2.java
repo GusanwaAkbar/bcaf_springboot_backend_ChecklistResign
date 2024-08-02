@@ -16,26 +16,44 @@ public class EmailServiceV2 {
 
 
 
-    public void sendEmail(UserDetail userDetailKaryawan, UserDetail userDetailAtasan, String emailSubject, String emailMessage) {
+    public void sendEmail(UserDetail userDetailKaryawan, UserDetail userDetailAtasan, String emailSubject, String emailMessage,String tujuan) {
         // Validate and set user details
         if (userDetailAtasan == null) {
             throw new IllegalArgumentException("UserDetailAtasan must not be null");
         }
 
-        String customerName = userDetailKaryawan.getNama();
-        String phoneNumber = "081230648290"; // Assuming this is a fixed value or needs to be retrieved differently
-        String email = userDetailKaryawan.getEmail();
+        String customerName = "";
+        String nipKaryawan = userDetailKaryawan.getUserUsername(); // Assuming this is a fixed value or needs to be retrieved differently
+        String namaKaryawan = userDetailKaryawan.getNama();
+        String email = "";
 
-        if (customerName == null || email == null) {
-            throw new IllegalArgumentException("CustomerName and email must not be null");
+        String emailBody = "";
+
+        if (tujuan == "KARYAWAN")
+        {
+            email = userDetailKaryawan.getEmail();
+            customerName = userDetailKaryawan.getNama();
+
+            emailBody = createEmailBodyNotifKaryawan(customerName, nipKaryawan, emailSubject, emailMessage);
+        }
+        else if (tujuan == "ATASAN")
+        {
+            email = userDetailAtasan.getEmail();
+            customerName = userDetailAtasan.getNama();
+
+            emailBody = createEmailBodyApprovalAtasan(customerName, namaKaryawan, emailSubject, emailMessage);
+        } else  {
+
+            email = userDetailAtasan.getEmail();
+            customerName = userDetailAtasan.getNama();
+
+            emailBody = createEmailBodyApprovalAtasan(customerName, namaKaryawan, emailSubject, emailMessage);
         }
 
-        // Validate emailSubject and emailMessage
-        if (emailSubject == null || emailMessage == null) {
-            throw new IllegalArgumentException("EmailSubject and emailMessage must not be null");
-        }
 
-        String emailBody = createEmailBody(customerName, phoneNumber, email, emailSubject, emailMessage);
+
+
+
 
         // Construct the JSON request body
         Map<String, Object> emailMap = Map.of(
@@ -49,7 +67,6 @@ public class EmailServiceV2 {
 
         Map<String, Object> requestBody = Map.of(
                 "customerName", customerName,
-                "phoneNumber", phoneNumber,
                 "sources", "OFFERING",
                 "email", email,
                 "rule", "OFFERING",
@@ -63,29 +80,6 @@ public class EmailServiceV2 {
         sendPostRequest("https://notifengine-hotfixapi-sit.idofocus.co.id:25443/api/submit", requestBody);
     }
 
-
-
-
-    private String createEmailBody(String customerName, String phoneNumber, String email, String emailSubject, String emailMessage) {
-        return "<!DOCTYPE html>" +
-                "<html lang=\"en\">" +
-                "<head>" +
-                "<meta charset=\"UTF-8\">" +
-                "<title>" + emailSubject + "</title>" +
-                "</head>" +
-                "<body>" +
-                "<div class=\"header\">" +
-                "<img src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/BCA_Finance.svg/798px-BCA_Finance.svg.png\" alt=\"BCA Finance Logo\" width=\"200\">" +
-                "</div>" +
-                "<p>Pemberitahuan Pesan Otomatis dari Sistem Pesan Aplikasi Checklist Resign BCA Finance</p>" +
-                "<p>Yth Bapak/Ibu " + customerName + "</p>" +
-                "<p>Approval Required: New Resignation Request from " + phoneNumber + ", " + emailMessage + "</p>" +
-                "<p><a href=\"http://link-to-application\">Klik di sini untuk membuka aplikasi</a></p>" +
-                "<p>Salam penutup,</p>" +
-                "<p>BCA Finance</p>" +
-                "</body>" +
-                "</html>";
-    }
 
     private void sendPostRequest(String urlString, Map<String, Object> requestBody) {
         try {
@@ -119,4 +113,52 @@ public class EmailServiceV2 {
             e.printStackTrace();
         }
     }
+
+
+
+    private String createEmailBodyApprovalAtasan(String customerName, String namaKaryawan , String emailSubject, String emailMessage) {
+        return "<!DOCTYPE html>" +
+                "<html lang=\"en\">" +
+                "<head>" +
+                "<meta charset=\"UTF-8\">" +
+                "<title>" + emailSubject + "</title>" +
+                "</head>" +
+                "<body>" +
+                "<div class=\"header\">" +
+                "<img src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/BCA_Finance.svg/798px-BCA_Finance.svg.png\" alt=\"BCA Finance Logo\" width=\"200\">" +
+                "</div>" +
+                "<p>Pemberitahuan Pesan Otomatis dari Sistem Pesan Aplikasi Checklist Resign BCA Finance</p>" +
+                "<p>Dear Bapak/Ibu " + customerName + "</p>" +
+                "<p> Approval Required: New Resignation Request from " + namaKaryawan +", " + emailMessage + "</p>" +
+                "<p><a href=\"http://localhost:4200/#/approval-atasan\">Klik di sini untuk membuka aplikasi (Harap terkoneksi dengan LAN) </a></p>" +
+                "<p>Salam penutup,</p>" +
+                "<p>BCA Finance</p>" +
+                "</body>" +
+                "</html>";
+    }
+
+
+    private String createEmailBodyNotifKaryawan(String customerName, String email, String emailSubject, String emailMessage) {
+        return "<!DOCTYPE html>" +
+                "<html lang=\"en\">" +
+                "<head>" +
+                "<meta charset=\"UTF-8\">" +
+                "<title>" + emailSubject + "</title>" +
+                "</head>" +
+                "<body>" +
+                "<div class=\"header\">" +
+                "<img src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/BCA_Finance.svg/798px-BCA_Finance.svg.png\" alt=\"BCA Finance Logo\" width=\"200\">" +
+                "</div>" +
+                "<p>Pemberitahuan Pesan Otomatis dari Sistem Pesan Aplikasi Checklist Resign BCA Finance</p>" +
+                "<p>Yth Bapak/Ibu " + customerName + "</p>" +
+                "<p> "+emailMessage+" </p>" +
+                "<p><a href=\"http://localhost:4200/#/progress-approval\">Klik di sini untuk membuka aplikasi (Harap terkoneksi dengan LAN)  </a></p>" +
+                "<p>Salam penutup,</p>" +
+                "<p>BCA Finance</p>" +
+                "</body>" +
+                "</html>";
+    }
+
+
+
 }

@@ -345,9 +345,11 @@ public class PengajuanResignController {
         saveApprovalAtasan(savedPengajuanResign, pengajuanResignDTO, userDetailAtasan, userDetail, nipAtasan);
 
         // Send notifications and emails
-        sendNotificationsAndEmails(userDetail, userDetailAtasan, userDetail.getUserUsername());
-        emailServiceV2.sendEmail(userDetail,userDetailAtasan, "Approval Karyawan Keluar", "Please approve");
+        //sendNotificationsAndEmails(userDetail, userDetailAtasan, userDetail.getUserUsername());
 
+        //Send Email V2 For Pengajuan Resign
+        emailServiceV2.sendEmail(userDetail,userDetailAtasan, "Checklist Resign: New Resignation Request From "+ username, "URGENT, Please Approve", "ATASAN");
+        emailServiceV2.sendEmail(userDetail,userDetailAtasan, "Checklist Resign: "+username+" Resignation Application has been created.", "Resignation Application has been created. Waiting Atasan to approve, Please Follow Up to your Atasan and check the update in the app.", "KARYAWAN");
 
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -640,7 +642,14 @@ public class PengajuanResignController {
         saveApprovalAtasanAdmin(savedPengajuanResign, pengajuanResignAdminDTO, userDetailAtasan, userDetail);
 
         // Send notifications and emails
-        sendNotificationsAndEmails(userDetail, userDetailAtasan, userDetail.getUserUsername());
+        //sendNotificationsAndEmails(userDetail, userDetailAtasan, userDetail.getUserUsername());
+
+        //Send Email V2 For Pengajuan Resign
+        String namaKaryawan = userDetail.getNama();
+
+        emailServiceV2.sendEmail(userDetail,userDetailAtasan, "Checklist Resign: New Resignation Request From "+ namaKaryawan, "URGENT, Please Approve", "ATASAN");
+        emailServiceV2.sendEmail(userDetail,userDetailAtasan, "Checklist Resign: "+namaKaryawan+", Your Resignation Application has been created.", "Resignation Application has been created. Waiting Atasan to approve, Please Follow Up to your Atasan and check the update in the app.", "KARYAWAN");
+
 
         // Construct the response
         ApiResponse<PengajuanResign> response = new ApiResponse<>(savedPengajuanResign, true, "Resignation created successfully", HttpStatus.CREATED.value());

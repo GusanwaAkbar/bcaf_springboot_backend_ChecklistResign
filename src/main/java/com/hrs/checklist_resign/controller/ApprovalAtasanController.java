@@ -68,6 +68,9 @@ public class ApprovalAtasanController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private EmailServiceV2 emailServiceV2;
+
 
 
     @PostMapping()
@@ -391,17 +394,25 @@ public class ApprovalAtasanController {
                 System.out.println(user);
 
                 UserDetail userDetailAdmin = user.getUserDetails();
+                String subject2 = " Checklist Resign: New Approval Checklist Resign From "+nipKaryawan;
 
-                sendNotificationsAndEmails(userDetailKaryawan, userDetailAdmin, nipKaryawan );
+                emailServiceV2.sendEmail(userDetailKaryawan, userDetailAdmin, subject2, "Please Check the Checklist Resign and Approve", "DEPARTEMENT");
+                //sendNotificationsAndEmails(userDetailKaryawan, userDetailAdmin, nipKaryawan );
 
             }
 
             String userNama = userDetailKaryawan.getNama();
+            String subject3 = ""+nipKaryawan+ "Checklist Resign: Your Atasan Has Been Approved your resignations";
 
-            notificationService.sendNotification("Resignation Request has been approved by Atasan, check the link below for more details", userDetailKaryawan, nipKaryawan);
-            Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, "Resignation Request has been approved by Atasan, check the link below for more details.", "http://localhost:4200/#/progress-approval");
+            //notificationService.sendNotification("Resignation Request has been approved by Atasan, check the link below for more details", userDetailKaryawan, nipKaryawan);
+            //Map<String, Object> variablesKaryawan = emailTemplateService.createEmailVariables(userNama, "Resignation Request has been approved by Atasan, check the link below for more details.", "http://localhost:4200/#/progress-approval");
+            emailServiceV2.sendEmail(userDetailKaryawan, userDetailAtasan, subject3, "Your Atasan Has Been Approved your resignations, Waiting for Departements Approval, check the progress in the App","KARYAWAN");
 
+        }
+        else {
 
+            String subject = "Checklist Resign: Your Resignation is Pending by Atasan";
+            emailServiceV2.sendEmail(userDetailKaryawan, userDetailAtasan, subject, "Your resignation is pending by your Atasan,Please contact your atasan for the next Information","KARYAWAN");
         }
 
         ApiResponse<ApprovalAtasan> response = new ApiResponse<>(updatedApprovalAtasan, true, "Approval Atasan updated successfully", HttpStatus.OK.value());

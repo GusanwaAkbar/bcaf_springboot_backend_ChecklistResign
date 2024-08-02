@@ -128,8 +128,8 @@ public class ApprovalHRServicesAdminService implements ApprovalService {
         String namaKaryawan = approvalAtasan.getNamaKaryawan();
 
         //Set User Detail Atasan
-        UserDetail userDetailAtasanResign = approvalHRServicesAdmin.getApprovalAtasan().getUserDetailAtasan();
-        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
+        UserDetail userDetailAtasanResign = approvalAtasan.getUserDetailAtasan();
+        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "HR Services", isAccept);
 
         //============== SEND EMAIL END ==============
 

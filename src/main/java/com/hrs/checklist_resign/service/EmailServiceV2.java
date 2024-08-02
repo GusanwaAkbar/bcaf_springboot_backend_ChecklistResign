@@ -125,19 +125,42 @@ public class EmailServiceV2 {
 
         if (isAccept) {
             subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved Your Resignation";
-            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved Your Resignation, Check the Progress In the App";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved Your Resignation. Waiting for other departements, Please Check the Progress In the App";
             sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "KARYAWAN");
 
             subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved The Resignation";
-            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved The Resignation, please check the progress in the app";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved The Resignation. Waiting for other departements, Please check the progress in the app";
             sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "ATASAN_UPDATE");
         } else {
             subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING Your Resignation";
-            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING Your Resignation, Please Contact the admin and Check the Progress In the App";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING Your Resignation. Please Contact the admin and Check the Progress In the App";
             sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "KARYAWAN");
 
             subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING the Resignation";
-            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING the Resignation, Please Contact the admin and Check the Progress In the App";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING the Resignation. Please Contact the admin and Check the Progress In the App";
+            sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "ATASAN_UPDATE");
+        }
+    }
+
+    public void sendDepartmentEmailFinal(UserDetail userDetailKaryawan, UserDetail userDetailAtasanResign, String nipKaryawan, String departmentName, boolean isAccept) {
+        String subject;
+        String body;
+
+        if (isAccept) {
+            subject = "Checklist Resign " + nipKaryawan + ": is Complete," + departmentName + " Has Approved Your Resignation";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved Your Resignation. Congratulations Your Resignation Checklist is Complete, contact your Atasan for further information";
+            sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "KARYAWAN");
+
+            subject = "Checklist Resign " + nipKaryawan + ": Is Complete" + departmentName + " Has Approved The Resignation";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has Approved The Resignation. Congratulations Your Resignation Checklist is Complete, contact your Atasan for further information";
+            sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "ATASAN_UPDATE");
+        } else {
+            subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING Your Resignation";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING Your Resignation. Please Contact the admin and Check the Progress In the App";
+            sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "KARYAWAN");
+
+            subject = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING the Resignation";
+            body = "Checklist Resign " + nipKaryawan + ": " + departmentName + " Has PENDING the Resignation. Please Contact the admin and Check the Progress In the App";
             sendEmail(userDetailKaryawan, userDetailAtasanResign, subject, body, "ATASAN_UPDATE");
         }
     }

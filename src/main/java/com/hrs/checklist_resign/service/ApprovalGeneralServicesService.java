@@ -145,7 +145,7 @@ public class ApprovalGeneralServicesService implements ApprovalService {
         String namaKaryawan = approvalAtasan.getNamaKaryawan();
 
         //Set User Detail Atasan
-        UserDetail userDetailAtasanResign = approvalGeneralServices.getApprovalAtasan().getUserDetailAtasan();
+        UserDetail userDetailAtasanResign = approvalAtasan.getUserDetailAtasan();
 
         emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
 

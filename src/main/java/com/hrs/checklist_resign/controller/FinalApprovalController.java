@@ -7,6 +7,7 @@ import com.hrs.checklist_resign.dto.FinalApprovalDTO;
 import com.hrs.checklist_resign.Model.FinalApproval;
 import com.hrs.checklist_resign.dto.PostFinalApprovalDTO;
 import com.hrs.checklist_resign.response.ApiResponse;
+import com.hrs.checklist_resign.service.EmailServiceV2;
 import com.hrs.checklist_resign.service.FinalApprovalService;
 import com.hrs.checklist_resign.service.PengajuanResignService;
 import com.hrs.checklist_resign.service.UserDetailsService;
@@ -34,6 +35,9 @@ public class FinalApprovalController {
 
     @Autowired
     private PengajuanResignService pengajuanResignService;
+
+    @Autowired
+    private EmailServiceV2 emailServiceV2;
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<FinalApprovalDTO>> getFinalApprovalById(@PathVariable Long id) {
@@ -98,7 +102,9 @@ public class FinalApprovalController {
             finalApproval.setRemarks(postFinalApprovalDTO.getRemarks());
             finalApproval.setFinalApprovalStatus(postFinalApprovalDTO.getFinalApprovalStatus());
 
-            if (finalApproval.getFinalApprovalStatus().equals("accept"))
+            boolean isAccept = finalApproval.getFinalApprovalStatus().equals("accept");
+
+            if (isAccept)
             {
                 //get pengajuanResign
 
@@ -115,6 +121,24 @@ public class FinalApprovalController {
                 pengajuanResignService.saveResignation(pengajuanResign);
 
             }
+
+            ApprovalAtasan approvalAtasan = finalApproval.getApprovalAtasan();
+
+            //============== SEND EMAIL START ==============
+
+            //Send the email
+            //Set User Detail Karyawan
+            UserDetail userDetailKaryawan = approvalAtasan.getPengajuanResign().getUserDetailResign();
+            String nipKaryawan = approvalAtasan.getNipKaryawanResign();
+            String namaKaryawan = approvalAtasan.getNamaKaryawan();
+
+            //Set User Detail Atasan
+            UserDetail userDetailAtasanResign = approvalAtasan.getUserDetailAtasan();
+            emailServiceV2.sendDepartmentEmailFinal(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "HR Service Admin (Final)", isAccept);
+
+            //============== SEND EMAIL END ==============
+
+
 
             // Save updated final approval
             FinalApproval updatedFinalApproval = finalApprovalService.updateFinalApproval(finalApproval);

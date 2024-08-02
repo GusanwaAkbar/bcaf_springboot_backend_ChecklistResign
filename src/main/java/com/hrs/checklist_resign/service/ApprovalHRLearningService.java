@@ -125,8 +125,8 @@ public class ApprovalHRLearningService implements ApprovalService {
         String namaKaryawan = approvalAtasan.getNamaKaryawan();
 
         //Set User Detail Atasan
-        UserDetail userDetailAtasanResign = approvalHRLearning.getApprovalAtasan().getUserDetailAtasan();
-        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "General Services", isAccept);
+        UserDetail userDetailAtasanResign = approvalAtasan.getUserDetailAtasan();
+        emailServiceV2.sendDepartmentEmail(userDetailKaryawan, userDetailAtasanResign, nipKaryawan, "HR Learning", isAccept);
 
         //============== SEND EMAIL END ==============
 

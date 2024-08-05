@@ -1,0 +1,74 @@
+stages:
+  - code_quality
+  - quality_check
+  - build_app
+  - build_docker
+  - deploy
+  
+cache:
+  paths:
+    - .m2/repository
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+code_quality:
+  stage: code_quality
+  image: 10.10.30.37/base/maven:3.8.3
+  variables:
+    SONAR_TOKEN: "${SONAR_TOKEN}"
+    SONAR_HOST_URL: "${SONAR_HOST_URL}"
+    GIT_DEPTH: 0
+  script:
+    - mvn --batch-mode verify sonar:sonar   -Dsonar.projectKey=external-apps_fina-konsumen_backend-cms_c23e1ad5-1b1c-4598-91ea-756729b875e8
+  only:
+    - /^development*/
+    - merge_request
+  allow_failure: true
+  tags:
+    - runner-docker-dev
+
+# check_quality_gate:
+#   stage: quality_check
+#   script:
+#     - |
+#       # Wait for SonarQube analysis to complete. Adjust sleep as necessary.
+#       sleep 60
+#       # Replace your_project_key and your_sonarqube_server with your actual project key and SonarQube server URL.
+#       export QUALITY_GATE_STATUS=$(curl -u $SONAR_TOKEN: 'http://192.168.29.24/api/qualitygates/project_status?projectKey=microservices_dms-mide_3749e693-b5fa-437f-aaac-c0920020d221&branch=dev1.0' | jq -r '.projectStatus.status')
+#       if [ "$QUALITY_GATE_STATUS" != "OK" ]; then
+#         echo "Quality Gate failed!"
+#         exit 1
+#       else
+#         echo "Quality Gate passed."
+#       fi
+#   allow_failure: false
+#   only:
+#     - /^dev*/ 
+#   tags:
+#     - runner-shell-dev
+
+
+build_app:
+  stage: build_app
+  image: 10.10.30.37/base/maven:3.8.4-openjdk-17
+  script: "mvn -Dmaven.test.skip=true install"
+  artifacts:
+    paths:
+      - target/*.jar
+    expire_in: 1 days
+  tags:
+    - runner-docker-dev
+
+include:
+  - local: 'gitlab/.gitlab-ci-dev.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH =~ /^development-.*$/'
+  - local: 'gitlab/.gitlab-ci-staging.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH =~ /^staging-.*$/'
+  - local: 'gitlab/.gitlab-ci-prod.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH =~ /^master.*$/'
+  
+  

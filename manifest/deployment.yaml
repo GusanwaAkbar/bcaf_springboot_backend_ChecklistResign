@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceklist-karyawan-keluar-be
+spec:
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: ceklist-karyawan-keluar-be
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ceklist-karyawan-keluar-be
+    spec:
+      containers:
+        - name:  ceklist-karyawan-keluar-be
+          image: __IMAGE__:__VERSION__
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: tz-config
+            - name: config-ceklist-karyawan-be
+              mountPath: /config/application.properties
+              subPath: application.properties 
+      nodeName: worker02
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /usr/share/zoneinfo/Asia/Jakarta
+          type: File
+        name: tz-config
+      - name:  config-ceklist-karyawan-be
+        configMap:
+          name: config-ceklist-karyawan-be
+      imagePullSecrets:
+        - name: hrisreg

@@ -1,0 +1,31 @@
+build_docker:
+  stage: build_docker
+  image: 10.10.30.37/base/docker:latest
+  services:
+    - name: 10.10.30.37/base/docker:dind
+  script:
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" ${IP_DOCKER_DEV}
+    - docker build -t "${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHA" .
+    - docker push "${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHA"
+  only:
+    - /^development*/
+  tags:
+    - runner-docker-dev
+    
+deploy:
+  stage: deploy
+  script:
+    - kubectl version
+    - cd manifest/
+    - sed -i "s,__IMAGE__:__VERSION__,${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHA," deployment.yaml
+    - kubectl config use-context new-bcaf@bcaf
+    - kubectl apply -f deployment.yaml -n  ${NAMESPACE}
+    - kubectl apply -f service.yaml -n  ${NAMESPACE}
+    - kubectl rollout status -f deployment.yaml -n  ${NAMESPACE}
+    - kubectl get all,ing  -n ${NAMESPACE}
+    - kubectl config use-context kubernetes-admin@bcaf
+    - kubectl config get-contexts
+  only:
+    - /^development*/
+  tags:
+    - runner-shell-dev

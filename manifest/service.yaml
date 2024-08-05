@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceklist-karyawan-keluar-be
+  labels:
+    app: ceklist-karyawan-keluar-be
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: ceklist-karyawan-keluar-be

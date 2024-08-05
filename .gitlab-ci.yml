@@ -51,7 +51,7 @@ code_quality:
 
 build_app:
   stage: build_app
-  image: 10.10.30.37/base/maven:3.8.4-openjdk-17
+  image: 10.10.30.37/base/maven:3.9.5-openjdk-21
   script: "mvn -Dmaven.test.skip=true install"
   artifacts:
     paths:

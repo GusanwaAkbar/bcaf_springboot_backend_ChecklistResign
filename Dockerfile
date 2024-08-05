@@ -1,4 +1,4 @@
-FROM 10.10.30.37/base/openjdk:17-alpine
+FROM 10.10.30.37/base/maven:3.9.5-openjdk-21
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 

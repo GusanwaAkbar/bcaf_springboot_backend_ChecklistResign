@@ -15,50 +15,39 @@ import org.springframework.stereotype.Service;
 public class EmailServiceV2 {
 
 
-
-    public void sendEmail(UserDetail userDetailKaryawan, UserDetail userDetailAtasan, String emailSubject, String emailMessage,String tujuan) {
+    public void sendEmail(UserDetail userDetailKaryawan, UserDetail userDetailAtasan, String emailSubject, String emailMessage, String tujuan) {
         // Validate and set user details
         if (userDetailAtasan == null) {
             throw new IllegalArgumentException("UserDetailAtasan must not be null");
         }
 
         String customerName = "";
-        String nipKaryawan = userDetailKaryawan.getUserUsername(); // Assuming this is a fixed value or needs to be retrieved differently
-        String namaKaryawan = userDetailKaryawan.getNama();
-        String email = "";
+        String nipKaryawan = userDetailKaryawan != null ? userDetailKaryawan.getUserUsername() : "";
+        String namaKaryawan = userDetailKaryawan != null ? userDetailKaryawan.getNama() : "";
+        String email = null; // Allow email to be null
 
         String emailBody = "";
 
-        if (tujuan == "KARYAWAN")
-        {
-            email = userDetailKaryawan.getEmail();
-            customerName = userDetailKaryawan.getNama();
-
-            emailBody = createEmailBodyNotifKaryawan(customerName, nipKaryawan, emailSubject, emailMessage);
-        }
-        else if (tujuan == "ATASAN")
-        {
+        if ("KARYAWAN".equals(tujuan)) {
+            if (userDetailKaryawan != null) {
+                email = userDetailKaryawan.getEmail();
+                customerName = userDetailKaryawan.getNama();
+                emailBody = createEmailBodyNotifKaryawan(customerName, nipKaryawan, emailSubject, emailMessage);
+            }
+        } else if ("ATASAN".equals(tujuan)) {
             email = userDetailAtasan.getEmail();
             customerName = userDetailAtasan.getNama();
-
             emailBody = createEmailBodyApprovalAtasan(customerName, namaKaryawan, emailSubject, emailMessage);
-        } else if (tujuan == "ATASAN_UPDATE") {
-
+        } else if ("ATASAN_UPDATE".equals(tujuan)) {
             email = userDetailAtasan.getEmail();
             customerName = userDetailAtasan.getNama();
-
             emailBody = createEmailBodyApprovalAtasanUpdate(customerName, namaKaryawan, emailSubject, emailMessage);
         }
 
-
-
-
-
-
-        // Construct the JSON request body
+        // Construct the JSON request body, handling null email
         Map<String, Object> emailMap = Map.of(
-                "EmailBody", emailBody,
-                "EmailSubject", emailSubject,
+                "EmailBody", emailBody != null ? emailBody : "",
+                "EmailSubject", emailSubject != null ? emailSubject : "",
                 "EmailCc", "", // Replaced null with an empty string
                 "EmailBcc", "", // Replaced null with an empty string
                 "EmailIdDataSources", 2,
@@ -66,9 +55,9 @@ public class EmailServiceV2 {
         );
 
         Map<String, Object> requestBody = Map.of(
-                "customerName", customerName,
+                "customerName", customerName != null ? customerName : "",
                 "sources", "OFFERING",
-                "email", email,
+                "email", email != null ? email : "", // Provide an empty string if email is null
                 "rule", "OFFERING",
                 "notificationList", List.of(Map.of(
                         "notificationType", "EMAIL",
@@ -79,6 +68,7 @@ public class EmailServiceV2 {
         // Send the request
         sendPostRequest("https://notifengine-hotfixapi-sit.idofocus.co.id:25443/api/submit", requestBody);
     }
+
 
 
     private void sendPostRequest(String urlString, Map<String, Object> requestBody) {
